@@ -37,6 +37,7 @@ object Koject {
  * Will be replaced by automatic code generation.
  * Not actually called.
  */
+@Suppress("unused")
 fun Koject.start() {
     throw CodeNotGeneratedException(
         "Code generation failed. Check your ksp settings.",

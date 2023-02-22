@@ -1,7 +1,6 @@
-package com.moriatsushi.koject.internal
+package com.moriatsushi.koject.internal.identifier
 
 import com.moriatsushi.koject.MyClass
-import com.moriatsushi.koject.identifier.Identifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.internal
+package com.moriatsushi.koject.internal.identifier
 
 import kotlin.reflect.KClass
 

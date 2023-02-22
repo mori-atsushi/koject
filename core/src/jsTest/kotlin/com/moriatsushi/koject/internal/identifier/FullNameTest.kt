@@ -1,17 +1,17 @@
-package com.moriatsushi.koject.internal
+package com.moriatsushi.koject.internal.identifier
 
 import com.moriatsushi.koject.MyClass
 import com.moriatsushi.koject.MyInterface
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-import org.junit.Test
 
 class FullNameTest {
     @Test
     fun int() {
         val target = Int::class
         val actual = target.fullName
-        val expected = "kotlin.Int"
+        val expected = "Int"
         assertEquals(expected, actual)
     }
 
@@ -19,7 +19,7 @@ class FullNameTest {
     fun list() {
         val target = List::class
         val actual = target.fullName
-        val expected = "kotlin.collections.List"
+        val expected = "List"
         assertEquals(expected, actual)
     }
 
@@ -27,7 +27,7 @@ class FullNameTest {
     fun myClass() {
         val target = MyClass::class
         val actual = target.fullName
-        val expected = "com.moriatsushi.koject.MyClass"
+        val expected = "MyClass"
         assertEquals(expected, actual)
     }
 

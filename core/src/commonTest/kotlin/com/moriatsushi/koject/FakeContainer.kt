@@ -1,7 +1,8 @@
 package com.moriatsushi.koject
 
-import com.moriatsushi.koject.identifier.Identifier
-import com.moriatsushi.koject.internal.of
+import com.moriatsushi.koject.internal.Container
+import com.moriatsushi.koject.internal.identifier.Identifier
+import com.moriatsushi.koject.internal.identifier.of
 
 class FakeContainer : Container {
     override fun resolve(id: Identifier): Any {

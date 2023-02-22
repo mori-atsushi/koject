@@ -1,6 +1,5 @@
-package com.moriatsushi.koject.internal
+package com.moriatsushi.koject.internal.identifier
 
-import com.moriatsushi.koject.identifier.Identifier
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
@@ -8,12 +7,6 @@ import kotlin.reflect.typeOf
 @PublishedApi
 internal inline fun <reified T> Identifier.Companion.of(): Identifier {
     return of(TypeStruct.of<T>())
-}
-
-@PublishedApi
-internal fun Identifier.Companion.of(typeStruct: TypeStruct): Identifier {
-    val value = typeStruct.toString()
-    return Identifier(value)
 }
 
 @PublishedApi

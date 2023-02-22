@@ -136,5 +136,9 @@ kotlin {
         val linuxMips32Test by getting {
             dependsOn(nativeTest)
         }
+
+        all {
+            languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
+        }
     }
 }

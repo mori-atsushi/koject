@@ -25,6 +25,10 @@ object Koject {
     fun start(container: Container) {
         _container = container
     }
+
+    internal fun stop() {
+        _container = null
+    }
 }
 
 /**

@@ -2,6 +2,7 @@ package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.CodeNotGeneratedException
 import com.moriatsushi.koject.error.KojectNotStartedException
+import com.moriatsushi.koject.internal.Container
 
 /**
  * Koject

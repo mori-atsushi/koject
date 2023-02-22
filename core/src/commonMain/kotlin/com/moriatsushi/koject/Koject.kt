@@ -14,7 +14,7 @@ object Koject {
     /**
      * current [Container]
      */
-    val container: Container
+    internal val container: Container
         get() = _container ?: throw KojectNotStartedException(
             "Koject has not been started.",
         )

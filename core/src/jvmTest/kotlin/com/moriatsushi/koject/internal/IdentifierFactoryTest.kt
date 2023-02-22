@@ -2,8 +2,8 @@ package com.moriatsushi.koject.internal
 
 import com.moriatsushi.koject.MyClass
 import com.moriatsushi.koject.identifier.Identifier
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class IdentifierFactoryTest {
     @Test
@@ -38,7 +38,7 @@ class IdentifierFactoryTest {
         val actual = Identifier.of<Map<Int, Map<Int, Map<Int, String>>>>()
         val expected = Identifier(
             "kotlin.collections.Map<kotlin.Int, kotlin.collections.Map" +
-                    "<kotlin.Int, kotlin.collections.Map<kotlin.Int, kotlin.String>>>",
+                "<kotlin.Int, kotlin.collections.Map<kotlin.Int, kotlin.String>>>",
         )
         assertEquals(expected, actual)
     }

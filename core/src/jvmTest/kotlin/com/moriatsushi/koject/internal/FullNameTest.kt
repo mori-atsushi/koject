@@ -2,9 +2,9 @@ package com.moriatsushi.koject.internal
 
 import com.moriatsushi.koject.MyClass
 import com.moriatsushi.koject.MyInterface
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import org.junit.Test
 
 class FullNameTest {
     @Test

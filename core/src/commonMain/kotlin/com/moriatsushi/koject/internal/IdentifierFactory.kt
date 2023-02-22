@@ -34,4 +34,3 @@ internal fun TypeStruct.Companion.of(type: KType): TypeStruct {
         isNullable = type.isMarkedNullable,
     )
 }
-

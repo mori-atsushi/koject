@@ -38,7 +38,7 @@ class IdentifierFactoryTest {
         val actual = Identifier.of<Map<Int, Map<Int, Map<Int, String>>>>()
         val expected = Identifier(
             "kotlin.collections.Map<kotlin.Int, kotlin.collections.Map" +
-                    "<kotlin.Int, kotlin.collections.Map<kotlin.Int, kotlin.String>>>",
+                "<kotlin.Int, kotlin.collections.Map<kotlin.Int, kotlin.String>>>",
         )
         assertEquals(expected, actual)
     }

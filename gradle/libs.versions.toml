@@ -1,6 +1,8 @@
 [versions]
 kotlin = "1.8.10"
 ksp = "1.8.10-1.0.9"
+ktlint = "0.48.1"
+spotless = "6.15.0"
 
 [libraries]
 ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
@@ -8,3 +10,4 @@ ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processi
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

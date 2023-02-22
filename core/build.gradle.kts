@@ -5,7 +5,7 @@ plugins {
 kotlin {
     jvm()
     js(IR) {
-        moduleName = "architectureDICore"
+        moduleName = "koject-core"
         nodejs()
         browser()
     }

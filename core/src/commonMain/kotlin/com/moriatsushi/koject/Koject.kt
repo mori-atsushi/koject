@@ -3,6 +3,7 @@ package com.moriatsushi.koject
 import com.moriatsushi.koject.error.CodeNotGeneratedException
 import com.moriatsushi.koject.error.KojectNotStartedException
 import com.moriatsushi.koject.internal.Container
+import com.moriatsushi.koject.internal.InternalKojectApi
 
 /**
  * Koject
@@ -23,6 +24,7 @@ object Koject {
     /**
      * Set [container] and start application
      */
+    @InternalKojectApi
     fun start(container: Container) {
         _container = container
     }

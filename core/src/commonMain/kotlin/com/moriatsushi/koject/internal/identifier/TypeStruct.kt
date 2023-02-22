@@ -1,5 +1,8 @@
 package com.moriatsushi.koject.internal.identifier
 
+import com.moriatsushi.koject.internal.InternalKojectApi
+
+@InternalKojectApi
 data class TypeStruct(
     val name: String,
     val isNullable: Boolean = false,

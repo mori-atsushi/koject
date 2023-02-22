@@ -7,6 +7,7 @@ import com.moriatsushi.koject.internal.identifier.Identifier
  *
  * Resolve of dependencies.
  */
+@InternalKojectApi
 interface Container {
     /**
      * Resolve dependencies and return an instance

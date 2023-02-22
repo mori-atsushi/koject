@@ -8,4 +8,6 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Identifier(
     val value: String,
-)
+) {
+    companion object
+}

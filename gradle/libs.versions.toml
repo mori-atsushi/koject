@@ -1,0 +1,10 @@
+[versions]
+kotlin = "1.8.10"
+ksp = "1.8.10-1.0.9"
+
+[libraries]
+ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

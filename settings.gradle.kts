@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "koject"
+include(":core")

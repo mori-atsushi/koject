@@ -2,7 +2,6 @@ package com.moriatsushi.koject.internal.identifier
 
 import com.moriatsushi.koject.MyClass
 import com.moriatsushi.koject.MyInterface
-import com.moriatsushi.koject.internal.fullName
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import org.junit.Test

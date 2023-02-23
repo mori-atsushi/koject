@@ -23,7 +23,7 @@ class FactoryFileSpecFactoryTest {
         val expectedCode = """
             |package com.moriatsushi.koject.di.generated.factory
             |
-            |public class com_package_Classname_Factory
+            |public class _com_package_Classname_Factory
             |
         """.trimMargin()
         assertEquals(expectedCode, spec.toString())

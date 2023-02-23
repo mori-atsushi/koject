@@ -23,5 +23,5 @@ internal class ProviderDeclaration(
     }
 
     val factoryName: String
-        get() = "${identifier.escapedValue}_Factory"
+        get() = "_${identifier.escapedValue}_Factory"
 }

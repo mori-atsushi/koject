@@ -40,12 +40,12 @@ class DIProcessorTest {
         assertExistsFile(
             folder,
             "ksp/sources/kotlin/com/moriatsushi/koject/di/generated/factory/" +
-                "com_testpackage_SampleClass1_Factory.kt",
+                "_com_testpackage_SampleClass1_Factory.kt",
         )
         assertExistsFile(
             folder,
             "ksp/sources/kotlin/com/moriatsushi/koject/di/generated/factory/" +
-                "com_testpackage_SampleClass1_Factory.kt",
+                "_com_testpackage_SampleClass1_Factory.kt",
         )
     }
 }

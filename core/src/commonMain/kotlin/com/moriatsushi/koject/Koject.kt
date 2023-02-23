@@ -29,7 +29,10 @@ object Koject {
         _container = container
     }
 
-    internal fun stop() {
+    /**
+     * Release the current container
+     */
+    fun stop() {
         _container = null
     }
 }
@@ -41,7 +44,14 @@ object Koject {
  * Not actually called.
  */
 @Suppress("unused")
-fun Koject.start() {
+fun Koject.start(
+    @Suppress("UNUSED_PARAMETER")
+    nothing: Nothing = codeNotGeneratedError(),
+) {
+    codeNotGeneratedError()
+}
+
+private fun codeNotGeneratedError(): Nothing {
     throw CodeNotGeneratedException(
         "Code generation failed. Check your ksp settings.",
     )

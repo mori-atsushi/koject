@@ -13,7 +13,13 @@ kotlin {
                 implementation(libs.kotlinpoet.ksp)
             }
             kotlin.srcDir("src/main/kotlin")
-            resources.srcDir("src/main/resources")
+        }
+
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+            kotlin.srcDir("src/test/kotlin")
         }
 
         all {

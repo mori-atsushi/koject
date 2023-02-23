@@ -1,11 +1,12 @@
 package com.moriatsushi.koject.internal.identifier
 
+import com.moriatsushi.koject.internal.InternalKojectApi
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-@PublishedApi
-internal inline fun <reified T> Identifier.Companion.of(): Identifier {
+@InternalKojectApi
+inline fun <reified T> Identifier.Companion.of(): Identifier {
     return of(TypeStruct.of<T>())
 }
 

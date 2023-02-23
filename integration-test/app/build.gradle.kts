@@ -5,11 +5,12 @@ plugins {
 
 kotlin {
     jvm()
-    js(IR) {
-        moduleName = "koject-integration-test-app"
-        nodejs()
-        browser()
-    }
+    // not working in Kotlin/JS
+    // js(IR) {
+    //     moduleName = "koject-integration-test-app"
+    //     nodejs()
+    //     browser()
+    // }
     ios()
     iosSimulatorArm64()
     macosX64()
@@ -36,13 +37,13 @@ kotlin {
             dependsOn(commonTest)
         }
 
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
+        // val jsMain by getting {
+        //     dependsOn(commonMain)
+        // }
 
-        val jsTest by getting {
-            dependsOn(commonTest)
-        }
+        // val jsTest by getting {
+        //     dependsOn(commonTest)
+        // }
 
         val nativeMain by creating {
             dependsOn(commonMain)
@@ -91,7 +92,7 @@ kotlin {
 
 dependencies {
     add("kspJvm", project(":processor:app"))
-    add("kspJs", project(":processor:app"))
+    // add("kspJs", project(":processor:app"))
     add("kspIosX64", project(":processor:app"))
     add("kspIosArm64", project(":processor:app"))
     add("kspIosSimulatorArm64", project(":processor:app"))

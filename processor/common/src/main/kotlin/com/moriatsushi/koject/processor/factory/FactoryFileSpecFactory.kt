@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.factory
 
 import com.moriatsushi.koject.processor.analysis.primaryConstructorWithParameters
+import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.PackageNames
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
@@ -9,6 +10,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
@@ -26,7 +28,15 @@ internal class FactoryFileSpecFactory {
     private fun createClassSpec(provider: ProviderDeclaration): TypeSpec {
         val constructorSpec = FunSpec.constructorBuilder().apply {
             provider.dependencies.forEach {
-                addParameter(it.providerName, LambdaTypeName.get(returnType = ANY))
+                val parameter = ParameterSpec.builder(
+                    it.providerName,
+                    LambdaTypeName.get(returnType = ANY),
+                ).apply {
+                    addAnnotation(
+                        AnnotationSpecFactory.createAssistantID(it.identifier),
+                    )
+                }.build()
+                addParameter(parameter)
             }
         }.build()
 
@@ -44,6 +54,12 @@ internal class FactoryFileSpecFactory {
                 setOf(KModifier.PRIVATE),
             )
             addFunction(createFunSpec)
+            addAnnotation(
+                AnnotationSpecFactory.createInternal(),
+            )
+            addAnnotation(
+                AnnotationSpecFactory.createAssistantID(provider.identifier),
+            )
 
             addOriginatingKSFile(provider.containingFile)
         }.build()

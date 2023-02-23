@@ -17,7 +17,7 @@ internal class DependencyType(
         }
     }
 
-    private val identifier by lazy {
+    val identifier by lazy {
         Identifier.of(ksType)
     }
 

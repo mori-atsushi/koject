@@ -6,6 +6,7 @@ import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.asTypeName
 
 internal class StartFileSpecFactory {
     fun create(): FileSpec {
@@ -14,7 +15,9 @@ internal class StartFileSpecFactory {
 
         val funSpec = FunSpec.builder("start").apply {
             receiver(Koject::class)
-            addStatement("%T._start(%T())", Koject::class, containerName)
+            // workaround to avoid crash in Kotlin/Native
+            // https://github.com/square/kotlinpoet/issues/1273
+            addStatement("%T._start(%T())", Koject::class.asTypeName(), containerName)
             addAnnotation(AnnotationSpecFactory.createOptInInternal())
         }.build()
 

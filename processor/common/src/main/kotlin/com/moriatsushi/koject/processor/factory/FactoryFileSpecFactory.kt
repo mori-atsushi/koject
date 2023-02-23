@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.processor.factory
 
+import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.analytics.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
@@ -11,18 +12,19 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class FactoryFileSpecFactory {
     fun create(provider: ProviderDeclaration): FileSpec {
-        val factoryName = Names.factoryNameOf(provider.identifier)
+        val type = createClassSpec(provider)
         return FileSpec.builder(
             packageName = Names.factoryPackageName,
-            fileName = factoryName,
+            fileName = type.name!!,
         ).apply {
             applyCommon()
-            addType(createClassSpec(provider))
+            addType(type)
         }.build()
     }
 
@@ -34,6 +36,7 @@ internal class FactoryFileSpecFactory {
             AnnotationSpecFactory.createInternal()
         val assistantIDAnnotationSpec =
             AnnotationSpecFactory.createAssistantID(provider.identifier)
+        val companionObject = createCompanionObjectSpec(provider)
 
         return TypeSpec.classBuilder(factoryName).apply {
             primaryConstructorWithParameters(
@@ -41,6 +44,7 @@ internal class FactoryFileSpecFactory {
                 setOf(KModifier.PRIVATE),
             )
             addFunction(createFunSpec)
+            addType(companionObject)
             addAnnotation(internalAnnotationSpec)
             addAnnotation(assistantIDAnnotationSpec)
 
@@ -73,6 +77,15 @@ internal class FactoryFileSpecFactory {
             }
             returns(ANY)
             addStatement("return ${provider.asTypeName()}($params\n)")
+        }.build()
+    }
+
+    private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
+        val identifierProperty = PropertySpec.builder("identifier", Identifier::class).apply {
+            initializer("%T.of<%T>()", Identifier::class, provider.asTypeName())
+        }.build()
+        return TypeSpec.companionObjectBuilder().apply {
+            addProperty(identifierProperty)
         }.build()
     }
 }

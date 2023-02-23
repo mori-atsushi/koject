@@ -95,6 +95,8 @@ class DIProcessorTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.AssistantID
+        |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.testpackage.SampleClass1
         |import kotlin.Any
         |
         |@InternalKojectApi
@@ -102,6 +104,10 @@ class DIProcessorTest {
         |public class _com_testpackage_SampleClass1_Factory() {
         |    public fun create(): Any = com.testpackage.SampleClass1(
         |    )
+        |
+        |    public companion object {
+        |        public val identifier: Identifier = Identifier.of<SampleClass1>()
+        |    }
         |}
         |
     """.trimMargin()
@@ -113,6 +119,8 @@ class DIProcessorTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.AssistantID
+        |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.testpackage.SampleClass2
         |import kotlin.Any
         |
         |@InternalKojectApi
@@ -124,6 +132,10 @@ class DIProcessorTest {
         |    public fun create(): Any = com.testpackage.SampleClass2(
         |    provide_com_testpackage_SampleClass1() as com.testpackage.SampleClass1
         |    )
+        |
+        |    public companion object {
+        |        public val identifier: Identifier = Identifier.of<SampleClass2>()
+        |    }
         |}
         |
     """.trimMargin()
@@ -135,6 +147,8 @@ class DIProcessorTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.AssistantID
+        |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.testpackage.SampleClass3
         |import kotlin.Any
         |
         |@InternalKojectApi
@@ -149,6 +163,10 @@ class DIProcessorTest {
         |    provide_com_testpackage_SampleClass1() as com.testpackage.SampleClass1,
         |    provide_com_testpackage_SampleClass2() as com.testpackage.SampleClass2
         |    )
+        |
+        |    public companion object {
+        |        public val identifier: Identifier = Identifier.of<SampleClass3>()
+        |    }
         |}
         |
     """.trimMargin()

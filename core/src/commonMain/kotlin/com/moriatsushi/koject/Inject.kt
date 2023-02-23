@@ -1,7 +1,6 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.internal.identifier.Identifier
-import com.moriatsushi.koject.internal.identifier.of
 
 /**
  * Inject an instance with resolved dependencies

@@ -8,6 +8,6 @@ class LibProcessorProvider : SymbolProcessorProvider {
     override fun create(
         environment: SymbolProcessorEnvironment,
     ): SymbolProcessor {
-        return DIProcessorFactory().create()
+        return DIProcessorFactory(environment).create()
     }
 }

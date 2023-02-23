@@ -8,6 +8,8 @@ class LibProcessorProvider : SymbolProcessorProvider {
     override fun create(
         environment: SymbolProcessorEnvironment,
     ): SymbolProcessor {
-        return DIProcessorFactory(environment).create()
+        // Don't generate a container class in the library module.
+        return DIProcessorFactory(environment)
+            .create(shouldGenerateContainer = false)
     }
 }

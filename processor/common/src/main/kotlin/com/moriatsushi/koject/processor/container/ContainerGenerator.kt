@@ -17,6 +17,7 @@ internal class ContainerGenerator(
             .getDeclarationsFromPackage(Names.factoryPackageName)
             .filterIsInstance<KSClassDeclaration>()
             .map { FactoryDeclaration(it) }
+            .sortedBy { it.identifier }
 
         val fileSpec = containerFileSpecFactory.create(factoryClasses)
 

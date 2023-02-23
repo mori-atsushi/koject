@@ -121,16 +121,16 @@ class DIProcessorMultimoduleTest {
         |
         |@InternalKojectApi
         |public class _AppContainer : Container {
-        |    private fun provide_com_lib_SampleClass1(): Any = _com_lib_SampleClass1_Factory(
-        |    ).create()
-        |
         |    private fun provide_com_app_SampleClass2(): Any = _com_app_SampleClass2_Factory(
         |    ::provide_com_lib_SampleClass1
         |    ).create()
         |
+        |    private fun provide_com_lib_SampleClass1(): Any = _com_lib_SampleClass1_Factory(
+        |    ).create()
+        |
         |    public override fun resolve(id: Identifier): Any = when (id.value) {
-        |        "com.lib.SampleClass1" -> provide_com_lib_SampleClass1()
         |        "com.app.SampleClass2" -> provide_com_app_SampleClass2()
+        |        "com.lib.SampleClass1" -> provide_com_lib_SampleClass1()
         |        else -> error("not provided")
         |    }
         |}

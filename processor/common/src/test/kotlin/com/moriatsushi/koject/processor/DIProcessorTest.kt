@@ -161,6 +161,9 @@ class DIProcessorTest {
         |
         |@InternalKojectApi
         |public class _AppContainer : Container {
+        |    private fun provide_com_testpackage_SampleClass1(): Any = _com_testpackage_SampleClass1_Factory(
+        |    ).create()
+        |
         |    private fun provide_com_testpackage_SampleClass2(): Any = _com_testpackage_SampleClass2_Factory(
         |    ::provide_com_testpackage_SampleClass1
         |    ).create()
@@ -170,13 +173,10 @@ class DIProcessorTest {
         |    ::provide_com_testpackage_SampleClass2
         |    ).create()
         |
-        |    private fun provide_com_testpackage_SampleClass1(): Any = _com_testpackage_SampleClass1_Factory(
-        |    ).create()
-        |
         |    public override fun resolve(id: Identifier): Any = when (id.value) {
+        |        "com.testpackage.SampleClass1" -> provide_com_testpackage_SampleClass1()
         |        "com.testpackage.SampleClass2" -> provide_com_testpackage_SampleClass2()
         |        "com.testpackage.SampleClass3" -> provide_com_testpackage_SampleClass3()
-        |        "com.testpackage.SampleClass1" -> provide_com_testpackage_SampleClass1()
         |        else -> error("not provided")
         |    }
         |}

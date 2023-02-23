@@ -198,11 +198,11 @@ class DIProcessorTest {
         |    ::provide_com_testpackage_SampleClass2
         |    ).create()
         |
-        |    public override fun resolve(id: Identifier): Any = when (id.value) {
-        |        "com.testpackage.SampleClass1" -> provide_com_testpackage_SampleClass1()
-        |        "com.testpackage.SampleClass2" -> provide_com_testpackage_SampleClass2()
-        |        "com.testpackage.SampleClass3" -> provide_com_testpackage_SampleClass3()
-        |        else -> error("not provided")
+        |    public override fun resolve(id: Identifier): Any = when (id) {
+        |        _com_testpackage_SampleClass1_Factory.identifier -> provide_com_testpackage_SampleClass1()
+        |        _com_testpackage_SampleClass2_Factory.identifier -> provide_com_testpackage_SampleClass2()
+        |        _com_testpackage_SampleClass3_Factory.identifier -> provide_com_testpackage_SampleClass3()
+        |        else -> error("not provided:${'$'}id")
         |    }
         |}
         |

@@ -65,12 +65,12 @@ internal class ContainerFileSpecFactory {
             returns(ANY)
             addModifiers(KModifier.OVERRIDE)
             addParameter("id", Identifier::class)
-            beginControlFlow("return when (id.value) {")
+            beginControlFlow("return when (id) {")
             factoryClasses.forEach {
                 val name = Names.providerNameOf(it.identifier)
-                addStatement("%S -> $name()", it.identifier.value)
+                addStatement("%T.identifier -> $name()", it.asClassName())
             }
-            addStatement("else -> error(\"not provided\")")
+            addStatement("else -> error(\"not provided:\$id\")")
             endControlFlow()
         }.build()
     }

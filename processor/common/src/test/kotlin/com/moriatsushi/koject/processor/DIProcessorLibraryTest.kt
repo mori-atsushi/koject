@@ -57,17 +57,17 @@ class DIProcessorLibraryTest {
     )
 
     private val expectedClass1FactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/di/generated/factory/" +
+        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_com_testpackage_SampleClass1_Factory.kt"
 
     private val expectedClass2FactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/di/generated/factory/" +
+        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_com_testpackage_SampleClass2_Factory.kt"
 
     private val expectedContainerFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/di/generated/" +
+        "ksp/sources/kotlin/com/moriatsushi/koject/generated/" +
             "_AppContainer.kt"
 
     private val expectedStartFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/di/_Start.kt"
+        "ksp/sources/kotlin/com/moriatsushi/koject/_Start.kt"
 }

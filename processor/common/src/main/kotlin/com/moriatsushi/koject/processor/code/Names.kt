@@ -5,7 +5,7 @@ import com.moriatsushi.koject.processor.identifier.escapedValue
 import com.squareup.kotlinpoet.ClassName
 
 internal object Names {
-    const val rootPackageName = "com.moriatsushi.koject.di"
+    const val rootPackageName = "com.moriatsushi.koject"
     const val generatedPackageName = "$rootPackageName.generated"
     const val factoryPackageName = "$generatedPackageName.factory"
 

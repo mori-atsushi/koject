@@ -49,7 +49,6 @@ internal class DIProcessor(
         step = Step.Completed
     }
 
-
     private enum class Step {
         GenerateFactory,
         GenerateContainer,

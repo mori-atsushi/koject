@@ -1,6 +1,6 @@
 package com.moriatsushi.koject.processor.factory
 
-import com.moriatsushi.koject.processor.analysis.primaryConstructorWithParameters
+import com.moriatsushi.koject.processor.analytics.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.PackageNames
 import com.moriatsushi.koject.processor.code.applyCommon

@@ -14,6 +14,7 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class FactoryFileSpecFactory {
@@ -82,7 +83,9 @@ internal class FactoryFileSpecFactory {
 
     private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
         val identifierProperty = PropertySpec.builder("identifier", Identifier::class).apply {
-            initializer("%T.of<%T>()", Identifier::class, provider.asTypeName())
+            // workaround to avoid crash in Kotlin/Native
+            // https://github.com/square/kotlinpoet/issues/1273
+            initializer("%T.of<%T>()", Identifier::class.asTypeName(), provider.asTypeName())
         }.build()
         return TypeSpec.companionObjectBuilder().apply {
             addProperty(identifierProperty)

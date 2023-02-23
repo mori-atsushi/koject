@@ -5,6 +5,7 @@ import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.start
 import kotlin.test.AfterTest
 import kotlin.test.Test
+import kotlin.test.assertFails
 import kotlin.test.assertIs
 
 class InjectTest {
@@ -25,5 +26,21 @@ class InjectTest {
 
         val appClass3 = inject<AppClass3>()
         assertIs<AppClass3>(appClass3)
+    }
+
+    @Test
+    fun failInject_notProvided() {
+        Koject.start()
+
+        assertFails {
+            inject<NotProvided>()
+        }
+    }
+
+    @Test
+    fun failInject_notStarted() {
+        assertFails {
+            inject<AppClass1>()
+        }
     }
 }

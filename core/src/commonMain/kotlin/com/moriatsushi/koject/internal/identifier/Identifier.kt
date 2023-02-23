@@ -10,11 +10,15 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Identifier(
     val value: String,
-) {
+) : Comparable<Identifier> {
     companion object {
         fun of(typeStruct: TypeStruct): Identifier {
             val value = typeStruct.toString()
             return Identifier(value)
         }
+    }
+
+    override fun compareTo(other: Identifier): Int {
+        return value.compareTo(other.value)
     }
 }

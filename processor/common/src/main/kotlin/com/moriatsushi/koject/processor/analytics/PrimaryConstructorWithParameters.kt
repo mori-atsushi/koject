@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.processor.analysis
+package com.moriatsushi.koject.processor.analytics
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier

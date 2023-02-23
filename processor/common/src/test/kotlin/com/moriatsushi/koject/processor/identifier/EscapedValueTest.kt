@@ -1,7 +1,6 @@
 package com.moriatsushi.koject.processor.identifier
 
 import com.moriatsushi.koject.internal.identifier.Identifier
-import com.moriatsushi.koject.internal.identifier.of
 import kotlin.test.assertEquals
 import org.junit.Test
 

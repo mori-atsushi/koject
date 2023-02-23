@@ -16,6 +16,10 @@ value class Identifier(
             val value = typeStruct.toString()
             return Identifier(value)
         }
+
+        inline fun <reified T> of(): Identifier {
+            return of(TypeStruct.of<T>())
+        }
     }
 
     override fun compareTo(other: Identifier): Int {

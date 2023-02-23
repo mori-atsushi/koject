@@ -26,7 +26,28 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createClassSpec(provider: ProviderDeclaration): TypeSpec {
-        val constructorSpec = FunSpec.constructorBuilder().apply {
+        val constructorSpec = createConstructorSpec(provider)
+        val createFunSpec = createCreateFunSpec(provider)
+        val internalAnnotationSpec =
+            AnnotationSpecFactory.createInternal()
+        val assistantIDAnnotationSpec =
+            AnnotationSpecFactory.createAssistantID(provider.identifier)
+
+        return TypeSpec.classBuilder(provider.factoryName).apply {
+            primaryConstructorWithParameters(
+                constructorSpec,
+                setOf(KModifier.PRIVATE),
+            )
+            addFunction(createFunSpec)
+            addAnnotation(internalAnnotationSpec)
+            addAnnotation(assistantIDAnnotationSpec)
+
+            addOriginatingKSFile(provider.containingFile)
+        }.build()
+    }
+
+    private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
+        return FunSpec.constructorBuilder().apply {
             provider.dependencies.forEach {
                 val parameter = ParameterSpec.builder(
                     it.providerName,
@@ -39,29 +60,15 @@ internal class FactoryFileSpecFactory {
                 addParameter(parameter)
             }
         }.build()
+    }
 
-        val createFunSpec = FunSpec.builder("create").apply {
+    private fun createCreateFunSpec(provider: ProviderDeclaration): FunSpec {
+        return FunSpec.builder("create").apply {
             val params = provider.dependencies.joinToString(",") {
                 "\n${it.providerName}() as ${it.asTypeName()}"
             }
             returns(ANY)
             addStatement("return ${provider.asTypeName()}($params\n)")
-        }.build()
-
-        return TypeSpec.classBuilder(provider.factoryName).apply {
-            primaryConstructorWithParameters(
-                constructorSpec,
-                setOf(KModifier.PRIVATE),
-            )
-            addFunction(createFunSpec)
-            addAnnotation(
-                AnnotationSpecFactory.createInternal(),
-            )
-            addAnnotation(
-                AnnotationSpecFactory.createAssistantID(provider.identifier),
-            )
-
-            addOriginatingKSFile(provider.containingFile)
         }.build()
     }
 }

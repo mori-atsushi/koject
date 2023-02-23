@@ -34,6 +34,9 @@ class DIProcessorLibraryTest {
 
         val expectedContainerFile = folder.resolve(expectedContainerFilePath)
         assertFileNotExists(expectedContainerFile)
+
+        val expectedStartFile = folder.resolve(expectedStartFilePath)
+        assertFileNotExists(expectedStartFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -64,4 +67,7 @@ class DIProcessorLibraryTest {
     private val expectedContainerFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/di/generated/" +
             "_AppContainer.kt"
+
+    private val expectedStartFilePath =
+        "ksp/sources/kotlin/com/moriatsushi/koject/di/_Start.kt"
 }

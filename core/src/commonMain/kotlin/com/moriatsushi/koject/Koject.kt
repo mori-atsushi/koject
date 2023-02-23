@@ -25,7 +25,7 @@ object Koject {
      * Set [container] and start application
      */
     @InternalKojectApi
-    fun start(container: Container) {
+    fun _start(container: Container) {
         _container = container
     }
 

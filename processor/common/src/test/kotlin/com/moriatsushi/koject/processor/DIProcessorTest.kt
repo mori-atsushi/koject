@@ -203,7 +203,7 @@ class DIProcessorTest {
         |
         |@OptIn(InternalKojectApi::class)
         |public fun Koject.start(): Unit {
-        |    Koject.start(_AppContainer())
+        |    Koject._start(_AppContainer())
         |}
         |
     """.trimMargin()

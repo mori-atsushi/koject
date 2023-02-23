@@ -14,7 +14,7 @@ internal class StartFileSpecFactory {
 
         val funSpec = FunSpec.builder("start").apply {
             receiver(Koject::class)
-            addStatement("%T.start(%T())", Koject::class, containerName)
+            addStatement("%T._start(%T())", Koject::class, containerName)
             addAnnotation(AnnotationSpecFactory.createOptInInternal())
         }.build()
 

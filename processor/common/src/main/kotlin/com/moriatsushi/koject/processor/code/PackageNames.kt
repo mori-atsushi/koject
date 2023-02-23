@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.processor.symbol
+package com.moriatsushi.koject.processor.code
 
 internal object PackageNames {
     const val root = "com.moriatsushi.koject.di"

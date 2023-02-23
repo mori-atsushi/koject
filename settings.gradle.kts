@@ -16,3 +16,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "koject"
 include(":core")
+include(":processor:common")
+include(":processor:app")
+include(":processor:lib")

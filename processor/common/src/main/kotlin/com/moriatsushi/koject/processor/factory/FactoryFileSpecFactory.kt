@@ -2,7 +2,7 @@ package com.moriatsushi.koject.processor.factory
 
 import com.moriatsushi.koject.processor.analytics.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
-import com.moriatsushi.koject.processor.code.PackageNames
+import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
 import com.squareup.kotlinpoet.ANY
@@ -16,9 +16,10 @@ import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class FactoryFileSpecFactory {
     fun create(provider: ProviderDeclaration): FileSpec {
+        val factoryName = Names.factoryNameOf(provider.identifier)
         return FileSpec.builder(
-            packageName = PackageNames.factory,
-            fileName = provider.factoryName,
+            packageName = Names.factoryPackageName,
+            fileName = factoryName,
         ).apply {
             applyCommon()
             addType(createClassSpec(provider))
@@ -26,6 +27,7 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createClassSpec(provider: ProviderDeclaration): TypeSpec {
+        val factoryName = Names.factoryNameOf(provider.identifier)
         val constructorSpec = createConstructorSpec(provider)
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =
@@ -33,7 +35,7 @@ internal class FactoryFileSpecFactory {
         val assistantIDAnnotationSpec =
             AnnotationSpecFactory.createAssistantID(provider.identifier)
 
-        return TypeSpec.classBuilder(provider.factoryName).apply {
+        return TypeSpec.classBuilder(factoryName).apply {
             primaryConstructorWithParameters(
                 constructorSpec,
                 setOf(KModifier.PRIVATE),
@@ -49,8 +51,9 @@ internal class FactoryFileSpecFactory {
     private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.constructorBuilder().apply {
             provider.dependencies.forEach {
+                val providerName = Names.providerNameOf(it.identifier)
                 val parameter = ParameterSpec.builder(
-                    it.providerName,
+                    providerName,
                     LambdaTypeName.get(returnType = ANY),
                 ).apply {
                     addAnnotation(
@@ -65,7 +68,8 @@ internal class FactoryFileSpecFactory {
     private fun createCreateFunSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.builder("create").apply {
             val params = provider.dependencies.joinToString(",") {
-                "\n${it.providerName}() as ${it.asTypeName()}"
+                val providerName = Names.providerNameOf(it.identifier)
+                "\n$providerName() as ${it.asTypeName()}"
             }
             returns(ANY)
             addStatement("return ${provider.asTypeName()}($params\n)")

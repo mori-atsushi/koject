@@ -4,7 +4,6 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.moriatsushi.koject.internal.identifier.Identifier
-import com.moriatsushi.koject.processor.identifier.escapedValue
 import com.moriatsushi.koject.processor.identifier.of
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -24,9 +23,6 @@ internal class ProviderDeclaration(
     val identifier by lazy {
         Identifier.of(ksClass)
     }
-
-    val factoryName: String
-        get() = "_${identifier.escapedValue}_Factory"
 
     val dependencies: List<DependencyType>
         get() = ksClass.primaryConstructor?.parameters

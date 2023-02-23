@@ -13,7 +13,7 @@ class InjectTest {
 
     @Test
     fun successInject() {
-        Koject.start(FakeContainer())
+        Koject._start(FakeContainer())
         val actual = inject<String>()
         val expected = "test"
         assertEquals(actual, expected)
@@ -21,7 +21,7 @@ class InjectTest {
 
     @Test
     fun failInject_notProvided() {
-        Koject.start(FakeContainer())
+        Koject._start(FakeContainer())
         assertFails {
             inject<Pair<Int, Int>>()
         }

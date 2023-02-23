@@ -10,8 +10,14 @@ import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 internal class ContainerGenerator(
     private val fileGenerator: FileGenerator,
     private val containerFileSpecFactory: ContainerFileSpecFactory,
+    private val startFileSpecFactory: StartFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
+        generateContainer(resolver)
+        generateStart()
+    }
+
+    private fun generateContainer(resolver: Resolver) {
         @OptIn(KspExperimental::class)
         val factoryClasses = resolver
             .getDeclarationsFromPackage(Names.factoryPackageName)
@@ -24,6 +30,15 @@ internal class ContainerGenerator(
         fileGenerator.createNewFile(
             fileSpec = fileSpec,
             aggregating = true,
+        )
+    }
+
+    private fun generateStart() {
+        val fileSpec = startFileSpecFactory.create()
+
+        fileGenerator.createNewFile(
+            fileSpec = fileSpec,
+            aggregating = false,
         )
     }
 }

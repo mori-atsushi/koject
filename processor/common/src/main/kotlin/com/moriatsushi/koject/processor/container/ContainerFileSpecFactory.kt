@@ -38,9 +38,9 @@ internal class ContainerFileSpecFactory {
             addFunction(createGetFunSpec(factoryClasses))
             addAnnotation(internalAnnotationSpec)
 
-            factoryClasses.forEach {
-                addOriginatingKSFile(it.containingFile)
-            }
+            factoryClasses
+                .mapNotNull { it.containingFile }
+                .forEach { addOriginatingKSFile(it) }
         }.build()
     }
 

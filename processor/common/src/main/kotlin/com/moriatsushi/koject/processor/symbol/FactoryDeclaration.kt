@@ -13,8 +13,9 @@ class FactoryDeclaration(
         ksClass.findIdentifier()!!
     }
 
-    val containingFile: KSFile
-        get() = ksClass.containingFile!!
+    val containingFile: KSFile?
+        // null for other modules
+        get() = ksClass.containingFile
 
     val parameters: List<ProviderParameter>
         get() = ksClass.primaryConstructor?.parameters

@@ -10,6 +10,7 @@ kotlin {
         browser()
     }
     ios()
+    iosSimulatorArm64()
     macosX64()
     macosArm64()
     watchos()
@@ -63,6 +64,14 @@ kotlin {
 
         val iosTest by getting {
             dependsOn(nativeTest)
+        }
+
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
+        val iosSimulatorArm64Test by getting {
+            dependsOn(iosMain)
         }
 
         val macosX64Main by getting {

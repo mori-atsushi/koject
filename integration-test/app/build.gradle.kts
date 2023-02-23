@@ -20,13 +20,12 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
+                implementation(kotlin("test"))
+                implementation(project(":integration-test:lib"))
             }
         }
 
         val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
         }
 
         val jvmMain by getting {

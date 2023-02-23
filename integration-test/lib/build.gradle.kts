@@ -20,6 +20,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
+                implementation(kotlin("test"))
             }
         }
 
@@ -54,11 +55,11 @@ kotlin {
 }
 
 dependencies {
-    add("kspJvm", project(":processor:app"))
-    // add("kspJs", project(":processor:app"))
-    add("kspIosX64", project(":processor:app"))
-    add("kspIosArm64", project(":processor:app"))
-    add("kspIosSimulatorArm64", project(":processor:app"))
-    add("kspMacosX64", project(":processor:app"))
-    add("kspMacosArm64", project(":processor:app"))
+    add("kspJvm", project(":processor:lib"))
+    // add("kspJs", project(":processor:lib"))
+    add("kspIosX64", project(":processor:lib"))
+    add("kspIosArm64", project(":processor:lib"))
+    add("kspIosSimulatorArm64", project(":processor:lib"))
+    add("kspMacosX64", project(":processor:lib"))
+    add("kspMacosArm64", project(":processor:lib"))
 }

@@ -18,6 +18,7 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.kotlin.compile.testing.ksp)
             }
             kotlin.srcDir("src/test/kotlin")
         }

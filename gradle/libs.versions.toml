@@ -1,11 +1,13 @@
 [versions]
 kotlin = "1.8.10"
+kotlin-compile-testing = "1.4.9"
 kotlinpoet = "1.12.0"
 ksp = "1.8.10-1.0.9"
 ktlint = "0.48.1"
 spotless = "6.15.0"
 
 [libraries]
+kotlin-compile-testing-ksp = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing-ksp", version.ref = "kotlin-compile-testing" }
 kotlinpoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version.ref = "kotlinpoet" }
 ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
 

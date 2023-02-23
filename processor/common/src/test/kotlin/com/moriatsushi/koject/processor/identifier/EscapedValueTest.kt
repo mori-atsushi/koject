@@ -2,8 +2,8 @@ package com.moriatsushi.koject.processor.identifier
 
 import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.internal.identifier.of
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class EscapedValueTest {
     @Test
@@ -35,7 +35,7 @@ class EscapedValueTest {
         val target = Identifier.of<Map<Int, Map<Int, Map<Int, String>>>>()
         val actual = target.escapedValue
         val expected = "kotlin_collections_Map__kotlin_Int__kotlin_collections_Map__" +
-                "kotlin_Int__kotlin_collections_Map__kotlin_Int__kotlin_String______"
+            "kotlin_Int__kotlin_collections_Map__kotlin_Int__kotlin_String______"
         assertEquals(expected, actual)
     }
 

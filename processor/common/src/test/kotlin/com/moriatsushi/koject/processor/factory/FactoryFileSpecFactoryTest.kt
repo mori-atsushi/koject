@@ -4,8 +4,8 @@ import com.moriatsushi.koject.processor.dummy.DummyKSClassDeclarationFactory
 import com.moriatsushi.koject.processor.dummy.DummyKSFile
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
 import com.squareup.kotlinpoet.ksp.originatingKSFiles
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class FactoryFileSpecFactoryTest {
     @Test
@@ -24,7 +24,8 @@ class FactoryFileSpecFactoryTest {
             |package com.moriatsushi.koject.di.generated.factory
             |
             |public class com_package_Classname_Factory
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertEquals(expectedCode, spec.toString())
 
         val expectedOriginatingKSFiles = listOf(containingFile)

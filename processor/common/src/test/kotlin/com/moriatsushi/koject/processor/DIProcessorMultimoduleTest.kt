@@ -72,11 +72,11 @@ class DIProcessorMultimoduleTest {
                 package com.moriatsushi.koject.generated.factory
                 
                 import com.moriatsushi.koject.`internal`.InternalKojectApi
-                import com.moriatsushi.koject.`internal`.identifier.AssistantID
+                import com.moriatsushi.koject.`internal`.identifier._Identifier
                 import kotlin.Any
                 
                 @InternalKojectApi
-                @AssistantID("com.lib.SampleClass1")
+                @_Identifier("com.lib.SampleClass1")
                 public class _com_lib_SampleClass1_Factory() {
                     public fun create(): Any = com.lib.SampleClass1(
                     )

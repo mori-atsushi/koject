@@ -94,13 +94,13 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated.factory
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
-        |import com.moriatsushi.koject.`internal`.identifier.AssistantID
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.moriatsushi.koject.`internal`.identifier._Identifier
         |import com.testpackage.SampleClass1
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@AssistantID("com.testpackage.SampleClass1")
+        |@_Identifier("com.testpackage.SampleClass1")
         |public class _com_testpackage_SampleClass1_Factory() {
         |    public fun create(): Any = com.testpackage.SampleClass1()
         |
@@ -117,16 +117,16 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated.factory
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
-        |import com.moriatsushi.koject.`internal`.identifier.AssistantID
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.moriatsushi.koject.`internal`.identifier._Identifier
         |import com.testpackage.SampleClass1
         |import com.testpackage.SampleClass2
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@AssistantID("com.testpackage.SampleClass2")
+        |@_Identifier("com.testpackage.SampleClass2")
         |public class _com_testpackage_SampleClass2_Factory(
-        |    @AssistantID("com.testpackage.SampleClass1")
+        |    @_Identifier("com.testpackage.SampleClass1")
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
         |) {
         |    public fun create(): Any = com.testpackage.SampleClass2(
@@ -146,19 +146,19 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated.factory
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
-        |import com.moriatsushi.koject.`internal`.identifier.AssistantID
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.moriatsushi.koject.`internal`.identifier._Identifier
         |import com.testpackage.SampleClass1
         |import com.testpackage.SampleClass2
         |import com.testpackage.SampleClass3
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@AssistantID("com.testpackage.SampleClass3")
+        |@_Identifier("com.testpackage.SampleClass3")
         |public class _com_testpackage_SampleClass3_Factory(
-        |    @AssistantID("com.testpackage.SampleClass1")
+        |    @_Identifier("com.testpackage.SampleClass1")
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
-        |    @AssistantID("com.testpackage.SampleClass2")
+        |    @_Identifier("com.testpackage.SampleClass2")
         |    private val provide_com_testpackage_SampleClass2: () -> Any,
         |) {
         |    public fun create(): Any = com.testpackage.SampleClass3(

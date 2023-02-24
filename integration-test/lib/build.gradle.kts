@@ -15,40 +15,18 @@ kotlin {
     macosX64()
     macosArm64()
 
+    mingwX64()
+    mingwX86()
+    linuxX64()
+    linuxArm32Hfp()
+    linuxMips32()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
                 implementation(kotlin("test"))
             }
-        }
-
-        val jvmMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosArm64Main by getting {
-            dependsOn(nativeMain)
         }
     }
 }
@@ -61,4 +39,9 @@ dependencies {
     add("kspIosSimulatorArm64", project(":processor:lib"))
     add("kspMacosX64", project(":processor:lib"))
     add("kspMacosArm64", project(":processor:lib"))
+    add("kspMingwX64", project(":processor:lib"))
+    add("kspMingwX86", project(":processor:lib"))
+    add("kspLinuxX64", project(":processor:lib"))
+    add("kspLinuxArm32Hfp", project(":processor:lib"))
+    add("kspLinuxMips32", project(":processor:lib"))
 }

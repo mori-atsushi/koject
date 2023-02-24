@@ -27,4 +27,3 @@ data class ProviderObjectWithParameters(
     val type: ProvidableInterface,
     val appClass: AppClass1,
 )
-

@@ -65,11 +65,11 @@ class DIProcessorProviderObjectTest {
 
     private val expectedIntFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-                "_kotlin_Int_Factory.kt"
+            "_kotlin_Int_Factory.kt"
 
     private val expectedClassFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-                "_com_testpackage_ProviderObjectWithParameters_Factory.kt"
+            "_com_testpackage_ProviderObjectWithParameters_Factory.kt"
 
     @Language("kotlin")
     private val expectedIntFactoryText = """

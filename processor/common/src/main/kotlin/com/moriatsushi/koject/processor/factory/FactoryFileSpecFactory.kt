@@ -73,7 +73,14 @@ internal class FactoryFileSpecFactory {
 
     private fun createCreateFunSpec(provider: ProviderDeclaration): FunSpec {
         val code = buildCodeBlock {
-            add("return ${provider.asTypeName()}(")
+            add("return ")
+            when (provider) {
+                is ProviderDeclaration.Class ->
+                    add("%T", provider.typeName)
+                is ProviderDeclaration.Function ->
+                    add("%M", provider.memberName)
+            }
+            add("(")
             if (provider.dependencies.isNotEmpty()) {
                 add("\n")
                 indent()
@@ -95,7 +102,7 @@ internal class FactoryFileSpecFactory {
         val identifierProperty = PropertySpec.builder("identifier", Identifier::class).apply {
             // workaround to avoid crash in Kotlin/Native
             // https://github.com/square/kotlinpoet/issues/1273
-            initializer("%T.of<%T>()", Identifier::class.asTypeName(), provider.asTypeName())
+            initializer("%T.of<%T>()", Identifier::class.asTypeName(), provider.typeName)
         }.build()
         return TypeSpec.companionObjectBuilder().apply {
             addProperty(identifierProperty)

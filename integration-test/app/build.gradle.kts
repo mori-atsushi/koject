@@ -15,6 +15,12 @@ kotlin {
     macosX64()
     macosArm64()
 
+    mingwX64()
+    mingwX86()
+    linuxX64()
+    linuxArm32Hfp()
+    linuxMips32()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -25,65 +31,6 @@ kotlin {
         }
 
         val commonTest by getting {
-        }
-
-        val jvmMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val jvmTest by getting {
-            dependsOn(commonTest)
-        }
-
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val jsTest by getting {
-            dependsOn(commonTest)
-        }
-
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val nativeTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val iosTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosMain)
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val macosArm64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosArm64Test by getting {
-            dependsOn(nativeTest)
         }
     }
 }
@@ -96,4 +43,9 @@ dependencies {
     add("kspIosSimulatorArm64", project(":processor:app"))
     add("kspMacosX64", project(":processor:app"))
     add("kspMacosArm64", project(":processor:app"))
+    add("kspMingwX64", project(":processor:app"))
+    add("kspMingwX86", project(":processor:app"))
+    add("kspLinuxX64", project(":processor:app"))
+    add("kspLinuxArm32Hfp", project(":processor:app"))
+    add("kspLinuxMips32", project(":processor:app"))
 }

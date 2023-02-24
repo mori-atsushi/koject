@@ -102,7 +102,7 @@ class DIProcessorTest {
         |@InternalKojectApi
         |@_Identifier("com.testpackage.SampleClass1")
         |public class _com_testpackage_SampleClass1_Factory() {
-        |    public fun create(): Any = com.testpackage.SampleClass1()
+        |    public fun create(): Any = SampleClass1()
         |
         |    public companion object {
         |        public val identifier: Identifier = Identifier.of<SampleClass1>()
@@ -129,7 +129,7 @@ class DIProcessorTest {
         |    @_Identifier("com.testpackage.SampleClass1")
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
         |) {
-        |    public fun create(): Any = com.testpackage.SampleClass2(
+        |    public fun create(): Any = SampleClass2(
         |        provide_com_testpackage_SampleClass1() as SampleClass1,
         |    )
         |
@@ -161,7 +161,7 @@ class DIProcessorTest {
         |    @_Identifier("com.testpackage.SampleClass2")
         |    private val provide_com_testpackage_SampleClass2: () -> Any,
         |) {
-        |    public fun create(): Any = com.testpackage.SampleClass3(
+        |    public fun create(): Any = SampleClass3(
         |        provide_com_testpackage_SampleClass1() as SampleClass1,
         |        provide_com_testpackage_SampleClass2() as SampleClass2,
         |    )

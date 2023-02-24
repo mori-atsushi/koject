@@ -188,17 +188,22 @@ class DIProcessorTest {
         |
         |@InternalKojectApi
         |public class _AppContainer : Container {
-        |    private fun provide_com_testpackage_SampleClass1(): Any = _com_testpackage_SampleClass1_Factory(
-        |    ).create()
+        |    private val provide_com_testpackage_SampleClass1: () -> Any by lazy {
+        |                _com_testpackage_SampleClass1_Factory()::create
+        |            }
         |
-        |    private fun provide_com_testpackage_SampleClass2(): Any = _com_testpackage_SampleClass2_Factory(
-        |    ::provide_com_testpackage_SampleClass1
-        |    ).create()
+        |    private val provide_com_testpackage_SampleClass2: () -> Any by lazy {
+        |                _com_testpackage_SampleClass2_Factory(
+        |                    provide_com_testpackage_SampleClass1,
+        |                )::create
+        |            }
         |
-        |    private fun provide_com_testpackage_SampleClass3(): Any = _com_testpackage_SampleClass3_Factory(
-        |    ::provide_com_testpackage_SampleClass1,
-        |    ::provide_com_testpackage_SampleClass2
-        |    ).create()
+        |    private val provide_com_testpackage_SampleClass3: () -> Any by lazy {
+        |                _com_testpackage_SampleClass3_Factory(
+        |                    provide_com_testpackage_SampleClass1,
+        |                    provide_com_testpackage_SampleClass2,
+        |                )::create
+        |            }
         |
         |    public override fun resolve(id: Identifier): Any = when (id) {
         |        _com_testpackage_SampleClass1_Factory.identifier -> provide_com_testpackage_SampleClass1()

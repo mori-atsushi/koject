@@ -121,12 +121,15 @@ class DIProcessorMultimoduleTest {
         |
         |@InternalKojectApi
         |public class _AppContainer : Container {
-        |    private fun provide_com_app_SampleClass2(): Any = _com_app_SampleClass2_Factory(
-        |    ::provide_com_lib_SampleClass1
-        |    ).create()
+        |    private val provide_com_app_SampleClass2: () -> Any by lazy {
+        |                _com_app_SampleClass2_Factory(
+        |                    provide_com_lib_SampleClass1,
+        |                )::create
+        |            }
         |
-        |    private fun provide_com_lib_SampleClass1(): Any = _com_lib_SampleClass1_Factory(
-        |    ).create()
+        |    private val provide_com_lib_SampleClass1: () -> Any by lazy {
+        |                _com_lib_SampleClass1_Factory()::create
+        |            }
         |
         |    public override fun resolve(id: Identifier): Any = when (id) {
         |        _com_app_SampleClass2_Factory.identifier -> provide_com_app_SampleClass2()
@@ -150,8 +153,9 @@ class DIProcessorMultimoduleTest {
         |
         |@InternalKojectApi
         |public class _AppContainer : Container {
-        |    private fun provide_com_lib_SampleClass1(): Any = _com_lib_SampleClass1_Factory(
-        |    ).create()
+        |    private val provide_com_lib_SampleClass1: () -> Any by lazy {
+        |                _com_lib_SampleClass1_Factory()::create
+        |            }
         |
         |    public override fun resolve(id: Identifier): Any = when (id) {
         |        _com_lib_SampleClass1_Factory.identifier -> provide_com_lib_SampleClass1()

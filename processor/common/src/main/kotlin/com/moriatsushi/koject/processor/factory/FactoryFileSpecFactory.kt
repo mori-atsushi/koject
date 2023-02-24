@@ -36,8 +36,8 @@ internal class FactoryFileSpecFactory {
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
-        val assistantIDAnnotationSpec =
-            AnnotationSpecFactory.createAssistantID(provider.identifier)
+        val _IdentifierAnnotationSpec =
+            AnnotationSpecFactory.createIdentifier(provider.identifier)
         val companionObject = createCompanionObjectSpec(provider)
 
         return TypeSpec.classBuilder(factoryName).apply {
@@ -48,7 +48,7 @@ internal class FactoryFileSpecFactory {
             addFunction(createFunSpec)
             addType(companionObject)
             addAnnotation(internalAnnotationSpec)
-            addAnnotation(assistantIDAnnotationSpec)
+            addAnnotation(_IdentifierAnnotationSpec)
 
             addOriginatingKSFile(provider.containingFile)
         }.build()
@@ -63,7 +63,7 @@ internal class FactoryFileSpecFactory {
                     LambdaTypeName.get(returnType = ANY),
                 ).apply {
                     addAnnotation(
-                        AnnotationSpecFactory.createAssistantID(it.identifier),
+                        AnnotationSpecFactory.createIdentifier(it.identifier),
                     )
                 }.build()
                 addParameter(parameter)

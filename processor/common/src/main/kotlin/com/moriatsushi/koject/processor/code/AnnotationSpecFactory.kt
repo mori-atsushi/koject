@@ -1,19 +1,22 @@
 package com.moriatsushi.koject.processor.code
 
-import com.moriatsushi.koject.internal.identifier.AssistantID
 import com.moriatsushi.koject.internal.identifier.Identifier
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 
 internal object AnnotationSpecFactory {
+    private val identifierAnnotationName = ClassName(
+        "com.moriatsushi.koject.internal.identifier",
+        "_Identifier",
+    )
     private val internalAnnotationName = ClassName(
         "com.moriatsushi.koject.internal",
         "InternalKojectApi",
     )
     private val optInAnnotationName = ClassName("kotlin", "OptIn")
 
-    fun createAssistantID(identifier: Identifier): AnnotationSpec {
-        return AnnotationSpec.builder(AssistantID::class).apply {
+    fun createIdentifier(identifier: Identifier): AnnotationSpec {
+        return AnnotationSpec.builder(identifierAnnotationName).apply {
             addMember("%S", identifier.value)
         }.build()
     }

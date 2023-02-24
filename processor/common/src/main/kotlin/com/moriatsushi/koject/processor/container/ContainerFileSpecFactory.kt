@@ -10,7 +10,10 @@ import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ContainerFileSpecFactory {
@@ -33,7 +36,7 @@ internal class ContainerFileSpecFactory {
         return TypeSpec.classBuilder(Names.containerClassName).apply {
             addSuperinterface(Container::class)
             factoryClasses.forEach {
-                addFunction(createProviderFunSpec(it))
+                addProperty(createProviderPropertySpec(it))
             }
             addFunction(createGetFunSpec(factoryClasses))
             addAnnotation(internalAnnotationSpec)
@@ -44,17 +47,30 @@ internal class ContainerFileSpecFactory {
         }.build()
     }
 
-    private fun createProviderFunSpec(factoryClass: FactoryDeclaration): FunSpec {
+    private fun createProviderPropertySpec(factoryClass: FactoryDeclaration): PropertySpec {
         val factoryName = factoryClass.asClassName()
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val params = factoryClass.parameters.joinToString(",") {
-            "\n::${it.providerName}"
+        val type = LambdaTypeName.get(returnType = ANY)
+        val code = buildCodeBlock {
+            add("lazy·{\n")
+            indent()
+            add("%T(", factoryName)
+            if (factoryClass.parameters.isNotEmpty()) {
+                add("\n")
+                indent()
+                factoryClass.parameters.forEach {
+                    add("${it.providerName},\n")
+                }
+                unindent()
+            }
+            add(")::create\n")
+            unindent()
+            add("}")
         }
 
-        return FunSpec.builder(providerName).apply {
-            returns(ANY)
+        return PropertySpec.builder(providerName, type).apply {
             addModifiers(KModifier.PRIVATE)
-            addStatement("return %T($params\n).create()", factoryName)
+            delegate(code)
         }.build()
     }
 

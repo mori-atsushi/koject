@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class FactoryFileSpecFactory {
@@ -71,13 +72,22 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createCreateFunSpec(provider: ProviderDeclaration): FunSpec {
-        return FunSpec.builder("create").apply {
-            val params = provider.dependencies.joinToString(",") {
-                val providerName = Names.providerNameOf(it.identifier)
-                "\n$providerName() as ${it.asTypeName()}"
+        val code = buildCodeBlock {
+            add("return ${provider.asTypeName()}(")
+            if (provider.dependencies.isNotEmpty()) {
+                add("\n")
+                indent()
+                provider.dependencies.forEach {
+                    val providerName = Names.providerNameOf(it.identifier)
+                    add("$providerName() as %T,\n", it.asTypeName())
+                }
+                unindent()
             }
+            add(")")
+        }
+        return FunSpec.builder("create").apply {
             returns(ANY)
-            addStatement("return ${provider.asTypeName()}($params\n)")
+            addCode(code)
         }.build()
     }
 

@@ -102,8 +102,7 @@ class DIProcessorTest {
         |@InternalKojectApi
         |@AssistantID("com.testpackage.SampleClass1")
         |public class _com_testpackage_SampleClass1_Factory() {
-        |    public fun create(): Any = com.testpackage.SampleClass1(
-        |    )
+        |    public fun create(): Any = com.testpackage.SampleClass1()
         |
         |    public companion object {
         |        public val identifier: Identifier = Identifier.of<SampleClass1>()
@@ -120,6 +119,7 @@ class DIProcessorTest {
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.AssistantID
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.testpackage.SampleClass1
         |import com.testpackage.SampleClass2
         |import kotlin.Any
         |
@@ -130,7 +130,7 @@ class DIProcessorTest {
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
         |) {
         |    public fun create(): Any = com.testpackage.SampleClass2(
-        |    provide_com_testpackage_SampleClass1() as com.testpackage.SampleClass1
+        |        provide_com_testpackage_SampleClass1() as SampleClass1,
         |    )
         |
         |    public companion object {
@@ -148,6 +148,8 @@ class DIProcessorTest {
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.AssistantID
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
+        |import com.testpackage.SampleClass1
+        |import com.testpackage.SampleClass2
         |import com.testpackage.SampleClass3
         |import kotlin.Any
         |
@@ -160,8 +162,8 @@ class DIProcessorTest {
         |    private val provide_com_testpackage_SampleClass2: () -> Any,
         |) {
         |    public fun create(): Any = com.testpackage.SampleClass3(
-        |    provide_com_testpackage_SampleClass1() as com.testpackage.SampleClass1,
-        |    provide_com_testpackage_SampleClass2() as com.testpackage.SampleClass2
+        |        provide_com_testpackage_SampleClass1() as SampleClass1,
+        |        provide_com_testpackage_SampleClass2() as SampleClass2,
         |    )
         |
         |    public companion object {
@@ -186,17 +188,22 @@ class DIProcessorTest {
         |
         |@InternalKojectApi
         |public class _AppContainer : Container {
-        |    private fun provide_com_testpackage_SampleClass1(): Any = _com_testpackage_SampleClass1_Factory(
-        |    ).create()
+        |    private val provide_com_testpackage_SampleClass1: () -> Any by lazy {
+        |                _com_testpackage_SampleClass1_Factory()::create
+        |            }
         |
-        |    private fun provide_com_testpackage_SampleClass2(): Any = _com_testpackage_SampleClass2_Factory(
-        |    ::provide_com_testpackage_SampleClass1
-        |    ).create()
+        |    private val provide_com_testpackage_SampleClass2: () -> Any by lazy {
+        |                _com_testpackage_SampleClass2_Factory(
+        |                    provide_com_testpackage_SampleClass1,
+        |                )::create
+        |            }
         |
-        |    private fun provide_com_testpackage_SampleClass3(): Any = _com_testpackage_SampleClass3_Factory(
-        |    ::provide_com_testpackage_SampleClass1,
-        |    ::provide_com_testpackage_SampleClass2
-        |    ).create()
+        |    private val provide_com_testpackage_SampleClass3: () -> Any by lazy {
+        |                _com_testpackage_SampleClass3_Factory(
+        |                    provide_com_testpackage_SampleClass1,
+        |                    provide_com_testpackage_SampleClass2,
+        |                )::create
+        |            }
         |
         |    public override fun resolve(id: Identifier): Any = when (id) {
         |        _com_testpackage_SampleClass1_Factory.identifier -> provide_com_testpackage_SampleClass1()

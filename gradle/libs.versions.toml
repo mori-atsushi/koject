@@ -4,6 +4,7 @@ kotlin-compile-testing = "1.4.9"
 kotlinpoet = "1.12.0"
 ksp = "1.8.10-1.0.9"
 ktlint = "0.48.1"
+publish = "0.24.0"
 spotless = "6.15.0"
 
 [libraries]
@@ -14,4 +15,5 @@ ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processi
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

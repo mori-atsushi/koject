@@ -1,9 +1,11 @@
 package com.moriatsushi.koject
 
+import com.moriatsushi.koject.error.KojectNotStartedException
+import com.moriatsushi.koject.error.NotProvidedException
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 
 class InjectTest {
     @AfterTest
@@ -22,8 +24,15 @@ class InjectTest {
     @Test
     fun failInject_notProvided() {
         Koject._start(FakeContainer())
-        assertFails {
+        assertFailsWith<NotProvidedException> {
             inject<Pair<Int, Int>>()
+        }
+    }
+
+    @Test
+    fun failInject_notStarted() {
+        assertFailsWith<KojectNotStartedException> {
+            inject<String>()
         }
     }
 }

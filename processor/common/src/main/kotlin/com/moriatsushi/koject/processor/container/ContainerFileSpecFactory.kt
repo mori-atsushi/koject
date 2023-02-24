@@ -78,7 +78,7 @@ internal class ContainerFileSpecFactory {
         factoryClasses: Sequence<FactoryDeclaration>,
     ): FunSpec {
         return FunSpec.builder("resolve").apply {
-            returns(ANY)
+            returns(ANY.copy(nullable = true))
             addModifiers(KModifier.OVERRIDE)
             addParameter("id", Identifier::class)
             beginControlFlow("return when (id) {")
@@ -86,7 +86,7 @@ internal class ContainerFileSpecFactory {
                 val name = Names.providerNameOf(it.identifier)
                 addStatement("%T.identifier -> $name()", it.asClassName())
             }
-            addStatement("else -> error(\"not provided:\$id\")")
+            addStatement("else -> null")
             endControlFlow()
         }.build()
     }

@@ -1,9 +1,11 @@
 package com.moriatsushi.koject
 
+import com.moriatsushi.koject.error.CodeNotGeneratedException
+import com.moriatsushi.koject.error.KojectNotStartedException
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 
 class KojectTest {
     @AfterTest
@@ -20,14 +22,14 @@ class KojectTest {
 
     @Test
     fun failStart_kspIsDisabled() {
-        assertFails {
+        assertFailsWith<CodeNotGeneratedException> {
             Koject.start()
         }
     }
 
     @Test
     fun noContainer_notStarted() {
-        assertFails {
+        assertFailsWith<KojectNotStartedException> {
             Koject.container
         }
     }

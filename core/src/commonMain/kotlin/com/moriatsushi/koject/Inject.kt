@@ -1,5 +1,6 @@
 package com.moriatsushi.koject
 
+import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.internal.identifier.Identifier
 
 /**
@@ -7,10 +8,11 @@ import com.moriatsushi.koject.internal.identifier.Identifier
  */
 inline fun <reified T : Any> inject(): T {
     val id = Identifier.of<T>()
-    return inject(id) as T
+    return injectOrNull(id) as? T
+        ?: throw NotProvidedException("$id is not provided")
 }
 
 @PublishedApi
-internal fun inject(id: Identifier): Any {
+internal fun injectOrNull(id: Identifier): Any? {
     return Koject.container.resolve(id)
 }

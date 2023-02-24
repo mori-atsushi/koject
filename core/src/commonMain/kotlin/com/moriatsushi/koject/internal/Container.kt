@@ -12,5 +12,5 @@ interface Container {
     /**
      * Resolve dependencies and return an instance
      */
-    fun resolve(id: Identifier): Any
+    fun resolve(id: Identifier): Any?
 }

@@ -131,10 +131,10 @@ class DIProcessorMultimoduleTest {
         |                _com_lib_SampleClass1_Factory()::create
         |            }
         |
-        |    public override fun resolve(id: Identifier): Any = when (id) {
+        |    public override fun resolve(id: Identifier): Any? = when (id) {
         |        _com_app_SampleClass2_Factory.identifier -> provide_com_app_SampleClass2()
         |        _com_lib_SampleClass1_Factory.identifier -> provide_com_lib_SampleClass1()
-        |        else -> error("not provided:${'$'}id")
+        |        else -> null
         |    }
         |}
         |
@@ -157,9 +157,9 @@ class DIProcessorMultimoduleTest {
         |                _com_lib_SampleClass1_Factory()::create
         |            }
         |
-        |    public override fun resolve(id: Identifier): Any = when (id) {
+        |    public override fun resolve(id: Identifier): Any? = when (id) {
         |        _com_lib_SampleClass1_Factory.identifier -> provide_com_lib_SampleClass1()
-        |        else -> error("not provided:${'$'}id")
+        |        else -> null
         |    }
         |}
         |

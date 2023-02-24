@@ -75,10 +75,15 @@ internal class FactoryFileSpecFactory {
         val code = buildCodeBlock {
             add("return ")
             when (provider) {
-                is ProviderDeclaration.Class ->
+                is ProviderDeclaration.Class -> {
                     add("%T", provider.typeName)
-                is ProviderDeclaration.Function ->
+                }
+                is ProviderDeclaration.TopLevelFunction -> {
                     add("%M", provider.memberName)
+                }
+                is ProviderDeclaration.ObjectFunction -> {
+                    add("%T.%M", provider.parentName, provider.memberName)
+                }
             }
             add("(")
             if (provider.dependencies.isNotEmpty()) {

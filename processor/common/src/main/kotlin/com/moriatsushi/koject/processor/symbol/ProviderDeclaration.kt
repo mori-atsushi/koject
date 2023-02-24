@@ -14,6 +14,7 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal sealed class ProviderDeclaration(
     private val declaration: KSDeclaration,
@@ -88,7 +89,7 @@ internal sealed class ProviderDeclaration(
             )
 
         override val typeName: TypeName
-            get() = ksType.toClassName()
+            get() = ksType.toTypeName()
     }
 
     class ObjectFunction(
@@ -108,6 +109,6 @@ internal sealed class ProviderDeclaration(
             get() = parentName.member(function.simpleName.asString())
 
         override val typeName: TypeName
-            get() = ksType.toClassName()
+            get() = ksType.toTypeName()
     }
 }

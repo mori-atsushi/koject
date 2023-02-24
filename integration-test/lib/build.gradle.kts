@@ -1,9 +1,11 @@
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.ksp)
+    alias(libs.plugins.android.library)
 }
 
 kotlin {
+    android()
     jvm()
     js(IR) {
         moduleName = "koject-integration-test-lib"
@@ -28,10 +30,31 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+
+        val jvmMain by getting
+
+        val androidMain by getting {
+            dependsOn(jvmMain)
+        }
+    }
+}
+
+android {
+    namespace = "com.moriatsushi.koject.integrationtest.lib"
+    compileSdk = 33
+
+    defaultConfig {
+        minSdk = 23
+    }
+
+    compileOptions {
+        sourceCompatibility(JavaVersion.VERSION_11)
+        targetCompatibility(JavaVersion.VERSION_11)
     }
 }
 
 dependencies {
+    add("kspAndroid", project(":processor:lib"))
     add("kspJvm", project(":processor:lib"))
     add("kspJs", project(":processor:lib"))
     add("kspIosX64", project(":processor:lib"))

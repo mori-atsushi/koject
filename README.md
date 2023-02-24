@@ -5,20 +5,21 @@ Koject is a DI Container libreary for Kotlin Multiplatform.
 fun main() {
     Koject.start()
 
-    val controller = inject<Controller>()
+    val repository = inject<Repository>()
 }
 
 @Provides
 class Api
 
 @Provides
-class Repository(
-    private val api: Api
-)
+fun createDB(): DB {
+    return DB.create()
+}
 
 @Provides
-class Controller(
-    private val repository: Repository
+class Repository(
+    private val api: Api,
+    private val db: DB,
 )
 ```
 
@@ -43,6 +44,7 @@ plugins {
 }
 
 kotlin {
+    android()
     jvm()
     js(IR) {
         nodejs()
@@ -53,7 +55,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha01")
++                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha02")
             }
         }
     }
@@ -61,7 +63,8 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha01"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02"
++    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
 +    add("kspIosX64", processor)
@@ -83,8 +86,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha01")
-+    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha01")
++    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha02")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02")
 }
 ```
 
@@ -98,8 +101,9 @@ Use `koject-processor-lib` to avoid generating `Container` in library modules.
 ```diff
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha01"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha01"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha02"
+    add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
     add("kspIosX64", processor)
@@ -113,9 +117,9 @@ dependencies {
 
 ```diff
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha01")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha01")
-+    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha01")
+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha02")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha02")
 }
 ```
 
@@ -132,11 +136,6 @@ class Api
 class Repository(
     private val api: Api
 )
-
-@Provides
-class Controller(
-    private val repository: Repository
-)
 ```
 
 You can get an instance using `inject` after calling `Koject.start()`.
@@ -145,14 +144,35 @@ You can get an instance using `inject` after calling `Koject.start()`.
 fun main() {
     Koject.start()
 
-    val controller = inject<Controller>()
+    val repository = inject<Repository>()
+}
+```
+
+### Provide from functions
+Any types can be provided from top-level functions with a `@Provides` annotation. This is useful when provide outside modules classes.
+
+```kotlin
+@Provides
+fun createDB(): DB {
+    return DB.create()
+}
+```
+
+You can also provide from object functions.
+
+```kotlin
+object DBFactory {
+    @Provides
+    fun create(): DB {
+        return DB.create()
+    }
 }
 ```
 
 ## TODO
 This library is incomplete and the following features will be added later.
 
-- [ ] [Allow provide from function #18](https://github.com/Mori-Atsushi/koject/issues/18)
+- [x] [Allow provide from function #18](https://github.com/Mori-Atsushi/koject/issues/18)
 - [ ] [Support singleton #19](https://github.com/Mori-Atsushi/koject/issues/19)
 - [ ] [Allow provide same types #20](https://github.com/Mori-Atsushi/koject/issues/20)
 - [ ] [Make type binding easier #21](https://github.com/Mori-Atsushi/koject/issues/21)

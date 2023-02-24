@@ -32,7 +32,7 @@ class Controller(
 ## Setup
 ### Multiplatform
 
-You'll need to enable KSP.
+You need to enable KSP.
 
 <details open><summary>build.gradle.kts</summary>
 
@@ -72,7 +72,7 @@ dependencies {
 
 ### Single platform
 
-You can use it in single module.
+Inject can also be used on a single platform.
 
 <details><summary>build.gradle.kts</summary>
 

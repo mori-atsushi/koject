@@ -1,8 +1,8 @@
 package com.moriatsushi.koject.processor.symbol
 
-import org.junit.Test
 import kotlin.reflect.typeOf
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class IdentifierTest {
     @Test
@@ -34,7 +34,7 @@ class IdentifierTest {
         val target = Identifier(typeOf<Map<Int, Map<Int, Map<Int, String>>>>().toString())
         val actual = target.asCodeName()
         val expected = "kotlin_collections_Map__kotlin_Int__kotlin_collections_Map__" +
-                "kotlin_Int__kotlin_collections_Map__kotlin_Int__kotlin_String______"
+            "kotlin_Int__kotlin_collections_Map__kotlin_Int__kotlin_String______"
         assertEquals(expected, actual)
     }
 
@@ -56,9 +56,9 @@ class IdentifierTest {
 
     @Test
     fun asCodeName_named() {
-        val target = Identifier("${typeOf<Int>()}-name")
+        val target = Identifier("${typeOf<Int>()}:Named(name)")
         val actual = target.asCodeName()
-        val expected = "kotlin_Int___name"
+        val expected = "kotlin_Int__0GxX6UJlK7NHytJ_"
         assertEquals(expected, actual)
     }
 }

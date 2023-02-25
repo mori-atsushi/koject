@@ -5,6 +5,8 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import java.security.MessageDigest
+import java.util.Base64
 
 @JvmInline
 internal value class Identifier(
@@ -19,8 +21,8 @@ internal value class Identifier(
             val value = buildString {
                 append(typeDeclaration.fullName)
                 if (qualifier != null) {
-                    append("-")
-                    append(qualifier.fullName)
+                    append(":")
+                    append("Named(${qualifier.fullName})")
                 }
             }
             return Identifier(value)
@@ -31,13 +33,15 @@ internal value class Identifier(
      * Name that can be used in code for functions, classes, etc.
      */
     fun asCodeName(): String {
-        return value.replace(" ", "")
-            .replace("-", "___")
-            .replace(".", "_")
-            .replace("<", "__")
-            .replace(">", "__")
-            .replace(",", "__")
-            .replace("?", "_nullable")
+        return buildString {
+            val type = value.substringBefore(":")
+            append(type.escaped)
+            val qualifier = value.substringAfter(":", "")
+            if (qualifier.isNotEmpty()) {
+                append("__")
+                append(qualifier.hash)
+            }
+        }
     }
 
     /**
@@ -72,3 +76,21 @@ private val KSType.fullName: String
 
 private val KSAnnotation.fullName: String
     get() = findArgumentByName<String>("name").orEmpty()
+
+private val String.escaped: String
+    get() = this
+        .replace(" ", "")
+        .replace(".", "_")
+        .replace("<", "__")
+        .replace(">", "__")
+        .replace(",", "__")
+        .replace("?", "_nullable")
+
+private val String.hash: String
+    get() {
+        val sha256 = MessageDigest.getInstance("SHA-256").digest(this.toByteArray())
+        return Base64.getUrlEncoder().withoutPadding()
+            .encodeToString(sha256)
+            .take(16)
+            .replace("-", "_")
+    }

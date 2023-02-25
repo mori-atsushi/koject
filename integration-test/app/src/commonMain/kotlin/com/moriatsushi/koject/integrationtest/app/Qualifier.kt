@@ -41,12 +41,13 @@ class QualifierClass(
     val string: String,
 )
 
+@Provides
 fun provideQualifierHolderInterface(
     notSet: QualifierClass,
     @ID1 id1: QualifierClass,
     @ID2 id2: QualifierClass,
-) {
-    object : QualifierHolderInterface {
+): QualifierHolderInterface {
+    return object : QualifierHolderInterface {
         override val notSet: QualifierClass = notSet
         override val id1: QualifierClass = id1
         override val id2: QualifierClass = id2

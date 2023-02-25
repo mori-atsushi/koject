@@ -18,10 +18,10 @@ class QualifierTest {
         Koject.start()
 
         val class1 = inject<QualifierClass>(ID1())
-        assertEquals("name1", class1.string)
+        assertEquals("id1", class1.string)
 
         val class2 = inject<QualifierClass>(ID2())
-        assertEquals("name2", class2.string)
+        assertEquals("id2", class2.string)
 
         val noName = inject<QualifierClass>()
         assertEquals("not set", noName.string)
@@ -32,9 +32,9 @@ class QualifierTest {
         Koject.start()
 
         val holder = inject<QualifierHolderClass>()
-        assertEquals("id1", holder.notSet.string)
-        assertEquals("id2", holder.id1.string)
-        assertEquals("not set", holder.id2.string)
+        assertEquals("not set", holder.notSet.string)
+        assertEquals("id1", holder.id1.string)
+        assertEquals("id2", holder.id2.string)
     }
 
     @Test
@@ -42,8 +42,8 @@ class QualifierTest {
         Koject.start()
 
         val holder = inject<QualifierHolderInterface>()
-        assertEquals("id1", holder.notSet.string)
-        assertEquals("id2", holder.id1.string)
-        assertEquals("not set", holder.id2.string)
+        assertEquals("not set", holder.notSet.string)
+        assertEquals("id1", holder.id1.string)
+        assertEquals("id2", holder.id2.string)
     }
 }

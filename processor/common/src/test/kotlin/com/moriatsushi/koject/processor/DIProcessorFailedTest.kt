@@ -2,7 +2,8 @@ package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
-import com.moriatsushi.koject.processor.error.DependencyResolutionException
+import com.moriatsushi.koject.processor.error.NotProvidedException
+import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.tschuchort.compiletesting.SourceFile
 import kotlin.test.assertContains
 import org.junit.Rule
@@ -16,23 +17,43 @@ class DIProcessorFailedTest {
     private val compilationFactory = KotlinCompilationFactory()
 
     @Test
-    fun compile() {
+    fun notProvided() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(inputCode)
+        complication.sources = listOf(notProvidedInputCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
 
-        val expectedError = DependencyResolutionException::class
-        val expectedErrorMessage =
-            "com.testpackage.NotProvided is not provided. " +
-                "It is requested by com.testpackage.SampleClass."
+        val expectedError = NotProvidedException::class
+        val expectedErrorMessage1 = "com.testpackage.NotProvided is not provided."
+        val expectedErrorMessage2 = "It is requested by com.testpackage.SampleClass."
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage)
+        assertContains(result.messages, expectedErrorMessage1)
+        assertContains(result.messages, expectedErrorMessage2)
     }
 
-    private val inputCode = SourceFile.kotlin(
+    @Test
+    fun wrongScope() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(invalidScopeCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = WrongScopeException::class
+        val expectedErrorMessage1 =
+            "com.testpackage.SingletonScope cannot be created " +
+                "because com.testpackage.NormalScope is not a singleton."
+        val expectedErrorMessage2 =
+            "Only a singleton can be requested from a singleton."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, expectedErrorMessage1)
+        assertContains(result.messages, expectedErrorMessage2)
+    }
+
+    private val notProvidedInputCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
@@ -44,6 +65,25 @@ class DIProcessorFailedTest {
                 @Provides
                 class SampleClass(
                     private val notProvided: NotProvided
+                )
+            """,
+    )
+
+    private val invalidScopeCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.Singleton
+
+                @Provides
+                class NormalScope
+
+                @Singleton
+                @Provides
+                class SingletonScope(
+                    val normal: NormalScope
                 )
             """,
     )

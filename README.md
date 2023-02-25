@@ -5,21 +5,29 @@ Koject is a DI Container libreary for Kotlin Multiplatform.
 fun main() {
     Koject.start()
 
-    val repository = inject<Repository>()
+    val controller = inject<Controller>()
 }
 
+@Singleton
 @Provides
 class Api
 
+@Singleton
 @Provides
 fun createDB(): DB {
     return DB.create()
 }
 
+@Singleton
 @Provides
 class Repository(
     private val api: Api,
     private val db: DB,
+)
+
+@Provides
+fun Controller(
+    private val repository: Repository
 )
 ```
 
@@ -55,7 +63,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha03")
++                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha04")
             }
         }
     }
@@ -63,7 +71,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha04"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -86,8 +94,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha03")
-+    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03")
++    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha04")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha04")
 }
 ```
 
@@ -101,8 +109,8 @@ Use `koject-processor-lib` to avoid generating `Container` in library modules.
 ```diff
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha03"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha04"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha04"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -117,9 +125,9 @@ dependencies {
 
 ```diff
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha03")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha04")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha04")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha04")
 }
 ```
 
@@ -130,11 +138,11 @@ Add `@Provides` annotation to the class you want to provide.
 
 ```kotlin
 @Provides
-class Api
+class Repository
 
 @Provides
-class Repository(
-    private val api: Api
+class Controller(
+    private val repository: Repository
 )
 ```
 
@@ -144,7 +152,7 @@ You can get an instance using `inject` after calling `Koject.start()`.
 fun main() {
     Koject.start()
 
-    val repository = inject<Repository>()
+    val controller = inject<Controller>()
 }
 ```
 
@@ -169,11 +177,40 @@ object DBFactory {
 }
 ```
 
+### Singleton Scope
+By adding the `@Singleton` annotation, the instance will be created only once and reused within the application.
+
+```kotlin
+@Singleton
+@Provides
+class Api
+
+@Singleton
+@Provides
+fun createDB(): DB {
+    return DB.create()
+}
+```
+
+Note that you can't inject a normally scope type into a singleton scope type.
+
+```kotlin
+@Provides
+class NormalScope
+
+@Singleton
+@Provides
+class SingletonScope(
+    // cannot inject!
+    private val normal: NormalScope
+)
+```
+
 ## TODO
 This library is incomplete and the following features will be added later.
 
 - [x] [Allow provide from function #18](https://github.com/Mori-Atsushi/koject/issues/18)
-- [ ] [Support singleton #19](https://github.com/Mori-Atsushi/koject/issues/19)
+- [x] [Support singleton #19](https://github.com/Mori-Atsushi/koject/issues/19)
 - [ ] [Allow provide same types #20](https://github.com/Mori-Atsushi/koject/issues/20)
 - [ ] [Make type binding easier #21](https://github.com/Mori-Atsushi/koject/issues/21)
 - [ ] [Make compile-time error messages easier to understand #22](https://github.com/Mori-Atsushi/koject/issues/22)

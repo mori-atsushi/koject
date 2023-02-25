@@ -3,10 +3,11 @@ package com.moriatsushi.koject.processor.symbol
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.code.Names
 
 internal class AllFactoryDeclarations(
-    val all: Sequence<FactoryDeclaration>,
+    private val map: Map<Identifier, FactoryDeclaration>,
 ) {
     companion object {
         fun of(resolver: Resolver): AllFactoryDeclarations {
@@ -15,8 +16,14 @@ internal class AllFactoryDeclarations(
                 .getDeclarationsFromPackage(Names.factoryPackageName)
                 .filterIsInstance<KSClassDeclaration>()
                 .map { FactoryDeclaration(it) }
-                .sortedBy { it.identifier }
+                .associateBy { it.identifier }
             return AllFactoryDeclarations(all)
         }
+    }
+
+    val all = map.values.sortedBy { it.identifier }
+
+    fun contains(identifier: Identifier): Boolean {
+        return map.contains(identifier)
     }
 }

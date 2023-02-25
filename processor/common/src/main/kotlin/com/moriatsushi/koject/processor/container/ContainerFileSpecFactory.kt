@@ -5,6 +5,7 @@ import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
+import com.moriatsushi.koject.processor.error.DependencyResolutionException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.squareup.kotlinpoet.ANY
@@ -37,7 +38,7 @@ internal class ContainerFileSpecFactory {
         return TypeSpec.classBuilder(Names.containerClassName).apply {
             addSuperinterface(Container::class)
             allFactories.all.forEach {
-                addProperty(createProviderPropertySpec(it))
+                addProperty(createProviderPropertySpec(allFactories, it))
             }
             addFunction(createGetFunSpec(allFactories))
             addAnnotation(internalAnnotationSpec)
@@ -48,7 +49,12 @@ internal class ContainerFileSpecFactory {
         }.build()
     }
 
-    private fun createProviderPropertySpec(factoryClass: FactoryDeclaration): PropertySpec {
+    private fun createProviderPropertySpec(
+        allFactories: AllFactoryDeclarations,
+        factoryClass: FactoryDeclaration,
+    ): PropertySpec {
+        validateDependencies(allFactories, factoryClass)
+
         val factoryName = factoryClass.asClassName()
         val providerName = Names.providerNameOf(factoryClass.identifier)
         val type = LambdaTypeName.get(returnType = ANY)
@@ -73,6 +79,20 @@ internal class ContainerFileSpecFactory {
             addModifiers(KModifier.PRIVATE)
             delegate(code)
         }.build()
+    }
+
+    private fun validateDependencies(
+        allFactories: AllFactoryDeclarations,
+        factoryClass: FactoryDeclaration,
+    ) {
+        factoryClass.parameters.forEach {
+            if (!allFactories.contains(it.identifier)) {
+                throw DependencyResolutionException(
+                    "${it.identifier} is not provided. " +
+                        "It is requested by ${factoryClass.identifier}.",
+                )
+            }
+        }
     }
 
     private fun createGetFunSpec(

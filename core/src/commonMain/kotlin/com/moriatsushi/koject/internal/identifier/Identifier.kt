@@ -1,38 +1,30 @@
 package com.moriatsushi.koject.internal.identifier
 
 import com.moriatsushi.koject.internal.InternalKojectApi
-import kotlin.jvm.JvmInline
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 /**
  * Unique identifier for resolving dependencies
  */
 @InternalKojectApi
-@JvmInline
-value class Identifier(
-    val value: String,
+data class Identifier(
+    val type: KType,
+    val qualifier: Any?,
 ) : Comparable<Identifier> {
     companion object {
-        fun of(typeStruct: TypeStruct, name: String? = null): Identifier {
-            val value = buildString {
-                append(typeStruct)
-                if (name != null) {
-                    append("-")
-                    append(name)
-                }
-            }
-            return Identifier(value)
-        }
-
-        inline fun <reified T> of(name: String? = null): Identifier {
-            return of(TypeStruct.of<T>(), name)
+        inline fun <reified T> of(qualifier: Any? = null): Identifier {
+            return Identifier(typeOf<T>(), qualifier)
         }
     }
 
+    /**
+     * Alphabetical order
+     */
     override fun compareTo(other: Identifier): Int {
-        return value.compareTo(other.value)
-    }
-
-    override fun toString(): String {
-        return value
+        return compareBy<Identifier>(
+            { type.toString() },
+            { qualifier?.toString().orEmpty() },
+        ).compare(this, other)
     }
 }

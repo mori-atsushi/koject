@@ -1,38 +1,44 @@
 package com.moriatsushi.koject.processor.identifier
 
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.moriatsushi.koject.internal.identifier.Identifier
-import com.moriatsushi.koject.internal.identifier.TypeStruct
+import com.moriatsushi.koject.processor.analytics.findArgumentByName
 
-internal fun Identifier.Companion.of(classDeclaration: KSClassDeclaration): Identifier {
-    val typeStruct = TypeStruct.of(classDeclaration)
-    return of(typeStruct)
+object IdentifierFactory {
+    fun create(classDeclaration: KSClassDeclaration): String {
+        return classDeclaration.fullName
+    }
+
+    fun create(typeDeclaration: KSType, qualifier: KSAnnotation?): String {
+        return buildString {
+            append(typeDeclaration.fullName)
+            if (qualifier != null) {
+                append("-")
+                append(qualifier.fullName)
+            }
+        }
+    }
+
+    private val KSDeclaration.fullName: String
+        get() = (qualifiedName ?: simpleName).asString()
+
+    private val KSType.fullName: String
+        get() = buildString {
+            append(declaration.fullName)
+            if (arguments.isNotEmpty()) {
+                append("<")
+                arguments.joinTo(this, ", ") {
+                    it.toString()
+                }
+                append(">")
+            }
+            if (isMarkedNullable) {
+                append("?")
+            }
+        }
+
+    private val KSAnnotation.fullName: String
+        get() = findArgumentByName<String>("name").orEmpty()
 }
-
-internal fun Identifier.Companion.of(type: KSType, name: String?): Identifier {
-    val typeStruct = TypeStruct.of(type)
-    return of(typeStruct, name)
-}
-
-private fun TypeStruct.Companion.of(classDeclaration: KSClassDeclaration): TypeStruct {
-    return TypeStruct(classDeclaration.fullName)
-}
-
-private fun TypeStruct.Companion.of(type: KSType): TypeStruct {
-    val name = type.declaration.fullName
-    val isNullable = type.isMarkedNullable
-    val arguments = type.arguments
-        .mapNotNull { it.type?.resolve() }
-        .map { of(it) }
-
-    return TypeStruct(
-        name = name,
-        isNullable = isNullable,
-        arguments = arguments,
-    )
-}
-
-private val KSDeclaration.fullName: String
-    get() = (qualifiedName ?: simpleName).asString()

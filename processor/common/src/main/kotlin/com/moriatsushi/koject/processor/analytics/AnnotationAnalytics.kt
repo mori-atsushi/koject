@@ -3,13 +3,11 @@ package com.moriatsushi.koject.processor.analytics
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.moriatsushi.koject.Named
-import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.internal.identifier._Identifier
 
-internal fun KSAnnotated.findIdentifier(): Identifier? {
+internal fun KSAnnotated.findIdentifier(): String? {
     return findAnnotation<_Identifier>()
         ?.findArgumentByName<String>("value")
-        ?.run(::Identifier)
 }
 
 internal fun KSAnnotated.findName(): String? {

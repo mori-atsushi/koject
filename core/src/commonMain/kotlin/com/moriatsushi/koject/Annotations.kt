@@ -13,3 +13,10 @@ annotation class Provides
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class Singleton
+
+/**
+ * Identifier for distinguishing the same type
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
+annotation class Named(val name: String)

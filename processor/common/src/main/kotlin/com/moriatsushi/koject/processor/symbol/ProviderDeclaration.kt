@@ -86,7 +86,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier by lazy {
-            Identifier.of(ksType, function.findQualifier())
+            Identifier.of(ksType, qualifier)
         }
 
         val memberName: MemberName
@@ -110,7 +110,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier: Identifier by lazy {
-            Identifier.of(ksType, function.findQualifier())
+            Identifier.of(ksType, qualifier)
         }
 
         val parentName: ClassName

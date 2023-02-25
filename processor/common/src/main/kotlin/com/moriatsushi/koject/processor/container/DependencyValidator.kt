@@ -4,6 +4,7 @@ import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
+import com.moriatsushi.koject.processor.symbol.Identifier
 import com.moriatsushi.koject.processor.symbol.ProviderParameter
 
 internal class DependencyValidator {
@@ -34,8 +35,8 @@ internal class DependencyValidator {
     }
 
     private fun throwNotProvidedException(
-        target: String,
-        dependency: String,
+        target: Identifier,
+        dependency: Identifier,
     ) {
         throw NotProvidedException(
             """
@@ -47,8 +48,8 @@ internal class DependencyValidator {
     }
 
     private fun throwWrongScopeException(
-        target: String,
-        dependency: String,
+        target: Identifier,
+        dependency: Identifier,
     ) {
         throw WrongScopeException(
             """

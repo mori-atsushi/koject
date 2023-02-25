@@ -12,7 +12,6 @@ import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findName
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
-import com.moriatsushi.koject.processor.identifier.IdentifierFactory
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
@@ -24,7 +23,7 @@ internal sealed class ProviderDeclaration(
     private val declaration: KSDeclaration,
     private val function: KSFunctionDeclaration,
 ) {
-    abstract val identifier: String
+    abstract val identifier: Identifier
     abstract val typeName: TypeName
     abstract val name: String?
 
@@ -74,7 +73,7 @@ internal sealed class ProviderDeclaration(
         ksClass.primaryConstructor!!,
     ) {
         override val identifier by lazy {
-            IdentifierFactory.create(ksClass)
+            Identifier.of(ksClass)
         }
 
         override val typeName: TypeName
@@ -88,8 +87,8 @@ internal sealed class ProviderDeclaration(
     ) : ProviderDeclaration(function, function) {
         private val ksType = function.returnType!!.resolve()
 
-        override val identifier: String by lazy {
-            IdentifierFactory.create(
+        override val identifier by lazy {
+            Identifier.of(
                 ksType,
                 function.findAnnotation<Named>(),
             )
@@ -115,8 +114,8 @@ internal sealed class ProviderDeclaration(
     ) : ProviderDeclaration(function, function) {
         private val ksType = function.returnType!!.resolve()
 
-        override val identifier: String by lazy {
-            IdentifierFactory.create(
+        override val identifier: Identifier by lazy {
+            Identifier.of(
                 ksType,
                 function.findAnnotation<Named>(),
             )

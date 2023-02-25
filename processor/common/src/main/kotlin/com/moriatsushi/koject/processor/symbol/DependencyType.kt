@@ -5,7 +5,6 @@ import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.moriatsushi.koject.Named
 import com.moriatsushi.koject.processor.analytics.findAnnotation
-import com.moriatsushi.koject.processor.identifier.IdentifierFactory
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
@@ -22,7 +21,7 @@ internal class DependencyType(
     }
 
     val identifier by lazy {
-        IdentifierFactory.create(ksType, qualifier)
+        Identifier.of(ksType, qualifier)
     }
 
     fun asTypeName(): TypeName {

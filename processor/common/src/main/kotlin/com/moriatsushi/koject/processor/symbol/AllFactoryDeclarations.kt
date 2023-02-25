@@ -6,7 +6,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.moriatsushi.koject.processor.code.Names
 
 internal class AllFactoryDeclarations(
-    private val map: Map<String, FactoryDeclaration>,
+    private val map: Map<Identifier, FactoryDeclaration>,
 ) {
     companion object {
         fun of(resolver: Resolver): AllFactoryDeclarations {
@@ -24,11 +24,11 @@ internal class AllFactoryDeclarations(
     val normals = all.filter { !it.isSingleton }
     val singletons = all.filter { it.isSingleton }
 
-    fun get(identifier: String): FactoryDeclaration {
+    fun get(identifier: Identifier): FactoryDeclaration {
         return getOrNull(identifier) ?: error("not found : $identifier")
     }
 
-    fun getOrNull(identifier: String): FactoryDeclaration? {
+    fun getOrNull(identifier: Identifier): FactoryDeclaration? {
         return map[identifier]
     }
 }

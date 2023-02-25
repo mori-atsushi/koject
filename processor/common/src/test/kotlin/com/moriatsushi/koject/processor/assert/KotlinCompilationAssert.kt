@@ -5,9 +5,17 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 fun assertCompileSucceed(result: KotlinCompilation.Result) {
-    assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
+    assertEquals(
+        KotlinCompilation.ExitCode.OK,
+        result.exitCode,
+        "Expected compile succeed",
+    )
 }
 
 fun assertCompileFailed(result: KotlinCompilation.Result) {
-    assertNotEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
+    assertNotEquals(
+        KotlinCompilation.ExitCode.OK,
+        result.exitCode,
+        "Expected compile failed",
+    )
 }

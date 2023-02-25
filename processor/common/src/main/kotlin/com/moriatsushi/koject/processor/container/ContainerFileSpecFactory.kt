@@ -5,7 +5,6 @@ import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.error.DependencyResolutionException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.squareup.kotlinpoet.ANY
@@ -21,8 +20,6 @@ import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ContainerFileSpecFactory {
     fun create(allFactories: AllFactoryDeclarations): FileSpec {
-        validateDependencies(allFactories)
-
         return FileSpec.builder(
             Names.containerClassName.packageName,
             Names.containerClassName.simpleName,
@@ -119,21 +116,6 @@ internal class ContainerFileSpecFactory {
                 unindent()
             }
             add(")")
-        }
-    }
-
-    private fun validateDependencies(
-        allFactories: AllFactoryDeclarations,
-    ) {
-        allFactories.all.forEach { factoryClass ->
-            factoryClass.parameters.forEach {
-                if (!allFactories.contains(it.identifier)) {
-                    throw DependencyResolutionException(
-                        "${it.identifier} is not provided. " +
-                            "It is requested by ${factoryClass.identifier}.",
-                    )
-                }
-            }
         }
     }
 

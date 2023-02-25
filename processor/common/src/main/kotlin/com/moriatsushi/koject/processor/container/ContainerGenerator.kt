@@ -5,17 +5,20 @@ import com.moriatsushi.koject.processor.file.FileGenerator
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 
 internal class ContainerGenerator(
+    private val dependencyValidator: DependencyValidator,
     private val fileGenerator: FileGenerator,
     private val containerFileSpecFactory: ContainerFileSpecFactory,
     private val startFileSpecFactory: StartFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
-        generateContainer(resolver)
+        val allFactories = AllFactoryDeclarations.of(resolver)
+        dependencyValidator.validate(allFactories)
+
+        generateContainer(allFactories)
         generateStart()
     }
 
-    private fun generateContainer(resolver: Resolver) {
-        val allFactories = AllFactoryDeclarations.of(resolver)
+    private fun generateContainer(allFactories: AllFactoryDeclarations) {
         val fileSpec = containerFileSpecFactory.create(allFactories)
 
         fileGenerator.createNewFile(

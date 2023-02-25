@@ -26,10 +26,10 @@ internal class AllFactoryDeclarations(
     val singletons = all.filter { it.isSingleton }
 
     fun get(identifier: Identifier): FactoryDeclaration {
-        return map[identifier] ?: error("not found : $identifier")
+        return getOrNull(identifier) ?: error("not found : $identifier")
     }
 
-    fun contains(identifier: Identifier): Boolean {
-        return map.contains(identifier)
+    fun getOrNull(identifier: Identifier): FactoryDeclaration? {
+        return map[identifier]
     }
 }

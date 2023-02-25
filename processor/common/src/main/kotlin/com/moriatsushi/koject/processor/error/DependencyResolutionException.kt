@@ -3,4 +3,17 @@ package com.moriatsushi.koject.processor.error
 /**
  * Failed to resolve dependencies
  */
-class DependencyResolutionException(message: String) : Exception(message)
+sealed class DependencyResolutionException(message: String) :
+    Exception(message)
+
+/**
+ *Required dependencies not provided
+ */
+class NotProvidedException(message: String) :
+    DependencyResolutionException(message)
+
+/**
+ * Injecting in wrong scope
+ */
+class WrongScopeException(message: String) :
+    DependencyResolutionException(message)

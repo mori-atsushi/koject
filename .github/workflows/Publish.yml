@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest # to publish for Kotlin/Native
     timeout-minutes: 90
 
     steps:

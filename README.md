@@ -55,7 +55,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha02")
++                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha03")
             }
         }
     }
@@ -63,7 +63,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -86,8 +86,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha02")
-+    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02")
++    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha03")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03")
 }
 ```
 
@@ -101,8 +101,8 @@ Use `koject-processor-lib` to avoid generating `Container` in library modules.
 ```diff
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha02"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha03"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -117,9 +117,9 @@ dependencies {
 
 ```diff
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha02")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha02")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha02")
+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha03")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha03")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha03")
 }
 ```
 

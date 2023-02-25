@@ -2,7 +2,9 @@ package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.processor.analytics.findIdentifier
+import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
@@ -21,6 +23,9 @@ internal class FactoryDeclaration(
         get() = ksClass.primaryConstructor?.parameters
             .orEmpty()
             .map { ProviderParameter(it) }
+
+    val isSingleton: Boolean
+        get() = ksClass.hasAnnotation<Singleton>()
 
     fun asClassName(): ClassName {
         return ksClass.toClassName()

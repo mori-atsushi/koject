@@ -12,11 +12,19 @@ internal fun KSAnnotated.findIdentifier(): Identifier? {
 }
 
 internal inline fun <reified T> KSAnnotated.findAnnotation(): KSAnnotation? {
-    return annotations.find {
-        it.shortName.asString() == T::class.simpleName &&
-            it.annotationType.resolve().declaration.qualifiedName!!.asString() ==
-            T::class.qualifiedName!!
+    return annotations.find { it.isInstance<T>() }
+}
+
+internal inline fun <reified T> KSAnnotated.hasAnnotation(): Boolean {
+    return annotations.any { it.isInstance<T>() }
+}
+
+private inline fun <reified T> KSAnnotation.isInstance(): Boolean {
+    if (shortName.asString() != T::class.simpleName) {
+        return false
     }
+    val qualifiedName = annotationType.resolve().declaration.qualifiedName!!
+    return qualifiedName.asString() == T::class.qualifiedName!!
 }
 
 internal inline fun <reified T> KSAnnotation.findArgumentByName(

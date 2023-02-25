@@ -36,7 +36,7 @@ internal class FactoryFileSpecFactory {
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
-        val _IdentifierAnnotationSpec =
+        val identifierAnnotationSpec =
             AnnotationSpecFactory.createIdentifier(provider.identifier)
         val companionObject = createCompanionObjectSpec(provider)
 
@@ -48,7 +48,11 @@ internal class FactoryFileSpecFactory {
             addFunction(createFunSpec)
             addType(companionObject)
             addAnnotation(internalAnnotationSpec)
-            addAnnotation(_IdentifierAnnotationSpec)
+            if (provider.isSingleton) {
+                val annotation = AnnotationSpecFactory.createSingleton()
+                addAnnotation(annotation)
+            }
+            addAnnotation(identifierAnnotationSpec)
 
             addOriginatingKSFile(provider.containingFile)
         }.build()

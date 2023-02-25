@@ -15,6 +15,10 @@ internal object Names {
         return "provide_${identifier.escapedValue}"
     }
 
+    fun instanceNameOf(identifier: Identifier): String {
+        return identifier.escapedValue
+    }
+
     fun factoryNameOf(identifier: Identifier): String {
         return "_${identifier.escapedValue}_Factory"
     }

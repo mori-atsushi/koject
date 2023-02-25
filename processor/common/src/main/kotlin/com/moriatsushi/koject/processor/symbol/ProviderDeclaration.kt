@@ -7,7 +7,9 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.identifier.Identifier
+import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.moriatsushi.koject.processor.identifier.of
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
@@ -29,6 +31,9 @@ internal sealed class ProviderDeclaration(
 
     val containingFile: KSFile
         get() = declaration.containingFile!!
+
+    val isSingleton: Boolean
+        get() = declaration.hasAnnotation<Singleton>()
 
     companion object {
         fun of(node: KSAnnotated): ProviderDeclaration? {

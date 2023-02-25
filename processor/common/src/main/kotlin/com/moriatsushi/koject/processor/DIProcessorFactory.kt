@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.processor.container.ContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ContainerGenerator
+import com.moriatsushi.koject.processor.container.DependencyValidator
 import com.moriatsushi.koject.processor.container.StartFileSpecFactory
 import com.moriatsushi.koject.processor.factory.FactoryFileSpecFactory
 import com.moriatsushi.koject.processor.factory.FactoryGenerator
@@ -29,6 +30,10 @@ class DIProcessorFactory(
         )
     }
 
+    private fun createDependencyValidator(): DependencyValidator {
+        return DependencyValidator()
+    }
+
     private fun createContainerFileSpecFactory(): ContainerFileSpecFactory {
         return ContainerFileSpecFactory()
     }
@@ -39,6 +44,7 @@ class DIProcessorFactory(
 
     private fun createContainerGenerator(): ContainerGenerator {
         return ContainerGenerator(
+            createDependencyValidator(),
             createFileGenerator(),
             createContainerFileSpecFactory(),
             createStartFileSpecFactory(),

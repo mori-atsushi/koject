@@ -1,7 +1,6 @@
 package com.moriatsushi.koject.processor.code
 
-import com.moriatsushi.koject.internal.identifier.Identifier
-import com.moriatsushi.koject.processor.identifier.escapedValue
+import com.moriatsushi.koject.processor.symbol.Identifier
 import com.squareup.kotlinpoet.ClassName
 
 internal object Names {
@@ -12,14 +11,14 @@ internal object Names {
     val containerClassName = ClassName(generatedPackageName, "_AppContainer")
 
     fun providerNameOf(identifier: Identifier): String {
-        return "provide_${identifier.escapedValue}"
+        return "provide_${identifier.asCodeName()}"
     }
 
     fun instanceNameOf(identifier: Identifier): String {
-        return identifier.escapedValue
+        return identifier.asCodeName()
     }
 
     fun factoryNameOf(identifier: Identifier): String {
-        return "_${identifier.escapedValue}_Factory"
+        return "_${identifier.asCodeName()}_Factory"
     }
 }

@@ -7,11 +7,11 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.moriatsushi.koject.Named
 import com.moriatsushi.koject.Singleton
-import com.moriatsushi.koject.internal.identifier.Identifier
+import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findName
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
-import com.moriatsushi.koject.processor.identifier.of
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
@@ -87,8 +87,11 @@ internal sealed class ProviderDeclaration(
     ) : ProviderDeclaration(function, function) {
         private val ksType = function.returnType!!.resolve()
 
-        override val identifier: Identifier by lazy {
-            Identifier.of(ksType, name)
+        override val identifier by lazy {
+            Identifier.of(
+                ksType,
+                function.findAnnotation<Named>(),
+            )
         }
 
         val memberName: MemberName
@@ -112,7 +115,10 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier: Identifier by lazy {
-            Identifier.of(ksType, name)
+            Identifier.of(
+                ksType,
+                function.findAnnotation<Named>(),
+            )
         }
 
         val parentName: ClassName

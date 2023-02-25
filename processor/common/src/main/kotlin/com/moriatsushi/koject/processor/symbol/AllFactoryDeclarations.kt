@@ -3,7 +3,6 @@ package com.moriatsushi.koject.processor.symbol
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.code.Names
 
 internal class AllFactoryDeclarations(

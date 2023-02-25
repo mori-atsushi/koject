@@ -11,7 +11,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 internal class FactoryDeclaration(
     private val ksClass: KSClassDeclaration,
 ) {
-    val identifier by lazy {
+    val identifier: Identifier by lazy {
         ksClass.findIdentifier()!!
     }
 

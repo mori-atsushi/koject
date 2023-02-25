@@ -1,10 +1,10 @@
 package com.moriatsushi.koject.processor.container
 
-import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
+import com.moriatsushi.koject.processor.symbol.Identifier
 import com.moriatsushi.koject.processor.symbol.ProviderParameter
 
 internal class DependencyValidator {

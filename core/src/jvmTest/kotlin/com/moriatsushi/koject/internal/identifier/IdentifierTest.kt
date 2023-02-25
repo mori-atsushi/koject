@@ -4,7 +4,7 @@ import com.moriatsushi.koject.MyClass
 import kotlin.test.assertEquals
 import org.junit.Test
 
-class IdentifierFactoryTest {
+class IdentifierTest {
     @Test
     fun of_int() {
         val actual = Identifier.of<Int>()
@@ -65,6 +65,15 @@ class IdentifierFactoryTest {
         val actual = Identifier.of<List<String?>?>()
         val expected = Identifier(
             "kotlin.collections.List<kotlin.String?>?",
+        )
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun of_intWithName() {
+        val actual = Identifier.of<Int>("name")
+        val expected = Identifier(
+            "kotlin.Int-name",
         )
         assertEquals(expected, actual)
     }

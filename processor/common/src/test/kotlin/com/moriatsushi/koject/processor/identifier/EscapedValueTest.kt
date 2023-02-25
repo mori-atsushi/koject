@@ -53,4 +53,12 @@ class EscapedValueTest {
         val expected = "kotlin_collections_List__kotlin_String_nullable___nullable"
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun named() {
+        val target = Identifier.of<Int>("name")
+        val actual = target.escapedValue
+        val expected = "kotlin_Int___name"
+        assertEquals(expected, actual)
+    }
 }

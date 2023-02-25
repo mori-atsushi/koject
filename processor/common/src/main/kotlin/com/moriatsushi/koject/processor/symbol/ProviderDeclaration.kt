@@ -9,6 +9,7 @@ import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.identifier.Identifier
+import com.moriatsushi.koject.processor.analytics.findName
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.moriatsushi.koject.processor.identifier.of
 import com.squareup.kotlinpoet.ClassName
@@ -24,10 +25,11 @@ internal sealed class ProviderDeclaration(
 ) {
     abstract val identifier: Identifier
     abstract val typeName: TypeName
+    abstract val name: String?
 
     val dependencies: List<DependencyType>
         get() = function.parameters
-            .map { DependencyType.of(it.type) }
+            .map { DependencyType.of(it) }
 
     val containingFile: KSFile
         get() = declaration.containingFile!!
@@ -76,6 +78,8 @@ internal sealed class ProviderDeclaration(
 
         override val typeName: TypeName
             get() = ksClass.toClassName()
+
+        override val name: String? = null
     }
 
     class TopLevelFunction(
@@ -84,7 +88,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier: Identifier by lazy {
-            Identifier.of(ksType)
+            Identifier.of(ksType, name)
         }
 
         val memberName: MemberName
@@ -95,6 +99,10 @@ internal sealed class ProviderDeclaration(
 
         override val typeName: TypeName
             get() = ksType.toTypeName()
+
+        override val name: String? by lazy {
+            function.findName()
+        }
     }
 
     class ObjectFunction(
@@ -104,7 +112,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier: Identifier by lazy {
-            Identifier.of(ksType)
+            Identifier.of(ksType, name)
         }
 
         val parentName: ClassName
@@ -115,5 +123,9 @@ internal sealed class ProviderDeclaration(
 
         override val typeName: TypeName
             get() = ksType.toTypeName()
+
+        override val name: String? by lazy {
+            function.findName()
+        }
     }
 }

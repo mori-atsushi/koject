@@ -7,6 +7,7 @@ import com.moriatsushi.koject.internal.identifier.Identifier
  */
 internal val Identifier.escapedValue: String
     get() = value.replace(" ", "")
+        .replace("-", "___")
         .replace(".", "_")
         .replace("<", "__")
         .replace(">", "__")

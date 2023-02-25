@@ -11,9 +11,9 @@ internal fun Identifier.Companion.of(classDeclaration: KSClassDeclaration): Iden
     return of(typeStruct)
 }
 
-internal fun Identifier.Companion.of(type: KSType): Identifier {
+internal fun Identifier.Companion.of(type: KSType, name: String?): Identifier {
     val typeStruct = TypeStruct.of(type)
-    return of(typeStruct)
+    return of(typeStruct, name)
 }
 
 private fun TypeStruct.Companion.of(classDeclaration: KSClassDeclaration): TypeStruct {

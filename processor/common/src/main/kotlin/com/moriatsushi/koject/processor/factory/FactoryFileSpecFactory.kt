@@ -108,10 +108,16 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
+        val initializerCode = buildCodeBlock {
+            add("%T.of<%T>(", Identifier::class.asTypeName(), provider.typeName)
+            val name = provider.name
+            if (name != null) {
+                add("%S", name)
+            }
+            add(")")
+        }
         val identifierProperty = PropertySpec.builder("identifier", Identifier::class).apply {
-            // workaround to avoid crash in Kotlin/Native
-            // https://github.com/square/kotlinpoet/issues/1273
-            initializer("%T.of<%T>()", Identifier::class.asTypeName(), provider.typeName)
+            initializer(initializerCode)
         }.build()
         return TypeSpec.companionObjectBuilder().apply {
             addProperty(identifierProperty)

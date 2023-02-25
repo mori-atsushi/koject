@@ -5,6 +5,7 @@ import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
+import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
@@ -17,8 +18,8 @@ import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ContainerFileSpecFactory {
-    fun create(factoryClasses: Sequence<FactoryDeclaration>): FileSpec {
-        val typeSpec = createContainerClass(factoryClasses)
+    fun create(allFactories: AllFactoryDeclarations): FileSpec {
+        val typeSpec = createContainerClass(allFactories)
 
         return FileSpec.builder(
             Names.containerClassName.packageName,
@@ -29,19 +30,19 @@ internal class ContainerFileSpecFactory {
         }.build()
     }
 
-    private fun createContainerClass(factoryClasses: Sequence<FactoryDeclaration>): TypeSpec {
+    private fun createContainerClass(allFactories: AllFactoryDeclarations): TypeSpec {
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
 
         return TypeSpec.classBuilder(Names.containerClassName).apply {
             addSuperinterface(Container::class)
-            factoryClasses.forEach {
+            allFactories.all.forEach {
                 addProperty(createProviderPropertySpec(it))
             }
-            addFunction(createGetFunSpec(factoryClasses))
+            addFunction(createGetFunSpec(allFactories))
             addAnnotation(internalAnnotationSpec)
 
-            factoryClasses
+            allFactories.all
                 .mapNotNull { it.containingFile }
                 .forEach { addOriginatingKSFile(it) }
         }.build()
@@ -75,14 +76,14 @@ internal class ContainerFileSpecFactory {
     }
 
     private fun createGetFunSpec(
-        factoryClasses: Sequence<FactoryDeclaration>,
+        allFactories: AllFactoryDeclarations,
     ): FunSpec {
         return FunSpec.builder("resolve").apply {
             returns(ANY.copy(nullable = true))
             addModifiers(KModifier.OVERRIDE)
             addParameter("id", Identifier::class)
             beginControlFlow("return when (id) {")
-            factoryClasses.forEach {
+            allFactories.all.forEach {
                 val name = Names.providerNameOf(it.identifier)
                 addStatement("%T.identifier -> $name()", it.asClassName())
             }

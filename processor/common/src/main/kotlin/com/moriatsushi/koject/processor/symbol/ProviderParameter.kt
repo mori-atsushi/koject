@@ -4,7 +4,7 @@ import com.google.devtools.ksp.symbol.KSValueParameter
 import com.moriatsushi.koject.processor.analytics.findIdentifier
 import com.moriatsushi.koject.processor.identifier.escapedValue
 
-class ProviderParameter(
+internal class ProviderParameter(
     private val ksValueParameter: KSValueParameter,
 ) {
     val identifier by lazy {

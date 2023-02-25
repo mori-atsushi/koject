@@ -22,6 +22,12 @@ internal class AllFactoryDeclarations(
     }
 
     val all = map.values.sortedBy { it.identifier }
+    val normals = all.filter { !it.isSingleton }
+    val singletons = all.filter { it.isSingleton }
+
+    fun get(identifier: Identifier): FactoryDeclaration {
+        return map[identifier] ?: error("not found : $identifier")
+    }
 
     fun contains(identifier: Identifier): Boolean {
         return map.contains(identifier)

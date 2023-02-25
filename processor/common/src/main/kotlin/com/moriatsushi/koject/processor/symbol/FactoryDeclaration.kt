@@ -6,7 +6,7 @@ import com.moriatsushi.koject.processor.analytics.findIdentifier
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
-class FactoryDeclaration(
+internal class FactoryDeclaration(
     private val ksClass: KSClassDeclaration,
 ) {
     val identifier by lazy {

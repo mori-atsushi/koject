@@ -7,16 +7,16 @@ import com.moriatsushi.koject.internal.identifier.Identifier
  * Inject an instance with resolved dependencies
  */
 inline fun <reified T : Any> inject(qualifier: Any? = null): T {
-    TODO()
+    val id = Identifier.of<T>(qualifier)
+    return injectOrNull(id) as? T
+        ?: throw NotProvidedException("$id is not provided")
 }
 
 /**
  * Inject an [Named] instance with resolved dependencies
  */
 inline fun <reified T : Any> inject(name: String): T {
-    val id = Identifier.of<T>(name)
-    return injectOrNull(id) as? T
-        ?: throw NotProvidedException("$id is not provided")
+    return inject(Named(name))
 }
 
 @PublishedApi

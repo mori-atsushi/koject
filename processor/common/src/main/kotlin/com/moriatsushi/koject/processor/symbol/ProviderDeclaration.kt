@@ -7,10 +7,8 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.moriatsushi.koject.Named
 import com.moriatsushi.koject.Singleton
-import com.moriatsushi.koject.processor.analytics.findAnnotation
-import com.moriatsushi.koject.processor.analytics.findName
+import com.moriatsushi.koject.processor.analytics.findQualifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
@@ -25,7 +23,7 @@ internal sealed class ProviderDeclaration(
 ) {
     abstract val identifier: Identifier
     abstract val typeName: TypeName
-    abstract val name: String?
+    abstract val qualifier: QualifierAnnotation?
 
     val dependencies: List<DependencyType>
         get() = function.parameters
@@ -79,7 +77,7 @@ internal sealed class ProviderDeclaration(
         override val typeName: TypeName
             get() = ksClass.toClassName()
 
-        override val name: String? = null
+        override val qualifier: QualifierAnnotation? = null
     }
 
     class TopLevelFunction(
@@ -88,10 +86,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier by lazy {
-            Identifier.of(
-                ksType,
-                function.findAnnotation<Named>(),
-            )
+            Identifier.of(ksType, function.findQualifier())
         }
 
         val memberName: MemberName
@@ -103,8 +98,8 @@ internal sealed class ProviderDeclaration(
         override val typeName: TypeName
             get() = ksType.toTypeName()
 
-        override val name: String? by lazy {
-            function.findName()
+        override val qualifier by lazy {
+            function.findQualifier()
         }
     }
 
@@ -115,10 +110,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier: Identifier by lazy {
-            Identifier.of(
-                ksType,
-                function.findAnnotation<Named>(),
-            )
+            Identifier.of(ksType, function.findQualifier())
         }
 
         val parentName: ClassName
@@ -130,8 +122,8 @@ internal sealed class ProviderDeclaration(
         override val typeName: TypeName
             get() = ksType.toTypeName()
 
-        override val name: String? by lazy {
-            function.findName()
+        override val qualifier by lazy {
+            function.findQualifier()
         }
     }
 }

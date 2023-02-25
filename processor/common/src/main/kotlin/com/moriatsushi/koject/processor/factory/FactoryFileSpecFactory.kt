@@ -110,9 +110,9 @@ internal class FactoryFileSpecFactory {
     private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
         val initializerCode = buildCodeBlock {
             add("%T.of<%T>(", Identifier::class.asTypeName(), provider.typeName)
-            val name = provider.name
-            if (name != null) {
-                add("%S", name)
+            val qualifier = provider.qualifier
+            if (qualifier != null) {
+                add(qualifier.newInstanceCode)
             }
             add(")")
         }

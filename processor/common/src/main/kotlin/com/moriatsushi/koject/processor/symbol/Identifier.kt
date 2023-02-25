@@ -1,10 +1,7 @@
 package com.moriatsushi.koject.processor.symbol
 
-import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import java.security.MessageDigest
 import java.util.Base64
 
@@ -17,12 +14,15 @@ internal value class Identifier(
             return Identifier(classDeclaration.fullName)
         }
 
-        internal fun of(typeDeclaration: KSType, qualifier: KSAnnotation?): Identifier {
+        internal fun of(
+            typeDeclaration: KSType,
+            qualifier: QualifierAnnotation?,
+        ): Identifier {
             val value = buildString {
                 append(typeDeclaration.fullName)
                 if (qualifier != null) {
                     append(":")
-                    append("Named(${qualifier.fullName})")
+                    append(qualifier.fullName)
                 }
             }
             return Identifier(value)
@@ -56,9 +56,6 @@ internal value class Identifier(
     }
 }
 
-private val KSDeclaration.fullName: String
-    get() = (qualifiedName ?: simpleName).asString()
-
 private val KSType.fullName: String
     get() = buildString {
         append(declaration.fullName)
@@ -73,9 +70,6 @@ private val KSType.fullName: String
             append("?")
         }
     }
-
-private val KSAnnotation.fullName: String
-    get() = findArgumentByName<String>("name").orEmpty()
 
 private val String.escaped: String
     get() = this

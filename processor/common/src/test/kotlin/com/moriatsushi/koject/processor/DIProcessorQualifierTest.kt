@@ -101,11 +101,11 @@ class DIProcessorQualifierTest {
 
     private val expectedID1FactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-                "_${expectedID1Identifier.asCodeName()}_Factory.kt"
+            "_${expectedID1Identifier.asCodeName()}_Factory.kt"
 
     private val expectedClassFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-                "_com_testpackage_SampleClass_Factory.kt"
+            "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier =
         StringIdentifier(
@@ -114,7 +114,7 @@ class DIProcessorQualifierTest {
         )
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-                "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
+            "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
 
     @Language("kotlin")
     private val expectedID1FactoryText = """

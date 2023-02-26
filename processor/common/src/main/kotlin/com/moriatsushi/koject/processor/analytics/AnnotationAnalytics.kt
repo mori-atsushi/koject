@@ -2,15 +2,6 @@ package com.moriatsushi.koject.processor.analytics
 
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
-import com.moriatsushi.koject.Qualifier
-import com.moriatsushi.koject.processor.symbol.QualifierAnnotation
-
-internal fun KSAnnotated.findQualifier(): QualifierAnnotation? {
-    return annotations.find {
-        val declaration = it.annotationType.resolve().declaration
-        declaration.hasAnnotation<Qualifier>()
-    }?.let(::QualifierAnnotation)
-}
 
 internal inline fun <reified T> KSAnnotated.findAnnotation(): KSAnnotation? {
     return annotations.find { it.isInstance<T>() }

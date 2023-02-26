@@ -124,13 +124,13 @@ class DIProcessorSingletonTest {
         |import com.moriatsushi.koject.Singleton
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SingletonClass1
         |import kotlin.Any
         |
         |@InternalKojectApi
         |@Singleton
-        |@_Identifier("com.testpackage.SingletonClass1")
+        |@StringIdentifier("com.testpackage.SingletonClass1")
         |public class _com_testpackage_SingletonClass1_Factory() {
         |    public fun create(): Any = SingletonClass1()
         |
@@ -149,16 +149,16 @@ class DIProcessorSingletonTest {
         |import com.moriatsushi.koject.Singleton
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SingletonClass1
         |import com.testpackage.SingletonClass2
         |import kotlin.Any
         |
         |@InternalKojectApi
         |@Singleton
-        |@_Identifier("com.testpackage.SingletonClass2")
+        |@StringIdentifier("com.testpackage.SingletonClass2")
         |public class _com_testpackage_SingletonClass2_Factory(
-        |    @_Identifier("com.testpackage.SingletonClass1")
+        |    @StringIdentifier("com.testpackage.SingletonClass1")
         |    private val provide_com_testpackage_SingletonClass1: () -> Any,
         |) {
         |    public fun create(): Any = SingletonClass2(
@@ -180,14 +180,14 @@ class DIProcessorSingletonTest {
         |import com.moriatsushi.koject.Singleton
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SingletonInterface
         |import com.testpackage.provideSingletonInterface
         |import kotlin.Any
         |
         |@InternalKojectApi
         |@Singleton
-        |@_Identifier("com.testpackage.SingletonInterface")
+        |@StringIdentifier("com.testpackage.SingletonInterface")
         |public class _com_testpackage_SingletonInterface_Factory() {
         |    public fun create(): Any = provideSingletonInterface()
         |
@@ -205,18 +205,18 @@ class DIProcessorSingletonTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SingletonClass2
         |import com.testpackage.SingletonHolderClass
         |import com.testpackage.SingletonInterface
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SingletonHolderClass")
+        |@StringIdentifier("com.testpackage.SingletonHolderClass")
         |public class _com_testpackage_SingletonHolderClass_Factory(
-        |    @_Identifier("com.testpackage.SingletonClass2")
+        |    @StringIdentifier("com.testpackage.SingletonClass2")
         |    private val provide_com_testpackage_SingletonClass2: () -> Any,
-        |    @_Identifier("com.testpackage.SingletonInterface")
+        |    @StringIdentifier("com.testpackage.SingletonInterface")
         |    private val provide_com_testpackage_SingletonInterface: () -> Any,
         |) {
         |    public fun create(): Any = SingletonHolderClass(

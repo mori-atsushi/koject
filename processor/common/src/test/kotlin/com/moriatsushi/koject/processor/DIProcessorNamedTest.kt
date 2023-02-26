@@ -1,10 +1,11 @@
 package com.moriatsushi.koject.processor
 
+import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
 import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.assert.assertFileTextEquals
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
-import com.moriatsushi.koject.processor.symbol.Identifier
+import com.moriatsushi.koject.processor.symbol.asCodeName
 import com.tschuchort.compiletesting.SourceFile
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
@@ -78,8 +79,8 @@ class DIProcessorNamedTest {
             """,
     )
 
-    private val expectedName1Identifier = Identifier("kotlin.String:Named(name1)")
-    private val expectedName2Identifier = Identifier("kotlin.String:Named(name2)")
+    private val expectedName1Identifier = StringIdentifier("kotlin.String:Named(name1)")
+    private val expectedName2Identifier = StringIdentifier("kotlin.String:Named(name2)")
 
     private val expectedName1FactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
@@ -90,7 +91,7 @@ class DIProcessorNamedTest {
             "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier =
-        Identifier("com.testpackage.SampleClass:Named(by_function)")
+        StringIdentifier("com.testpackage.SampleClass:Named(by_function)")
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
@@ -103,13 +104,13 @@ class DIProcessorNamedTest {
         |import com.moriatsushi.koject.Named
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.provideString1
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedName1Identifier")
+        |@StringIdentifier("${expectedName1Identifier.value}")
         |public class _${expectedName1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -127,17 +128,17 @@ class DIProcessorNamedTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass")
+        |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @_Identifier("$expectedName1Identifier")
+        |    @StringIdentifier("${expectedName1Identifier.value}")
         |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedName2Identifier")
+        |    @StringIdentifier("${expectedName2Identifier.value}")
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -160,18 +161,18 @@ class DIProcessorNamedTest {
         |import com.moriatsushi.koject.Named
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass
         |import com.testpackage.provideSampleClass
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedFunctionIdentifier")
+        |@StringIdentifier("${expectedFunctionIdentifier.value}")
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @_Identifier("$expectedName1Identifier")
+        |    @StringIdentifier("${expectedName1Identifier.value}")
         |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedName2Identifier")
+        |    @StringIdentifier("${expectedName2Identifier.value}")
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

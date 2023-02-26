@@ -96,13 +96,13 @@ class DIProcessorProviderFunctionTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.provideString
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("kotlin.String")
+        |@StringIdentifier("kotlin.String")
         |public class _kotlin_String_Factory() {
         |    public fun create(): Any = provideString()
         |
@@ -120,13 +120,13 @@ class DIProcessorProviderFunctionTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleInterface
         |import com.testpackage.provideInterface
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleInterface")
+        |@StringIdentifier("com.testpackage.SampleInterface")
         |public class _com_testpackage_SampleInterface_Factory() {
         |    public fun create(): Any = provideInterface()
         |
@@ -144,7 +144,7 @@ class DIProcessorProviderFunctionTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass
         |import com.testpackage.SampleInterface
         |import com.testpackage.provideSampleClass
@@ -152,11 +152,11 @@ class DIProcessorProviderFunctionTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass")
+        |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @_Identifier("kotlin.String")
+        |    @StringIdentifier("kotlin.String")
         |    private val provide_kotlin_String: () -> Any,
-        |    @_Identifier("com.testpackage.SampleInterface")
+        |    @StringIdentifier("com.testpackage.SampleInterface")
         |    private val provide_com_testpackage_SampleInterface: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

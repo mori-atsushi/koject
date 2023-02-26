@@ -1,7 +1,7 @@
 package com.moriatsushi.koject.processor.code
 
 import com.moriatsushi.koject.Singleton
-import com.moriatsushi.koject.processor.symbol.Identifier
+import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.asClassName
@@ -9,7 +9,7 @@ import com.squareup.kotlinpoet.asClassName
 internal object AnnotationSpecFactory {
     private val identifierAnnotationName = ClassName(
         "com.moriatsushi.koject.internal.identifier",
-        "_Identifier",
+        "StringIdentifier",
     )
     private val internalAnnotationName = ClassName(
         "com.moriatsushi.koject.internal",
@@ -17,9 +17,9 @@ internal object AnnotationSpecFactory {
     )
     private val optInAnnotationName = ClassName("kotlin", "OptIn")
 
-    fun createIdentifier(identifier: Identifier): AnnotationSpec {
+    fun createIdentifier(identifier: StringIdentifier): AnnotationSpec {
         return AnnotationSpec.builder(identifierAnnotationName).apply {
-            addMember("%S", identifier)
+            addMember("%S", identifier.value)
         }.build()
     }
 

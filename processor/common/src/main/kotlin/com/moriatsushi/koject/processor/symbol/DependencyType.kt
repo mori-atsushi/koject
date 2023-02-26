@@ -2,6 +2,7 @@ package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSValueParameter
+import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.findQualifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toTypeName
@@ -19,7 +20,7 @@ internal class DependencyType(
     }
 
     val identifier by lazy {
-        Identifier.of(ksType, qualifier)
+        StringIdentifier.of(ksType, qualifier)
     }
 
     fun asTypeName(): TypeName {

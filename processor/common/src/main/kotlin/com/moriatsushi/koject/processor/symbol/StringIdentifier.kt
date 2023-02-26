@@ -73,5 +73,5 @@ private val String.hash: String
             .replace("-", "_")
     }
 
-internal val KSDeclaration.fullName: String
+private val KSDeclaration.fullName: String
     get() = (qualifiedName ?: simpleName).asString()

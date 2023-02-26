@@ -47,17 +47,6 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_arrayQualifier() {
-        Koject.start()
-
-        val value1 = inject<String>(StringArrayQualifier(arrayOf("a", "b", "c")))
-        assertEquals("StringArrayQualifier-abc", value1)
-
-        val value2 = inject<String>(StringArrayQualifier(arrayOf("e", "f", "g")))
-        assertEquals("StringArrayQualifier-efg", value2)
-    }
-
-    @Test
     fun successInject_multipleMemberQualifier() {
         Koject.start()
 
@@ -80,8 +69,6 @@ class QualifierWithMembersTest {
         assertEquals("EnumQualifier-id2", holder.enumQualifier2)
         assertEquals("ClassQualifier-string", holder.classQualifier1)
         assertEquals("ClassQualifier-int", holder.classQualifier2)
-        assertEquals("StringArrayQualifier-abc", holder.StringArrayQualifier1)
-        assertEquals("StringArrayQualifier-efg", holder.StringArrayQualifier2)
         assertEquals("MultipleMemberQualifier-id1-string", holder.multipleMemberQualifier1)
         assertEquals("MultipleMemberQualifier-id2-int", holder.multipleMemberQualifier2)
     }

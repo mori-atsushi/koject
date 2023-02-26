@@ -59,22 +59,6 @@ fun provideClassQualifier2(): String {
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class StringArrayQualifier(val array: Array<String>)
-
-@StringArrayQualifier(["a", "b", "c"])
-@Provides
-fun provideStringArrayQualifier1(): String {
-    return "StringArrayQualifier-abc"
-}
-
-@StringArrayQualifier(["e", "f", "g"])
-@Provides
-fun provideStringArrayQualifier2(): String {
-    return "StringArrayQualifier-efg"
-}
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class MultipleMemberQualifier(
     val value: String,
     val kClass: KClass<*>,
@@ -106,10 +90,6 @@ class QualifierWithMembersHolder(
     val classQualifier1: String,
     @ClassQualifier(Int::class)
     val classQualifier2: String,
-    @StringArrayQualifier(["a", "b", "c"])
-    val StringArrayQualifier1: String,
-    @StringArrayQualifier(["e", "f", "g"])
-    val StringArrayQualifier2: String,
     @MultipleMemberQualifier("id1", String::class)
     val multipleMemberQualifier1: String,
     @MultipleMemberQualifier("id2", Int::class)

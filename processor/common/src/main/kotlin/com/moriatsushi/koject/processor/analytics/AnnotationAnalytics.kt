@@ -3,14 +3,7 @@ package com.moriatsushi.koject.processor.analytics
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.moriatsushi.koject.Qualifier
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.symbol.QualifierAnnotation
-
-internal fun KSAnnotated.findIdentifier(): StringIdentifier? {
-    return findAnnotation<StringIdentifier>()
-        ?.findArgumentByName<String>("value")
-        ?.let { StringIdentifier(it) }
-}
 
 internal fun KSAnnotated.findQualifier(): QualifierAnnotation? {
     return annotations.find {

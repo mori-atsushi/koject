@@ -79,8 +79,8 @@ class DIProcessorNamedTest {
             """,
     )
 
-    private val expectedName1Identifier = StringIdentifier("kotlin.String:Named(name1)")
-    private val expectedName2Identifier = StringIdentifier("kotlin.String:Named(name2)")
+    private val expectedName1Identifier = StringIdentifier("kotlin.String", "Named(name1)")
+    private val expectedName2Identifier = StringIdentifier("kotlin.String", "Named(name2)")
 
     private val expectedName1FactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
@@ -91,7 +91,7 @@ class DIProcessorNamedTest {
             "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier =
-        StringIdentifier("com.testpackage.SampleClass:Named(by_function)")
+        StringIdentifier("com.testpackage.SampleClass", "Named(by_function)")
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
@@ -110,7 +110,10 @@ class DIProcessorNamedTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("${expectedName1Identifier.value}")
+        |@StringIdentifier(
+        |    "${expectedName1Identifier.type}",
+        |    "${expectedName1Identifier.qualifier}",
+        |)
         |public class _${expectedName1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -136,9 +139,15 @@ class DIProcessorNamedTest {
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @StringIdentifier("${expectedName1Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedName1Identifier.type}",
+        |        "${expectedName1Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("${expectedName2Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedName2Identifier.type}",
+        |        "${expectedName2Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -168,11 +177,20 @@ class DIProcessorNamedTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("${expectedFunctionIdentifier.value}")
+        |@StringIdentifier(
+        |    "${expectedFunctionIdentifier.type}",
+        |    "${expectedFunctionIdentifier.qualifier}",
+        |)
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @StringIdentifier("${expectedName1Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedName1Identifier.type}",
+        |        "${expectedName1Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("${expectedName2Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedName2Identifier.type}",
+        |        "${expectedName2Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

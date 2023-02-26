@@ -6,6 +6,7 @@ import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
+import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -36,8 +37,7 @@ internal class FactoryFileSpecFactory {
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
-        val identifierAnnotationSpec =
-            AnnotationSpecFactory.createIdentifier(provider.identifier)
+        val identifierAnnotationSpec = provider.identifier.asAnnotationSpec()
         val companionObject = createCompanionObjectSpec(provider)
 
         return TypeSpec.classBuilder(factoryName).apply {
@@ -66,9 +66,7 @@ internal class FactoryFileSpecFactory {
                     providerName,
                     LambdaTypeName.get(returnType = ANY),
                 ).apply {
-                    addAnnotation(
-                        AnnotationSpecFactory.createIdentifier(it.identifier),
-                    )
+                    addAnnotation(it.identifier.asAnnotationSpec())
                 }.build()
                 addParameter(parameter)
             }

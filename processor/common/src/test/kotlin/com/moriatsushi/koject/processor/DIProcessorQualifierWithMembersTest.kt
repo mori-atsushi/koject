@@ -155,9 +155,9 @@ class DIProcessorQualifierWithMembersTest {
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @StringIdentifier("${expectedID1Identifier.value}")
+        |    @StringIdentifier("${expectedID1Identifier.type}")
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("${expectedID2Identifier.value}")
+        |    @StringIdentifier("${expectedID2Identifier.type}")
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(

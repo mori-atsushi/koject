@@ -8,6 +8,7 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.moriatsushi.koject.Singleton
+import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.findQualifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
@@ -21,7 +22,7 @@ internal sealed class ProviderDeclaration(
     private val declaration: KSDeclaration,
     private val function: KSFunctionDeclaration,
 ) {
-    abstract val identifier: Identifier
+    abstract val identifier: StringIdentifier
     abstract val typeName: TypeName
     abstract val qualifier: QualifierAnnotation?
 
@@ -71,7 +72,7 @@ internal sealed class ProviderDeclaration(
         ksClass.primaryConstructor!!,
     ) {
         override val identifier by lazy {
-            Identifier.of(ksClass)
+            StringIdentifier.of(ksClass)
         }
 
         override val typeName: TypeName
@@ -86,7 +87,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier by lazy {
-            Identifier.of(ksType, qualifier)
+            StringIdentifier.of(ksType, qualifier)
         }
 
         val memberName: MemberName
@@ -109,8 +110,8 @@ internal sealed class ProviderDeclaration(
     ) : ProviderDeclaration(function, function) {
         private val ksType = function.returnType!!.resolve()
 
-        override val identifier: Identifier by lazy {
-            Identifier.of(ksType, qualifier)
+        override val identifier: StringIdentifier by lazy {
+            StringIdentifier.of(ksType, qualifier)
         }
 
         val parentName: ClassName

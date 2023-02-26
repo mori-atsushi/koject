@@ -1,10 +1,11 @@
 package com.moriatsushi.koject.processor
 
+import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
 import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.assert.assertFileTextEquals
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
-import com.moriatsushi.koject.processor.symbol.Identifier
+import com.moriatsushi.koject.processor.symbol.asCodeName
 import com.tschuchort.compiletesting.SourceFile
 import org.intellij.lang.annotations.Language
 import org.junit.Rule
@@ -89,8 +90,8 @@ class DIProcessorQualifierTest {
             """,
     )
 
-    private val expectedID1Identifier = Identifier("kotlin.String:com.testpackage.ID1")
-    private val expectedID2Identifier = Identifier("kotlin.String:com.testpackage.ID2")
+    private val expectedID1Identifier = StringIdentifier("kotlin.String:com.testpackage.ID1")
+    private val expectedID2Identifier = StringIdentifier("kotlin.String:com.testpackage.ID2")
 
     private val expectedID1FactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
@@ -101,7 +102,7 @@ class DIProcessorQualifierTest {
             "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier =
-        Identifier("com.testpackage.SampleClass:com.testpackage.ID1")
+        StringIdentifier("com.testpackage.SampleClass:com.testpackage.ID1")
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
@@ -120,7 +121,7 @@ class DIProcessorQualifierTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("$expectedID1Identifier")
+        |@StringIdentifier("${expectedID1Identifier.value}")
         |public class _${expectedID1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -146,9 +147,9 @@ class DIProcessorQualifierTest {
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @StringIdentifier("$expectedID1Identifier")
+        |    @StringIdentifier("${expectedID1Identifier.value}")
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("$expectedID2Identifier")
+        |    @StringIdentifier("${expectedID2Identifier.value}")
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -178,11 +179,11 @@ class DIProcessorQualifierTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("$expectedFunctionIdentifier")
+        |@StringIdentifier("${expectedFunctionIdentifier.value}")
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @StringIdentifier("$expectedID1Identifier")
+        |    @StringIdentifier("${expectedID1Identifier.value}")
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("$expectedID2Identifier")
+        |    @StringIdentifier("${expectedID2Identifier.value}")
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

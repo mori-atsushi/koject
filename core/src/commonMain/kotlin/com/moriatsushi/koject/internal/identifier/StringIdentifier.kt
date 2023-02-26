@@ -11,4 +11,6 @@ import com.moriatsushi.koject.internal.InternalKojectApi
     AnnotationTarget.CLASS,
     AnnotationTarget.VALUE_PARAMETER,
 )
-annotation class StringIdentifier(val value: String)
+annotation class StringIdentifier(val value: String) {
+    companion object
+}

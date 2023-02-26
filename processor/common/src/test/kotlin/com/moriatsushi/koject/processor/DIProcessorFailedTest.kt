@@ -46,7 +46,7 @@ class DIProcessorFailedTest {
         val expectedError = WrongScopeException::class
         val expectedErrorMessage1 =
             "com.testpackage.SingletonScope cannot be created " +
-                    "because com.testpackage.NormalScope is not a singleton."
+                "because com.testpackage.NormalScope is not a singleton."
         val expectedErrorMessage2 =
             "Only a singleton can be requested from a singleton."
         assertContains(result.messages, expectedError.qualifiedName!!)

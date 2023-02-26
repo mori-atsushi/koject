@@ -30,7 +30,8 @@ internal fun KSAnnotation.toNewInstanceCode(): CodeBlock {
                     """
                     |${value::class.qualifiedName} is an unsupported annotation member type.",
                     |at ${type.declaration.qualifiedName!!.asString()}.${argument.name!!.asString()}
-                    |""".trimMargin(),
+                    |
+                    """.trimMargin(),
                 )
             }
         }

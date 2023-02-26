@@ -26,7 +26,7 @@ annotation class EnumQualifier(val enum: QualifierEnum)
 
 enum class QualifierEnum {
     ID1,
-    ID2
+    ID2,
 }
 
 @EnumQualifier(QualifierEnum.ID1)

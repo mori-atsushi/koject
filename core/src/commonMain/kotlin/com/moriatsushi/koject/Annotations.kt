@@ -15,8 +15,16 @@ annotation class Provides
 annotation class Singleton
 
 /**
- * Identifier for distinguishing the same type
+ * Identifies qualifier annotations
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS)
+annotation class Qualifier
+
+/**
+ * String-based [Qualifier]
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
+@Qualifier
 annotation class Named(val name: String)

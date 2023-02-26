@@ -6,10 +6,17 @@ import com.moriatsushi.koject.internal.identifier.Identifier
 /**
  * Inject an instance with resolved dependencies
  */
-inline fun <reified T : Any> inject(name: String? = null): T {
-    val id = Identifier.of<T>(name)
+inline fun <reified T : Any> inject(qualifier: Any? = null): T {
+    val id = Identifier.of<T>(qualifier)
     return injectOrNull(id) as? T
         ?: throw NotProvidedException("$id is not provided")
+}
+
+/**
+ * Inject an [Named] instance with resolved dependencies
+ */
+inline fun <reified T : Any> inject(name: String): T {
+    return inject(Named(name))
 }
 
 @PublishedApi

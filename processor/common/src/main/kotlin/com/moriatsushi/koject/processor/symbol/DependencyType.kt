@@ -1,21 +1,19 @@
 package com.moriatsushi.koject.processor.symbol
 
-import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSValueParameter
-import com.moriatsushi.koject.Named
-import com.moriatsushi.koject.processor.analytics.findAnnotation
+import com.moriatsushi.koject.processor.analytics.findQualifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class DependencyType(
     private val ksType: KSType,
-    private val qualifier: KSAnnotation?,
+    private val qualifier: QualifierAnnotation?,
 ) {
     companion object {
         fun of(node: KSValueParameter): DependencyType {
             val ksType = node.type.resolve()
-            val qualifier = node.findAnnotation<Named>()
+            val qualifier = node.findQualifier()
             return DependencyType(ksType, qualifier)
         }
     }

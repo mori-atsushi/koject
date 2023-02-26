@@ -11,7 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorNamedTest {
+class DIProcessorQualifierTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
@@ -26,17 +26,17 @@ class DIProcessorNamedTest {
 
         assertCompileSucceed(result)
 
-        val expectedClass1FactoryFile = folder.resolve(expectedName1FactoryFilePath)
-        assertFileExists(expectedClass1FactoryFile)
-        assertFileTextEquals(expectedName1FactoryText, expectedClass1FactoryFile)
+        val expectedID1FactoryFile = folder.resolve(expectedID1FactoryFilePath)
+        assertFileExists(expectedID1FactoryFile)
+        assertFileTextEquals(expectedID1FactoryText, expectedID1FactoryFile)
 
-        val expectedClass2FactoryFile = folder.resolve(expectedClassFactoryFilePath)
-        assertFileExists(expectedClass2FactoryFile)
-        assertFileTextEquals(expectedClassFactoryText, expectedClass2FactoryFile)
+        val expectedClassFactoryFile = folder.resolve(expectedClassFactoryFilePath)
+        assertFileExists(expectedClassFactoryFile)
+        assertFileTextEquals(expectedClassFactoryText, expectedClassFactoryFile)
 
-        val expectedClass3FactoryFile = folder.resolve(expectedFunctionFactoryFilePath)
-        assertFileExists(expectedClass3FactoryFile)
-        assertFileTextEquals(expectedFunctionFactoryText, expectedClass3FactoryFile)
+        val expectedFunctionFactoryFile = folder.resolve(expectedFunctionFactoryFilePath)
+        assertFileExists(expectedFunctionFactoryFile)
+        assertFileTextEquals(expectedFunctionFactoryText, expectedFunctionFactoryFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -44,77 +44,88 @@ class DIProcessorNamedTest {
         """
                 package com.testpackage
 
-                import com.moriatsushi.koject.Named
                 import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.Qualifier
 
-                @Named("name1")
+                @Qualifier
+                @Retention(AnnotationRetention.BINARY)
+                annotation class ID1
+                
+                @Qualifier
+                @Retention(AnnotationRetention.BINARY)
+                annotation class ID2
+
+                @ID1
                 @Provides
                 fun provideString1(): String {
-                    return "name1"
+                    return "id1"
                 }
 
-                @Named("name2")
+                @ID2
                 @Provides
                 fun provideString1(): String {
-                    return "name2"
+                    return "id2"
                 }
 
                 @Provides
                 class SampleClass(
-                    @Named("name1")
-                    private val name1: String,
-                    @Named("name2")
-                    private val name2: String,
+                    @ID1
+                    private val string1: String,
+                    @ID2
+                    private val string2: String,
                 )
 
-                @Named("by_function")
+                @ID1
                 @Provides
                 fun provideSampleClass(
-                    @Named("name1") name1: String,
-                    @Named("name2") name2: String,
+                    @ID1 string1: String,
+                    @ID2 string2: String,
                 ): SampleClass {
-                    return SampleClass(name1, name2)
+                    return SampleClass(
+                        string1 + "by-id1",
+                        string2 + "by-id1",
+                    )
                 }
             """,
     )
 
-    private val expectedName1Identifier = Identifier("kotlin.String:Named(name1)")
-    private val expectedName2Identifier = Identifier("kotlin.String:Named(name2)")
+    private val expectedID1Identifier = Identifier("kotlin.String:com.testpackage.ID1")
+    private val expectedID2Identifier = Identifier("kotlin.String:com.testpackage.ID2")
 
-    private val expectedName1FactoryFilePath =
+    private val expectedID1FactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_${expectedName1Identifier.asCodeName()}_Factory.kt"
+            "_${expectedID1Identifier.asCodeName()}_Factory.kt"
 
     private val expectedClassFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier =
-        Identifier("com.testpackage.SampleClass:Named(by_function)")
+        Identifier("com.testpackage.SampleClass:com.testpackage.ID1")
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
 
     @Language("kotlin")
-    private val expectedName1FactoryText = """
+    private val expectedID1FactoryText = """
         |// Generated by Koject. Do not modify!
         |package com.moriatsushi.koject.generated.factory
         |
-        |import com.moriatsushi.koject.Named
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
         |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.testpackage.ID1
         |import com.testpackage.provideString1
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedName1Identifier")
-        |public class _${expectedName1Identifier.asCodeName()}_Factory() {
+        |@_Identifier("$expectedID1Identifier")
+        |public class _${expectedID1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<String>(Named("name1"))
+        |        public val identifier: Identifier = Identifier.of<String>(ID1())
         |    }
         |}
         |
@@ -135,14 +146,14 @@ class DIProcessorNamedTest {
         |@InternalKojectApi
         |@_Identifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @_Identifier("$expectedName1Identifier")
-        |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedName2Identifier")
-        |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
+        |    @_Identifier("$expectedID1Identifier")
+        |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
+        |    @_Identifier("$expectedID2Identifier")
+        |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
-        |        provide_${expectedName1Identifier.asCodeName()}() as String,
-        |        provide_${expectedName2Identifier.asCodeName()}() as String,
+        |        provide_${expectedID1Identifier.asCodeName()}() as String,
+        |        provide_${expectedID2Identifier.asCodeName()}() as String,
         |    )
         |
         |    public companion object {
@@ -157,10 +168,10 @@ class DIProcessorNamedTest {
         |// Generated by Koject. Do not modify!
         |package com.moriatsushi.koject.generated.factory
         |
-        |import com.moriatsushi.koject.Named
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
         |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.testpackage.ID1
         |import com.testpackage.SampleClass
         |import com.testpackage.provideSampleClass
         |import kotlin.Any
@@ -169,18 +180,18 @@ class DIProcessorNamedTest {
         |@InternalKojectApi
         |@_Identifier("$expectedFunctionIdentifier")
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @_Identifier("$expectedName1Identifier")
-        |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedName2Identifier")
-        |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
+        |    @_Identifier("$expectedID1Identifier")
+        |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
+        |    @_Identifier("$expectedID2Identifier")
+        |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(
-        |        provide_${expectedName1Identifier.asCodeName()}() as String,
-        |        provide_${expectedName2Identifier.asCodeName()}() as String,
+        |        provide_${expectedID1Identifier.asCodeName()}() as String,
+        |        provide_${expectedID2Identifier.asCodeName()}() as String,
         |    )
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<SampleClass>(Named("by_function"))
+        |        public val identifier: Identifier = Identifier.of<SampleClass>(ID1())
         |    }
         |}
         |

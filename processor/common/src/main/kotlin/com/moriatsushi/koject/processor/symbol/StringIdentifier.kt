@@ -29,7 +29,7 @@ internal fun StringIdentifier.Companion.of(
 internal fun StringIdentifier.Companion.ofOrNull(node: KSAnnotated): StringIdentifier? {
     val annotation = node.findAnnotation<StringIdentifier>() ?: return null
     val type = annotation.findArgumentByName<String>("type")!!
-    val qualifier = annotation.findArgumentByName<String>("qualifier")!!
+    val qualifier = annotation.findArgumentByName<String>("qualifier").orEmpty()
     return StringIdentifier(type, qualifier)
 }
 

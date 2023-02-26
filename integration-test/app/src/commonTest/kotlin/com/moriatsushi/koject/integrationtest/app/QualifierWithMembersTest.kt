@@ -67,4 +67,22 @@ class QualifierWithMembersTest {
         val value2 = inject<String>(MultipleMemberQualifier("id2", Int::class))
         assertEquals("MultipleMemberQualifier-id2-int", value2)
     }
+
+    @Test
+    fun successInject_qualifierWithMembersHolder() {
+        Koject.start()
+
+        val holder = inject<QualifierWithMembersHolder>()
+
+        assertEquals("StringQualifier-id1", holder.stringQualifier1)
+        assertEquals("StringQualifier-id2", holder.stringQualifier2)
+        assertEquals("EnumQualifier-id1", holder.enumQualifier1)
+        assertEquals("EnumQualifier-id2", holder.enumQualifier2)
+        assertEquals("ClassQualifier-string", holder.classQualifier1)
+        assertEquals("ClassQualifier-int", holder.classQualifier2)
+        assertEquals("StringArrayQualifier-abc", holder.StringArrayQualifier1)
+        assertEquals("StringArrayQualifier-efg", holder.StringArrayQualifier2)
+        assertEquals("MultipleMemberQualifier-id1-string", holder.multipleMemberQualifier1)
+        assertEquals("MultipleMemberQualifier-id2-int", holder.multipleMemberQualifier2)
+    }
 }

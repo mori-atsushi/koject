@@ -1,5 +1,5 @@
 # Koject  [🚧 Work in progress 🚧]
-Koject is a DI Container libreary for Kotlin Multiplatform.
+Koject is a DI Container library for Kotlin Multiplatform.
 
 ```kotlin
 fun main() {

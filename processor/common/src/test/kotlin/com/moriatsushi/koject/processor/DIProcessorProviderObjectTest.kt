@@ -78,14 +78,14 @@ class DIProcessorProviderObjectTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.ProviderObject
         |import com.testpackage.ProviderObject.provideInt
         |import kotlin.Any
         |import kotlin.Int
         |
         |@InternalKojectApi
-        |@_Identifier("kotlin.Int")
+        |@StringIdentifier("kotlin.Int")
         |public class _kotlin_Int_Factory() {
         |    public fun create(): Any = ProviderObject.provideInt()
         |
@@ -103,7 +103,7 @@ class DIProcessorProviderObjectTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.ProviderObject
         |import com.testpackage.ProviderObject.provideWithParameters
         |import com.testpackage.ProviderObjectWithParameters
@@ -111,9 +111,9 @@ class DIProcessorProviderObjectTest {
         |import kotlin.Int
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.ProviderObjectWithParameters")
+        |@StringIdentifier("com.testpackage.ProviderObjectWithParameters")
         |public class _com_testpackage_ProviderObjectWithParameters_Factory(
-        |    @_Identifier("kotlin.Int")
+        |    @StringIdentifier("kotlin.Int")
         |    private val provide_kotlin_Int: () -> Any,
         |) {
         |    public fun create(): Any = ProviderObject.provideWithParameters(

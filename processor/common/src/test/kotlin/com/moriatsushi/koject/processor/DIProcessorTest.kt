@@ -95,12 +95,12 @@ class DIProcessorTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass1
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass1")
+        |@StringIdentifier("com.testpackage.SampleClass1")
         |public class _com_testpackage_SampleClass1_Factory() {
         |    public fun create(): Any = SampleClass1()
         |
@@ -118,15 +118,15 @@ class DIProcessorTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass1
         |import com.testpackage.SampleClass2
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass2")
+        |@StringIdentifier("com.testpackage.SampleClass2")
         |public class _com_testpackage_SampleClass2_Factory(
-        |    @_Identifier("com.testpackage.SampleClass1")
+        |    @StringIdentifier("com.testpackage.SampleClass1")
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass2(
@@ -147,18 +147,18 @@ class DIProcessorTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass1
         |import com.testpackage.SampleClass2
         |import com.testpackage.SampleClass3
         |import kotlin.Any
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass3")
+        |@StringIdentifier("com.testpackage.SampleClass3")
         |public class _com_testpackage_SampleClass3_Factory(
-        |    @_Identifier("com.testpackage.SampleClass1")
+        |    @StringIdentifier("com.testpackage.SampleClass1")
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
-        |    @_Identifier("com.testpackage.SampleClass2")
+        |    @StringIdentifier("com.testpackage.SampleClass2")
         |    private val provide_com_testpackage_SampleClass2: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass3(

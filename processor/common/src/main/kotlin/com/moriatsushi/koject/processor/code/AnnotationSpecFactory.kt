@@ -9,7 +9,7 @@ import com.squareup.kotlinpoet.asClassName
 internal object AnnotationSpecFactory {
     private val identifierAnnotationName = ClassName(
         "com.moriatsushi.koject.internal.identifier",
-        "_Identifier",
+        "StringIdentifier",
     )
     private val internalAnnotationName = ClassName(
         "com.moriatsushi.koject.internal",

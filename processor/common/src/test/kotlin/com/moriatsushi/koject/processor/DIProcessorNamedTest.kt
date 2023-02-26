@@ -103,13 +103,13 @@ class DIProcessorNamedTest {
         |import com.moriatsushi.koject.Named
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.provideString1
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedName1Identifier")
+        |@StringIdentifier("$expectedName1Identifier")
         |public class _${expectedName1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -127,17 +127,17 @@ class DIProcessorNamedTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass")
+        |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @_Identifier("$expectedName1Identifier")
+        |    @StringIdentifier("$expectedName1Identifier")
         |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedName2Identifier")
+        |    @StringIdentifier("$expectedName2Identifier")
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -160,18 +160,18 @@ class DIProcessorNamedTest {
         |import com.moriatsushi.koject.Named
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass
         |import com.testpackage.provideSampleClass
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedFunctionIdentifier")
+        |@StringIdentifier("$expectedFunctionIdentifier")
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @_Identifier("$expectedName1Identifier")
+        |    @StringIdentifier("$expectedName1Identifier")
         |    private val provide_${expectedName1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedName2Identifier")
+        |    @StringIdentifier("$expectedName2Identifier")
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

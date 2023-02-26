@@ -113,14 +113,14 @@ class DIProcessorQualifierTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.ID1
         |import com.testpackage.provideString1
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedID1Identifier")
+        |@StringIdentifier("$expectedID1Identifier")
         |public class _${expectedID1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -138,17 +138,17 @@ class DIProcessorQualifierTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.SampleClass
         |import kotlin.Any
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("com.testpackage.SampleClass")
+        |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @_Identifier("$expectedID1Identifier")
+        |    @StringIdentifier("$expectedID1Identifier")
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedID2Identifier")
+        |    @StringIdentifier("$expectedID2Identifier")
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -170,7 +170,7 @@ class DIProcessorQualifierTest {
         |
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.`internal`.identifier.Identifier
-        |import com.moriatsushi.koject.`internal`.identifier._Identifier
+        |import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
         |import com.testpackage.ID1
         |import com.testpackage.SampleClass
         |import com.testpackage.provideSampleClass
@@ -178,11 +178,11 @@ class DIProcessorQualifierTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@_Identifier("$expectedFunctionIdentifier")
+        |@StringIdentifier("$expectedFunctionIdentifier")
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @_Identifier("$expectedID1Identifier")
+        |    @StringIdentifier("$expectedID1Identifier")
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @_Identifier("$expectedID2Identifier")
+        |    @StringIdentifier("$expectedID2Identifier")
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

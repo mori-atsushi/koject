@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import java.security.MessageDigest
@@ -71,3 +72,6 @@ private val String.hash: String
             .take(16)
             .replace("-", "_")
     }
+
+internal val KSDeclaration.fullName: String
+    get() = (qualifiedName ?: simpleName).asString()

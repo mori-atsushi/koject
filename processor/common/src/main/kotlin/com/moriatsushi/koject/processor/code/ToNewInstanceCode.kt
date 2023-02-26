@@ -16,11 +16,11 @@ internal fun KSAnnotation.toNewInstanceCode(): CodeBlock {
     val type = annotationType.resolve()
     return buildCodeBlock {
         add("%T(", type.toTypeName())
-        arguments.forEach { argument ->
-            addValueToBlock(argument.value!!)
-            if (arguments.indexOf(argument) != arguments.lastIndex) {
+        arguments.forEachIndexed { index, argument ->
+            if (index > 0) {
                 add(", ")
             }
+            addValueToBlock(argument.value!!)
         }
         add(")")
     }
@@ -30,12 +30,12 @@ private fun CodeBlock.Builder.addValueToBlock(value: Any) {
     when (value) {
         is List<*> -> {
             // Array type
-            add("arrayOf(⇥⇥")
+            add("arrayOf(")
             value.forEachIndexed { index, innerValue ->
                 if (index > 0) add(", ")
                 addValueToBlock(innerValue!!)
             }
-            add("⇤⇤)")
+            add(")")
         }
         is KSType -> {
             val isEnum =

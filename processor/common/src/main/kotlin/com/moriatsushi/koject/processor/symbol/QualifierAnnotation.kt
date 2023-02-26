@@ -17,8 +17,11 @@ internal class QualifierAnnotation(
                 val value = ksAnnotation.findArgumentByName<String>("name")
                 return "Named($value)"
             }
-            return newInstanceCode.toString()
-                .replace("\"", "")
+            var code = newInstanceCode.toString()
+            if (code.endsWith("()")) {
+                code = code.dropLast(2)
+            }
+            return code.replace("\"", "")
         }
 
     val newInstanceCode: CodeBlock

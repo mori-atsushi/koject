@@ -17,10 +17,10 @@ internal fun KSAnnotation.toNewInstanceCode(): CodeBlock {
     return buildCodeBlock {
         add("%T(", type.toTypeName())
         arguments.forEach { argument ->
-            val name = argument.name!!.getShortName()
-            add("$name = ")
             addValueToBlock(argument.value!!)
-            add(", ")
+            if (arguments.indexOf(argument) != arguments.lastIndex) {
+                add(", ")
+            }
         }
         add(")")
     }
@@ -68,6 +68,6 @@ private fun memberForValue(value: Any) = when (value) {
     is Char -> CodeBlock.of("$value.toChar()")
     is Byte -> CodeBlock.of("$value.toByte()")
     is Short -> CodeBlock.of("$value.toShort()")
-    // Int or Boolean
-    else -> CodeBlock.of("%L", value)
+    is Int, is Boolean -> CodeBlock.of("%L", value)
+    else -> error("unsupported value: $value")
 }

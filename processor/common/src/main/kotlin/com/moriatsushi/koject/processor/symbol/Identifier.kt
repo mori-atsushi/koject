@@ -62,7 +62,7 @@ private val KSType.fullName: String
         if (arguments.isNotEmpty()) {
             append("<")
             arguments.joinTo(this, ", ") {
-                it.toString()
+                it.type?.resolve()?.fullName.toString()
             }
             append(">")
         }

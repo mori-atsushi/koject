@@ -57,7 +57,7 @@ class StringIdentifierTest {
 
     @Test
     fun asCodeName_named() {
-        val target = StringIdentifier("${typeOf<Int>()}:Named(name)")
+        val target = StringIdentifier("${typeOf<Int>()}", "Named(name)")
         val actual = target.asCodeName()
         val expected = "kotlin_Int__0GxX6UJlK7NHytJ_"
         assertEquals(expected, actual)

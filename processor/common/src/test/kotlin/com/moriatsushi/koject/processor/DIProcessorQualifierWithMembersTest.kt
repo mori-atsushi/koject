@@ -92,10 +92,12 @@ class DIProcessorQualifierWithMembersTest {
     )
 
     private val expectedID1Identifier = StringIdentifier(
-        "kotlin.String:com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)",
+        "kotlin.String",
+        "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)",
     )
     private val expectedID2Identifier = StringIdentifier(
-        "kotlin.String:com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID2)",
+        "kotlin.String",
+        "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID2)",
     )
 
     private val expectedID1FactoryFilePath =
@@ -107,8 +109,8 @@ class DIProcessorQualifierWithMembersTest {
             "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier = StringIdentifier(
-        "com.testpackage.SampleClass:" +
-            "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)",
+        "com.testpackage.SampleClass",
+        "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)",
     )
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
@@ -129,7 +131,10 @@ class DIProcessorQualifierWithMembersTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("kotlin.String:com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)")
+        |@StringIdentifier(
+        |    "${expectedID1Identifier.type}",
+        |    "${expectedID1Identifier.qualifier}",
+        |)
         |public class _kotlin_String__QFp0F8LLrqGl9_Xj_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -155,9 +160,15 @@ class DIProcessorQualifierWithMembersTest {
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @StringIdentifier("${expectedID1Identifier.type}")
+        |    @StringIdentifier(
+        |        "${expectedID1Identifier.type}",
+        |        "${expectedID1Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("${expectedID2Identifier.type}")
+        |    @StringIdentifier(
+        |        "${expectedID2Identifier.type}",
+        |        "${expectedID2Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -188,11 +199,20 @@ class DIProcessorQualifierWithMembersTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("com.testpackage.SampleClass:com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)")
+        |@StringIdentifier(
+        |    "${expectedFunctionIdentifier.type}",
+        |    "${expectedFunctionIdentifier.qualifier}",
+        |)
         |public class _com_testpackage_SampleClass__QFp0F8LLrqGl9_Xj_Factory(
-        |    @StringIdentifier("kotlin.String:com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)")
+        |    @StringIdentifier(
+        |        "${expectedID1Identifier.type}",
+        |        "${expectedID1Identifier.qualifier}",
+        |    )
         |    private val provide_kotlin_String__QFp0F8LLrqGl9_Xj: () -> Any,
-        |    @StringIdentifier("kotlin.String:com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID2)")
+        |    @StringIdentifier(
+        |        "${expectedID2Identifier.type}",
+        |        "${expectedID2Identifier.qualifier}",
+        |    )
         |    private val provide_kotlin_String__mH4LPUTzuG918TGR: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

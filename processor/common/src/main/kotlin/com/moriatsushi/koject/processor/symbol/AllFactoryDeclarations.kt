@@ -21,7 +21,7 @@ internal class AllFactoryDeclarations(
         }
     }
 
-    val all = map.values.sortedBy { it.identifier.value }
+    val all = map.values.sortedBy { it.identifier.type }
     val normals = all.filter { !it.isSingleton }
     val singletons = all.filter { it.isSingleton }
 

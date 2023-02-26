@@ -90,8 +90,14 @@ class DIProcessorQualifierTest {
             """,
     )
 
-    private val expectedID1Identifier = StringIdentifier("kotlin.String:com.testpackage.ID1")
-    private val expectedID2Identifier = StringIdentifier("kotlin.String:com.testpackage.ID2")
+    private val expectedID1Identifier = StringIdentifier(
+        "kotlin.String",
+        "com.testpackage.ID1",
+    )
+    private val expectedID2Identifier = StringIdentifier(
+        "kotlin.String",
+        "com.testpackage.ID2",
+    )
 
     private val expectedID1FactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
@@ -102,7 +108,10 @@ class DIProcessorQualifierTest {
             "_com_testpackage_SampleClass_Factory.kt"
 
     private val expectedFunctionIdentifier =
-        StringIdentifier("com.testpackage.SampleClass:com.testpackage.ID1")
+        StringIdentifier(
+            "com.testpackage.SampleClass",
+            "com.testpackage.ID1",
+        )
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
             "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
@@ -121,7 +130,10 @@ class DIProcessorQualifierTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("${expectedID1Identifier.value}")
+        |@StringIdentifier(
+        |    "${expectedID1Identifier.type}",
+        |    "${expectedID1Identifier.qualifier}",
+        |)
         |public class _${expectedID1Identifier.asCodeName()}_Factory() {
         |    public fun create(): Any = provideString1()
         |
@@ -147,9 +159,15 @@ class DIProcessorQualifierTest {
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
         |public class _com_testpackage_SampleClass_Factory(
-        |    @StringIdentifier("${expectedID1Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedID1Identifier.type}",
+        |        "${expectedID1Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("${expectedID2Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedID2Identifier.type}",
+        |        "${expectedID2Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = SampleClass(
@@ -179,11 +197,20 @@ class DIProcessorQualifierTest {
         |import kotlin.String
         |
         |@InternalKojectApi
-        |@StringIdentifier("${expectedFunctionIdentifier.value}")
+        |@StringIdentifier(
+        |    "${expectedFunctionIdentifier.type}",
+        |    "${expectedFunctionIdentifier.qualifier}",
+        |)
         |public class _${expectedFunctionIdentifier.asCodeName()}_Factory(
-        |    @StringIdentifier("${expectedID1Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedID1Identifier.type}",
+        |        "${expectedID1Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedID1Identifier.asCodeName()}: () -> Any,
-        |    @StringIdentifier("${expectedID2Identifier.value}")
+        |    @StringIdentifier(
+        |        "${expectedID2Identifier.type}",
+        |        "${expectedID2Identifier.qualifier}",
+        |    )
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(

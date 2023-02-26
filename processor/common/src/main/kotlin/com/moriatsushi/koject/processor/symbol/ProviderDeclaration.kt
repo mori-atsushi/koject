@@ -9,7 +9,6 @@ import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
-import com.moriatsushi.koject.processor.analytics.findQualifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
@@ -100,7 +99,7 @@ internal sealed class ProviderDeclaration(
             get() = ksType.toTypeName()
 
         override val qualifier by lazy {
-            function.findQualifier()
+            QualifierAnnotation.ofOrNull(function)
         }
     }
 
@@ -124,7 +123,7 @@ internal sealed class ProviderDeclaration(
             get() = ksType.toTypeName()
 
         override val qualifier by lazy {
-            function.findQualifier()
+            QualifierAnnotation.ofOrNull(function)
         }
     }
 }

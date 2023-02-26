@@ -1,9 +1,14 @@
 package com.moriatsushi.koject.processor.symbol
 
+import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.moriatsushi.koject.processor.analytics.findAnnotation
+import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.asClassName
 import java.security.MessageDigest
 import java.util.Base64
 
@@ -15,14 +20,17 @@ internal fun StringIdentifier.Companion.of(
     typeDeclaration: KSType,
     qualifier: QualifierAnnotation?,
 ): StringIdentifier {
-    val value = buildString {
-        append(typeDeclaration.fullName)
-        if (qualifier != null) {
-            append(":")
-            append(qualifier.fullName)
-        }
-    }
-    return StringIdentifier(value)
+    return StringIdentifier(
+        typeDeclaration.fullName,
+        qualifier?.fullName ?: "",
+    )
+}
+
+internal fun StringIdentifier.Companion.ofOrNull(node: KSAnnotated): StringIdentifier? {
+    val annotation = node.findAnnotation<StringIdentifier>() ?: return null
+    val type = annotation.findArgumentByName<String>("type")!!
+    val qualifier = annotation.findArgumentByName<String>("qualifier").orEmpty()
+    return StringIdentifier(type, qualifier)
 }
 
 /**
@@ -30,14 +38,30 @@ internal fun StringIdentifier.Companion.of(
  */
 internal fun StringIdentifier.asCodeName(): String {
     return buildString {
-        val type = value.substringBefore(":")
         append(type.escaped)
-        val qualifier = value.substringAfter(":", "")
         if (qualifier.isNotEmpty()) {
             append("__")
             append(qualifier.hash)
         }
     }
+}
+
+internal val StringIdentifier.displayName: String
+    get() = buildString {
+        append(type)
+        if (qualifier.isNotEmpty()) {
+            append("@")
+            append(qualifier)
+        }
+    }
+
+internal fun StringIdentifier.asAnnotationSpec(): AnnotationSpec {
+    return AnnotationSpec.builder(StringIdentifier::class.asClassName()).apply {
+        addMember("%S", type)
+        if (qualifier.isNotEmpty()) {
+            addMember("%S", qualifier)
+        }
+    }.build()
 }
 
 private val KSType.fullName: String

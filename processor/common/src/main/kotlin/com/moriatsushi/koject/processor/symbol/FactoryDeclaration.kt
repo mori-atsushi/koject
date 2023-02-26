@@ -4,7 +4,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
-import com.moriatsushi.koject.processor.analytics.findIdentifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -13,7 +12,7 @@ internal class FactoryDeclaration(
     private val ksClass: KSClassDeclaration,
 ) {
     val identifier: StringIdentifier by lazy {
-        ksClass.findIdentifier()!!
+        StringIdentifier.ofOrNull(ksClass)!!
     }
 
     val containingFile: KSFile?

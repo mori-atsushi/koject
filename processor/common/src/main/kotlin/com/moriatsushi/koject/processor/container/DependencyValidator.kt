@@ -6,6 +6,7 @@ import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.ProviderParameter
+import com.moriatsushi.koject.processor.symbol.displayName
 
 internal class DependencyValidator {
     fun validate(
@@ -40,8 +41,8 @@ internal class DependencyValidator {
     ) {
         throw NotProvidedException(
             """
-            |"${dependency.value} is not provided.
-            |It is requested by ${target.value}.",
+            |"${dependency.displayName} is not provided.
+            |It is requested by ${target.displayName}.",
             |
             """.trimMargin(),
         )
@@ -53,7 +54,7 @@ internal class DependencyValidator {
     ) {
         throw WrongScopeException(
             """
-            |${target.value} cannot be created because ${dependency.value} is not a singleton.
+            |${target.displayName} cannot be created because ${dependency.displayName} is not a singleton.
             |Only a singleton can be requested from a singleton.
             |
             """.trimMargin(),

@@ -118,7 +118,9 @@ class DIProcessorNamedTest {
         |    public fun create(): Any = provideString1()
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<String>(Named("name1"))
+        |        public val identifier: Identifier = Identifier.of<String>(
+        |                    Named(name = "name1")
+        |                )
         |    }
         |}
         |
@@ -199,7 +201,9 @@ class DIProcessorNamedTest {
         |    )
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<SampleClass>(Named("by_function"))
+        |        public val identifier: Identifier = Identifier.of<SampleClass>(
+        |                    Named(name = "by_function")
+        |                )
         |    }
         |}
         |

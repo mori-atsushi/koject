@@ -93,11 +93,11 @@ class DIProcessorQualifierWithMembersTest {
 
     private val expectedID1Identifier = StringIdentifier(
         "kotlin.String",
-        "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)",
+        "com.testpackage.EnumQualifier(enum = com.testpackage.QualifierEnum.ID1)",
     )
     private val expectedID2Identifier = StringIdentifier(
         "kotlin.String",
-        "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID2)",
+        "com.testpackage.EnumQualifier(enum = com.testpackage.QualifierEnum.ID2)",
     )
 
     private val expectedID1FactoryFilePath =
@@ -110,7 +110,7 @@ class DIProcessorQualifierWithMembersTest {
 
     private val expectedFunctionIdentifier = StringIdentifier(
         "com.testpackage.SampleClass",
-        "com.testpackage.EnumQualifier(com.testpackage.QualifierEnum.ID1)",
+        "com.testpackage.EnumQualifier(enum = com.testpackage.QualifierEnum.ID1)",
     )
     private val expectedFunctionFactoryFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
@@ -135,11 +135,13 @@ class DIProcessorQualifierWithMembersTest {
         |    "${expectedID1Identifier.type}",
         |    "${expectedID1Identifier.qualifier}",
         |)
-        |public class _kotlin_String__QFp0F8LLrqGl9_Xj_Factory() {
+        |public class _kotlin_String__qWa2qxo1MEvyXwkR_Factory() {
         |    public fun create(): Any = provideString1()
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<String>(EnumQualifier(QualifierEnum.ID1))
+        |        public val identifier: Identifier = Identifier.of<String>(
+        |                    EnumQualifier(enum = QualifierEnum.ID1)
+        |                )
         |    }
         |}
         |
@@ -203,26 +205,27 @@ class DIProcessorQualifierWithMembersTest {
         |    "${expectedFunctionIdentifier.type}",
         |    "${expectedFunctionIdentifier.qualifier}",
         |)
-        |public class _com_testpackage_SampleClass__QFp0F8LLrqGl9_Xj_Factory(
+        |public class _com_testpackage_SampleClass__qWa2qxo1MEvyXwkR_Factory(
         |    @StringIdentifier(
         |        "${expectedID1Identifier.type}",
         |        "${expectedID1Identifier.qualifier}",
         |    )
-        |    private val provide_kotlin_String__QFp0F8LLrqGl9_Xj: () -> Any,
+        |    private val provide_kotlin_String__qWa2qxo1MEvyXwkR: () -> Any,
         |    @StringIdentifier(
         |        "${expectedID2Identifier.type}",
         |        "${expectedID2Identifier.qualifier}",
         |    )
-        |    private val provide_kotlin_String__mH4LPUTzuG918TGR: () -> Any,
+        |    private val provide_kotlin_String__FNY6AOVynHWo6Pm3: () -> Any,
         |) {
         |    public fun create(): Any = provideSampleClass(
-        |        provide_kotlin_String__QFp0F8LLrqGl9_Xj() as String,
-        |        provide_kotlin_String__mH4LPUTzuG918TGR() as String,
+        |        provide_kotlin_String__qWa2qxo1MEvyXwkR() as String,
+        |        provide_kotlin_String__FNY6AOVynHWo6Pm3() as String,
         |    )
         |
         |    public companion object {
-        |        public val identifier: Identifier =
-        |                Identifier.of<SampleClass>(EnumQualifier(QualifierEnum.ID1))
+        |        public val identifier: Identifier = Identifier.of<SampleClass>(
+        |                    EnumQualifier(enum = QualifierEnum.ID1)
+        |                )
         |    }
         |}
         |

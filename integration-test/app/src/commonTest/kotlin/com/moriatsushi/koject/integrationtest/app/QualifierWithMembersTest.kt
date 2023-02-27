@@ -22,6 +22,9 @@ class QualifierWithMembersTest {
 
         val value2 = inject<String>(StringQualifier("id2"))
         assertEquals("StringQualifier-id2", value2)
+
+        val valueDefault = inject<String>(StringQualifier())
+        assertEquals("StringQualifier-default", valueDefault)
     }
 
     @Test
@@ -53,8 +56,8 @@ class QualifierWithMembersTest {
         val value1 = inject<String>(MultipleMemberQualifier("id1", String::class))
         assertEquals("MultipleMemberQualifier-id1-string", value1)
 
-        val value2 = inject<String>(MultipleMemberQualifier("id2", Int::class))
-        assertEquals("MultipleMemberQualifier-id2-int", value2)
+        val value2 = inject<String>(MultipleMemberQualifier(kClass = Int::class))
+        assertEquals("MultipleMemberQualifier-default-int", value2)
     }
 
     @Test
@@ -65,11 +68,12 @@ class QualifierWithMembersTest {
 
         assertEquals("StringQualifier-id1", holder.stringQualifier1)
         assertEquals("StringQualifier-id2", holder.stringQualifier2)
+        assertEquals("StringQualifier-default", holder.stringQualifierDefault)
         assertEquals("EnumQualifier-id1", holder.enumQualifier1)
         assertEquals("EnumQualifier-id2", holder.enumQualifier2)
         assertEquals("ClassQualifier-string", holder.classQualifier1)
         assertEquals("ClassQualifier-int", holder.classQualifier2)
         assertEquals("MultipleMemberQualifier-id1-string", holder.multipleMemberQualifier1)
-        assertEquals("MultipleMemberQualifier-id2-int", holder.multipleMemberQualifier2)
+        assertEquals("MultipleMemberQualifier-default-int", holder.multipleMemberQualifier2)
     }
 }

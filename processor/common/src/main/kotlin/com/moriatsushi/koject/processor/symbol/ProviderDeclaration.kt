@@ -9,137 +9,135 @@ import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.Singleton
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
-internal sealed class ProviderDeclaration(
-    private val declaration: KSDeclaration,
-    private val function: KSFunctionDeclaration,
-) {
-    abstract val identifier: StringIdentifier
-    abstract val typeName: TypeName
-    abstract val qualifier: QualifierAnnotation?
-
+internal sealed interface ProviderDeclaration {
+    val identifier: TypedIdentifier
     val dependencies: List<TypedIdentifier>
-        get() = function.parameters
-            .map { TypedIdentifier.of(it) }
-
-    val containingFile: KSFile
-        get() = declaration.containingFile!!
-
     val isSingleton: Boolean
-        get() = declaration.hasAnnotation<Singleton>()
+    val containingFile: KSFile?
 
-    companion object {
-        fun of(node: KSAnnotated): ProviderDeclaration? {
-            return when (node) {
-                is KSClassDeclaration -> ofClass(node)
-                is KSFunctionDeclaration -> ofFunction(node)
-                else -> null
-            }
-        }
+    data class Class(
+        val className: ClassName,
+        override val identifier: TypedIdentifier,
+        override val dependencies: List<TypedIdentifier>,
+        override val isSingleton: Boolean,
+        override val containingFile: KSFile?,
+    ) : ProviderDeclaration
 
-        private fun ofClass(node: KSClassDeclaration): ProviderDeclaration {
-            return Class(node)
-        }
+    data class TopLevelFunction(
+        val functionName: MemberName,
+        override val identifier: TypedIdentifier,
+        override val dependencies: List<TypedIdentifier>,
+        override val isSingleton: Boolean,
+        override val containingFile: KSFile?,
+    ) : ProviderDeclaration
 
-        private fun ofFunction(node: KSFunctionDeclaration): ProviderDeclaration? {
-            return when (node.functionKind) {
-                FunctionKind.TOP_LEVEL -> TopLevelFunction(node)
-                FunctionKind.MEMBER -> {
-                    val parent = node.parentDeclaration as KSClassDeclaration
-                    if (parent.classKind == ClassKind.OBJECT) {
-                        ObjectFunction(parent, node)
-                    } else {
-                        null
-                    }
-                }
-                else -> null
-            }
-        }
-    }
+    data class ObjectFunction(
+        val objectName: ClassName,
+        val functionName: MemberName,
+        override val identifier: TypedIdentifier,
+        override val dependencies: List<TypedIdentifier>,
+        override val isSingleton: Boolean,
+        override val containingFile: KSFile?,
+    ) : ProviderDeclaration
 
-    class Class(
-        private val ksClass: KSClassDeclaration,
-    ) : ProviderDeclaration(
-        ksClass,
-        ksClass.primaryConstructor!!,
-    ) {
-        private val hasBindsAnnotation = ksClass.hasAnnotation<Binds>()
+    companion object
+}
 
-        val className: ClassName
-            get() = ksClass.toClassName()
-
-        override val identifier by lazy {
-            if (hasBindsAnnotation) {
-                val type = ksClass.superTypes.first().resolve()
-                StringIdentifier.of(type.toTypeName(), qualifier)
-            } else {
-                StringIdentifier.of(ksClass.toClassName())
-            }
-        }
-
-        override val typeName: TypeName
-            get() = if (hasBindsAnnotation) {
-                val type = ksClass.superTypes.first().resolve()
-                type.toTypeName()
-            } else {
-                ksClass.toClassName()
-            }
-
-        override val qualifier: QualifierAnnotation? = null
-    }
-
-    class TopLevelFunction(
-        private val function: KSFunctionDeclaration,
-    ) : ProviderDeclaration(function, function) {
-        private val ksType = function.returnType!!.resolve()
-
-        override val identifier by lazy {
-            StringIdentifier.of(ksType.toTypeName(), qualifier)
-        }
-
-        val memberName: MemberName
-            get() = MemberName(
-                function.packageName.asString(),
-                function.simpleName.asString(),
-            )
-
-        override val typeName: TypeName
-            get() = ksType.toTypeName()
-
-        override val qualifier by lazy {
-            function.findQualifierAnnotation()
-        }
-    }
-
-    class ObjectFunction(
-        private val parent: KSClassDeclaration,
-        private val function: KSFunctionDeclaration,
-    ) : ProviderDeclaration(function, function) {
-        private val ksType = function.returnType!!.resolve()
-
-        override val identifier: StringIdentifier by lazy {
-            StringIdentifier.of(ksType.toTypeName(), qualifier)
-        }
-
-        val parentName: ClassName
-            get() = parent.toClassName()
-
-        val memberName: MemberName
-            get() = parentName.member(function.simpleName.asString())
-
-        override val typeName: TypeName
-            get() = ksType.toTypeName()
-
-        override val qualifier by lazy {
-            function.findQualifierAnnotation()
-        }
+internal fun ProviderDeclaration.Companion.of(
+    node: KSAnnotated,
+): ProviderDeclaration? {
+    return when (node) {
+        is KSClassDeclaration -> of(node)
+        is KSFunctionDeclaration -> of(node)
+        else -> null
     }
 }
+
+private fun ProviderDeclaration.Companion.of(
+    ksClass: KSClassDeclaration,
+): ProviderDeclaration {
+    val hasBindsAnnotation = ksClass.hasAnnotation<Binds>()
+    val typeName = if (hasBindsAnnotation) {
+        val type = ksClass.superTypes.first().resolve()
+        type.toTypeName()
+    } else {
+        ksClass.toClassName()
+    }
+
+    return ProviderDeclaration.Class(
+        className = ksClass.toClassName(),
+        identifier = TypedIdentifier(typeName, null),
+        dependencies = ksClass.primaryConstructor!!.dependencies,
+        isSingleton = ksClass.isSingleton,
+        containingFile = ksClass.containingFile,
+    )
+}
+
+private fun ProviderDeclaration.Companion.of(
+    ksFunction: KSFunctionDeclaration,
+): ProviderDeclaration? {
+    return when (ksFunction.functionKind) {
+        FunctionKind.TOP_LEVEL -> createTopLevelFunction(ksFunction)
+        FunctionKind.MEMBER -> {
+            val parent = ksFunction.parentDeclaration as KSClassDeclaration
+            if (parent.classKind == ClassKind.OBJECT) {
+                createObjectFunction(parent, ksFunction)
+            } else {
+                null
+            }
+        }
+        else -> null
+    }
+}
+
+private fun ProviderDeclaration.Companion.createTopLevelFunction(
+    ksFunction: KSFunctionDeclaration,
+): ProviderDeclaration {
+    return ProviderDeclaration.TopLevelFunction(
+        functionName = MemberName(
+            ksFunction.packageName.asString(),
+            ksFunction.simpleName.asString(),
+        ),
+        identifier = ksFunction.identifier,
+        dependencies = ksFunction.dependencies,
+        isSingleton = ksFunction.isSingleton,
+        containingFile = ksFunction.containingFile,
+    )
+}
+
+private fun ProviderDeclaration.Companion.createObjectFunction(
+    parent: KSClassDeclaration,
+    ksFunction: KSFunctionDeclaration,
+): ProviderDeclaration {
+    val objectName = parent.toClassName()
+    val functionName = objectName.member(ksFunction.simpleName.asString())
+
+    return ProviderDeclaration.ObjectFunction(
+        objectName = objectName,
+        functionName = functionName,
+        identifier = ksFunction.identifier,
+        dependencies = ksFunction.dependencies,
+        isSingleton = ksFunction.isSingleton,
+        containingFile = ksFunction.containingFile,
+    )
+}
+
+private val KSFunctionDeclaration.dependencies: List<TypedIdentifier>
+    get() = parameters.map { TypedIdentifier.of(it) }
+
+private val KSFunctionDeclaration.identifier: TypedIdentifier
+    get() {
+        val typeName = returnType!!.toTypeName()
+        val qualifier = findQualifierAnnotation()
+        return TypedIdentifier(typeName, qualifier)
+    }
+
+private val KSDeclaration.isSingleton: Boolean
+    get() = hasAnnotation<Singleton>()

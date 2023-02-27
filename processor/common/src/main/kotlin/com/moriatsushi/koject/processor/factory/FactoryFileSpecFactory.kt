@@ -6,7 +6,6 @@ import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
-import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -32,7 +31,7 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createClassSpec(provider: ProviderDeclaration): TypeSpec {
-        val factoryName = Names.factoryNameOf(provider.identifier)
+        val factoryName = Names.factoryNameOf(provider.identifier.asStringIdentifier())
         val constructorSpec = createConstructorSpec(provider)
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =
@@ -54,19 +53,21 @@ internal class FactoryFileSpecFactory {
             }
             addAnnotation(identifierAnnotationSpec)
 
-            addOriginatingKSFile(provider.containingFile)
+            provider.containingFile?.let {
+                addOriginatingKSFile(it)
+            }
         }.build()
     }
 
     private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.constructorBuilder().apply {
             provider.dependencies.forEach {
-                val providerName = Names.providerNameOf(it.identifier)
+                val providerName = Names.providerNameOf(it.asStringIdentifier())
                 val parameter = ParameterSpec.builder(
                     providerName,
                     LambdaTypeName.get(returnType = ANY),
                 ).apply {
-                    addAnnotation(it.identifier.asAnnotationSpec())
+                    addAnnotation(it.asAnnotationSpec())
                 }.build()
                 addParameter(parameter)
             }
@@ -81,10 +82,10 @@ internal class FactoryFileSpecFactory {
                     add("%T", provider.className)
                 }
                 is ProviderDeclaration.TopLevelFunction -> {
-                    add("%M", provider.memberName)
+                    add("%M", provider.functionName)
                 }
                 is ProviderDeclaration.ObjectFunction -> {
-                    add("%T.%M", provider.parentName, provider.memberName)
+                    add("%T.%M", provider.objectName, provider.functionName)
                 }
             }
             add("(")
@@ -92,8 +93,8 @@ internal class FactoryFileSpecFactory {
                 add("\n")
                 indent()
                 provider.dependencies.forEach {
-                    val providerName = Names.providerNameOf(it.identifier)
-                    add("$providerName() as %T,\n", it.asTypeName())
+                    val providerName = Names.providerNameOf(it.asStringIdentifier())
+                    add("$providerName() as %T,\n", it.typeName)
                 }
                 unindent()
             }
@@ -107,8 +108,8 @@ internal class FactoryFileSpecFactory {
 
     private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
         val initializerCode = buildCodeBlock {
-            add("%T.of<%T>(", Identifier::class.asTypeName(), provider.typeName)
-            val qualifier = provider.qualifier
+            add("%T.of<%T>(", Identifier::class.asTypeName(), provider.identifier.typeName)
+            val qualifier = provider.identifier.qualifier
             if (qualifier != null) {
                 add(qualifier.newInstanceCode)
             }

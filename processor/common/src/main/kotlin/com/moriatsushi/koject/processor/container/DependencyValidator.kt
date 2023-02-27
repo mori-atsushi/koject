@@ -5,7 +5,6 @@ import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
-import com.moriatsushi.koject.processor.symbol.ProviderParameter
 import com.moriatsushi.koject.processor.symbol.displayName
 
 internal class DependencyValidator {
@@ -13,7 +12,7 @@ internal class DependencyValidator {
         allFactories: AllFactoryDeclarations,
     ) {
         allFactories.all.forEach { targetClass ->
-            targetClass.parameters.forEach {
+            targetClass.dependencies.forEach {
                 validate(allFactories, targetClass, it)
             }
         }
@@ -22,15 +21,15 @@ internal class DependencyValidator {
     private fun validate(
         allFactories: AllFactoryDeclarations,
         target: FactoryDeclaration,
-        dependency: ProviderParameter,
+        dependency: StringIdentifier,
     ) {
-        val dependencyFactory = allFactories.getOrNull(dependency.identifier)
+        val dependencyFactory = allFactories.getOrNull(dependency)
         when {
             dependencyFactory == null -> {
-                throwNotProvidedException(target.identifier, dependency.identifier)
+                throwNotProvidedException(target.identifier, dependency)
             }
             target.isSingleton && !dependencyFactory.isSingleton -> {
-                throwWrongScopeException(target.identifier, dependency.identifier)
+                throwWrongScopeException(target.identifier, dependency)
             }
         }
     }

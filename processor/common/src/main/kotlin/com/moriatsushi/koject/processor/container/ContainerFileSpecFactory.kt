@@ -97,19 +97,17 @@ internal class ContainerFileSpecFactory {
         allFactories: AllFactoryDeclarations,
         factoryClass: FactoryDeclaration,
     ): CodeBlock {
-        val factoryName = factoryClass.asClassName()
-
         return buildCodeBlock {
-            add("%T(", factoryName)
-            if (factoryClass.parameters.isNotEmpty()) {
+            add("%T(", factoryClass.className)
+            if (factoryClass.dependencies.isNotEmpty()) {
                 add("\n")
                 indent()
-                factoryClass.parameters.forEach {
-                    val factory = allFactories.get(it.identifier)
+                factoryClass.dependencies.forEach {
+                    val factory = allFactories.get(it)
                     if (factory.isSingleton) {
-                        add("{ ${Names.instanceNameOf(it.identifier)} }")
+                        add("{ ${Names.instanceNameOf(it)} }")
                     } else {
-                        add(Names.providerNameOf(it.identifier))
+                        add(Names.providerNameOf(it))
                     }
                     add(",\n")
                 }
@@ -131,10 +129,10 @@ internal class ContainerFileSpecFactory {
                 val factory = allFactories.get(it.identifier)
                 if (factory.isSingleton) {
                     val name = Names.instanceNameOf(it.identifier)
-                    addStatement("%T.identifier -> $name", it.asClassName())
+                    addStatement("%T.identifier -> $name", it.className)
                 } else {
                     val name = Names.providerNameOf(it.identifier)
-                    addStatement("%T.identifier -> $name()", it.asClassName())
+                    addStatement("%T.identifier -> $name()", it.className)
                 }
             }
             addStatement("else -> null")

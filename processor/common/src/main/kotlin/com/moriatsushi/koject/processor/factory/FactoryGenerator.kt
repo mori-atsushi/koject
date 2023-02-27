@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.processor.file.FileGenerator
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
+import com.moriatsushi.koject.processor.symbol.of
 
 internal class FactoryGenerator(
     private val fileGenerator: FileGenerator,

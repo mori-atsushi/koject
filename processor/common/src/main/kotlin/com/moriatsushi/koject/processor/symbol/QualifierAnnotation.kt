@@ -10,32 +10,31 @@ import com.moriatsushi.koject.processor.analytics.isInstance
 import com.moriatsushi.koject.processor.code.toNewInstanceCode
 import com.squareup.kotlinpoet.CodeBlock
 
-internal class QualifierAnnotation(
-    private val ksAnnotation: KSAnnotation,
+internal data class QualifierAnnotation(
+    val fullName: String,
+    val newInstanceCode: CodeBlock,
 ) {
-    companion object {
-        fun ofOrNull(node: KSAnnotated): QualifierAnnotation? {
-            val annotation = node.annotations.find {
-                val declaration = it.annotationType.resolve().declaration
-                declaration.hasAnnotation<Qualifier>()
-            } ?: return null
-            return QualifierAnnotation(annotation)
-        }
+    companion object
+}
+
+internal fun KSAnnotated.findQualifierAnnotation(): QualifierAnnotation? {
+    val annotation = annotations.find {
+        val declaration = it.annotationType.resolve().declaration
+        declaration.hasAnnotation<Qualifier>()
+    } ?: return null
+
+    return QualifierAnnotation.of(annotation)
+}
+
+private fun QualifierAnnotation.Companion.of(annotation: KSAnnotation): QualifierAnnotation {
+    val newInstanceCode = annotation.toNewInstanceCode()
+    val fullName = if (annotation.isInstance<Named>()) {
+        val value = annotation.findArgumentByName<String>("name")
+        "Named($value)"
+    } else {
+        newInstanceCode.toString()
+            .removeSuffix("()")
+            .replace("\"", "")
     }
-
-    val fullName: String
-        get() = buildString {
-            if (ksAnnotation.isInstance<Named>()) {
-                val value = ksAnnotation.findArgumentByName<String>("name")
-                return "Named($value)"
-            }
-            var code = newInstanceCode.toString()
-            if (code.endsWith("()")) {
-                code = code.dropLast(2)
-            }
-            return code.replace("\"", "")
-        }
-
-    val newInstanceCode: CodeBlock
-        get() = ksAnnotation.toNewInstanceCode()
+    return QualifierAnnotation(fullName, newInstanceCode)
 }

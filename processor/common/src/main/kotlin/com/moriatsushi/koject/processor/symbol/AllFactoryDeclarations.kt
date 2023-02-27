@@ -9,18 +9,6 @@ import com.moriatsushi.koject.processor.code.Names
 internal class AllFactoryDeclarations(
     private val map: Map<StringIdentifier, FactoryDeclaration>,
 ) {
-    companion object {
-        fun of(resolver: Resolver): AllFactoryDeclarations {
-            @OptIn(KspExperimental::class)
-            val all = resolver
-                .getDeclarationsFromPackage(Names.factoryPackageName)
-                .filterIsInstance<KSClassDeclaration>()
-                .map { FactoryDeclaration(it) }
-                .associateBy { it.identifier }
-            return AllFactoryDeclarations(all)
-        }
-    }
-
     val all = map.values.sortedBy { it.identifier.type }
     val normals = all.filter { !it.isSingleton }
     val singletons = all.filter { it.isSingleton }
@@ -32,4 +20,15 @@ internal class AllFactoryDeclarations(
     fun getOrNull(identifier: StringIdentifier): FactoryDeclaration? {
         return map[identifier]
     }
+
+    companion object
+}
+
+internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
+    @OptIn(KspExperimental::class)
+    val all = getDeclarationsFromPackage(Names.factoryPackageName)
+        .filterIsInstance<KSClassDeclaration>()
+        .map { FactoryDeclaration.of(it) }
+        .associateBy { it.identifier }
+    return AllFactoryDeclarations(all)
 }

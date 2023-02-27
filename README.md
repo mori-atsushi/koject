@@ -30,6 +30,17 @@ class Controller(
     private val repository: Repository
 )
 ```
+## Table of Contents
+* [Features](#features)
+* [Setup](#setup)
+  * [Multiplatform](#multiplatform)
+  * [Single platform](#single-platform)
+  * [Library module](#library-module)
+* [Usage](#usage)
+  * [Provide from functions](#provide-from-functions)
+  * [Singleton Scope](#singleton-scope)
+  * [Qualifier](#qualifier)
+* [TODO](#todo)
 
 ## Features
 

@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "7.4.1"
+androidGradlePlugin = "7.4.2"
 kotlin = "1.8.10"
 kotlin-compile-testing = "1.4.9"
 kotlinpoet = "1.12.0"

@@ -62,13 +62,14 @@ internal fun ProviderDeclaration.Companion.of(
 private fun ProviderDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
 ): ProviderDeclaration {
+    val qualifier = ksClass.findQualifierAnnotation()
     val bindAnnotation = ksClass.findBindAnnotation()
     val typeName = bindAnnotation?.toTypeName
         ?: ksClass.toClassName()
 
     return ProviderDeclaration.Class(
         className = ksClass.toClassName(),
-        identifier = TypedIdentifier(typeName, null),
+        identifier = TypedIdentifier(typeName, qualifier),
         dependencies = ksClass.primaryConstructor!!.dependencies,
         isSingleton = ksClass.isSingleton,
         containingFile = ksClass.containingFile,

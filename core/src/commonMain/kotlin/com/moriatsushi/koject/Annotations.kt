@@ -27,7 +27,11 @@ annotation class Qualifier
  * String-based [Qualifier]
  */
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.VALUE_PARAMETER,
+)
 @Qualifier
 annotation class Named(val name: String)
 
@@ -38,5 +42,4 @@ annotation class Named(val name: String)
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
-@Qualifier
 annotation class Binds(val to: KClass<*> = Nothing::class)

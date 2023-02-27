@@ -45,6 +45,7 @@ class Controller(
   * [Qualifier](#qualifier)
   * [Binds](#binds)
 * [TODO](#todo)
+* [Related libraries](#related-libraries)
 
 ## Features
 
@@ -340,3 +341,11 @@ This library is incomplete and the following features will be added later.
 - [ ] [Make compile-time error messages easier to understand #22](https://github.com/Mori-Atsushi/koject/issues/22)
 - [ ] [Add example projects #29](https://github.com/Mori-Atsushi/koject/issues/29)
 - [ ] [Complete documentation #27](https://github.com/Mori-Atsushi/koject/issues/27)
+
+## Related libraries
+Koject is inspired by the following libraries.
+
+* [google/dagger](https://github.com/google/dagger)
+* [InsertKoinIO/koin](https://github.com/InsertKoinIO/koin)
+* [evant/kotlin-inject](https://github.com/evant/kotlin-inject)
+* [mars885/hilt-binder](https://github.com/mars885/hilt-binder)

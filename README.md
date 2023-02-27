@@ -18,12 +18,15 @@ fun provideDB(): DB {
     return DB.create()
 }
 
+@Binds
 @Singleton
 @Provides
-class Repository(
+class RepositoryImpl(
     private val api: Api,
     private val db: DB,
-)
+): Repository
+
+interface Repository
 
 @Provides
 class Controller(
@@ -40,6 +43,7 @@ class Controller(
   * [Provide from functions](#provide-from-functions)
   * [Singleton Scope](#singleton-scope)
   * [Qualifier](#qualifier)
+  * [Binds](#binds)
 * [TODO](#todo)
 
 ## Features
@@ -291,6 +295,40 @@ val db1 = inject<DB>("db1")
 val db2 = inject<DB>("db2")
 ```
 
+### Binds
+By using a `@Binds` annotation, it is easy to provide as a supertypes.
+
+```kotlin
+@Binds
+@Provides
+class RepositoryImpl: Repository
+
+interface Repository
+```
+
+This is a shortcut for the following implementation.
+
+```kotlin
+class RepositoryImpl: Repository
+
+interface Repository
+
+@Provides
+fun provideRepository(): Repository {
+    return RepositoryImpl()
+}
+```
+
+If a type has multiple supertypes, use `to` parameter to specify the type.
+
+```kotlin
+@Binds(to = Type2::class)
+@Provides
+class Type: Type1, Type2
+
+interface Type1
+interface Type2
+```
 
 ## TODO
 This library is incomplete and the following features will be added later.
@@ -298,7 +336,7 @@ This library is incomplete and the following features will be added later.
 - [x] [Allow provide from function #18](https://github.com/Mori-Atsushi/koject/issues/18)
 - [x] [Support singleton #19](https://github.com/Mori-Atsushi/koject/issues/19)
 - [x] [Allow provide same types #20](https://github.com/Mori-Atsushi/koject/issues/20)
-- [ ] [Make type binding easier #21](https://github.com/Mori-Atsushi/koject/issues/21)
+- [x] [Make type binding easier #21](https://github.com/Mori-Atsushi/koject/issues/21)
 - [ ] [Make compile-time error messages easier to understand #22](https://github.com/Mori-Atsushi/koject/issues/22)
 - [ ] [Add example projects #29](https://github.com/Mori-Atsushi/koject/issues/29)
 - [ ] [Complete documentation #27](https://github.com/Mori-Atsushi/koject/issues/27)

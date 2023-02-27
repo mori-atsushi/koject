@@ -79,7 +79,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha05")
++                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha06")
             }
         }
     }
@@ -87,7 +87,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -110,8 +110,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha05")
-+    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05")
++    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha06")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06")
 }
 ```
 
@@ -125,8 +125,8 @@ Use `koject-processor-lib` to avoid generating `Container` in library modules.
 ```diff
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha05"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha06"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -141,9 +141,9 @@ dependencies {
 
 ```diff
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha05")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha05")
+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha06")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha06")
 }
 ```
 

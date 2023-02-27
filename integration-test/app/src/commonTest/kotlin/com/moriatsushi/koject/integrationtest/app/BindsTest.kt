@@ -33,10 +33,46 @@ class BindsTest {
     }
 
     @Test
+    fun failedInject_bindsBindsInterface1() {
+        Koject.start()
+
+        assertFailsWith<NotProvidedException> {
+            inject<BindsInterface1>()
+        }
+    }
+
+    @Test
+    fun successInject_bindsBindsInterface2() {
+        Koject.start()
+
+        val value = inject<BindsInterface2>()
+        assertIs<BindsMultipleImplement>(value)
+    }
+
+    @Test
+    fun successInject_bindsNested() {
+        Koject.start()
+
+        val value = inject<BindChild1>()
+        assertIs<BindsNestedImplement>(value)
+    }
+
+    @Test
+    fun successInject_bindsAbstract() {
+        Koject.start()
+
+        val value = inject<BindsAbstract>()
+        assertIs<BindsAbstractImplement>(value)
+    }
+
+    @Test
     fun successInject_bindsInterfaceHolder() {
         Koject.start()
 
         val holder = inject<BindsInterfaceHolder>()
-        assertIs<BindsImplement>(holder.value)
+        assertIs<BindsImplement>(holder.single)
+        assertIs<BindsMultipleImplement>(holder.multiple)
+        assertIs<BindsNestedImplement>(holder.nested)
+        assertIs<BindsAbstract>(holder.abstract)
     }
 }

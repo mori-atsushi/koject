@@ -7,7 +7,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
@@ -63,13 +62,9 @@ internal fun ProviderDeclaration.Companion.of(
 private fun ProviderDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
 ): ProviderDeclaration {
-    val hasBindsAnnotation = ksClass.hasAnnotation<Binds>()
-    val typeName = if (hasBindsAnnotation) {
-        val type = ksClass.superTypes.first().resolve()
-        type.toTypeName()
-    } else {
-        ksClass.toClassName()
-    }
+    val bindAnnotation = ksClass.findBindAnnotation()
+    val typeName = bindAnnotation?.toTypeName
+        ?: ksClass.toClassName()
 
     return ProviderDeclaration.Class(
         className = ksClass.toClassName(),

@@ -1,5 +1,7 @@
 package com.moriatsushi.koject
 
+import kotlin.reflect.KClass
+
 /**
  * Marks it providable by Koject DI Container
  */
@@ -30,9 +32,11 @@ annotation class Qualifier
 annotation class Named(val name: String)
 
 /**
- * You can provide as a supertype.
+ * Mark it to provide as a supertype.
+ *
+ * @param to Specifies the type when there are multiple supertypes.
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
 @Qualifier
-annotation class Binds
+annotation class Binds(val to: KClass<*> = Nothing::class)

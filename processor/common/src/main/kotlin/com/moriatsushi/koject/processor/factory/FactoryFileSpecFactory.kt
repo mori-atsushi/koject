@@ -111,7 +111,11 @@ internal class FactoryFileSpecFactory {
             add("%T.of<%T>(", Identifier::class.asTypeName(), provider.identifier.typeName)
             val qualifier = provider.identifier.qualifier
             if (qualifier != null) {
+                add("\n")
+                indent()
                 add(qualifier.newInstanceCode)
+                unindent()
+                add("\n")
             }
             add(")")
         }

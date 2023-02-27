@@ -5,6 +5,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSName
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSValueArgument
 import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -21,22 +22,31 @@ internal fun KSAnnotation.toNewInstanceCode(): CodeBlock {
             if (index > 0) {
                 add(", ")
             }
+            val name = argument.name!!.asString()
             val value = argument.value!!
             val block = valueCodeBlock(value)
-            if (block != null) {
-                add(block)
-            } else {
-                throw CodeGenerationException(
-                    """
-                    |${value::class.qualifiedName} is an unsupported annotation member type.",
-                    |at ${type.declaration.qualifiedName!!.asString()}.${argument.name!!.asString()}
-                    |
-                    """.trimMargin(),
-                )
-            }
+                ?: throwCodeGenerationException(type, argument)
+            add("$name = ")
+            add(block)
         }
         add(")")
     }
+}
+
+private fun throwCodeGenerationException(
+    annotationType: KSType,
+    argument: KSValueArgument,
+): Nothing {
+    val annotationTypeName = annotationType.declaration.qualifiedName!!.asString()
+    val variableName = argument.name!!.asString()
+    val variableTypeName = argument.value!!::class.qualifiedName
+    throw CodeGenerationException(
+        """
+        |$variableTypeName is an unsupported annotation member type.",
+        |at $annotationTypeName.$variableName
+        |
+        """.trimMargin(),
+    )
 }
 
 private fun valueCodeBlock(value: Any): CodeBlock? {

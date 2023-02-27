@@ -138,7 +138,9 @@ class DIProcessorQualifierTest {
         |    public fun create(): Any = provideString1()
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<String>(ID1())
+        |        public val identifier: Identifier = Identifier.of<String>(
+        |                    ID1()
+        |                )
         |    }
         |}
         |
@@ -219,7 +221,9 @@ class DIProcessorQualifierTest {
         |    )
         |
         |    public companion object {
-        |        public val identifier: Identifier = Identifier.of<SampleClass>(ID1())
+        |        public val identifier: Identifier = Identifier.of<SampleClass>(
+        |                    ID1()
+        |                )
         |    }
         |}
         |

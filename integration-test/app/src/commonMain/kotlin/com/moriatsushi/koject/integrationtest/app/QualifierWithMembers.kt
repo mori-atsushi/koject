@@ -6,7 +6,13 @@ import kotlin.reflect.KClass
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class StringQualifier(val value: String)
+annotation class StringQualifier(val value: String = "default")
+
+@StringQualifier()
+@Provides
+fun provideStringQualifierDefault(): String {
+    return "StringQualifier-default"
+}
 
 @StringQualifier("id1")
 @Provides
@@ -60,7 +66,7 @@ fun provideClassQualifier2(): String {
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class MultipleMemberQualifier(
-    val value: String,
+    val value: String = "default",
     val kClass: KClass<*>,
 )
 
@@ -70,10 +76,10 @@ fun provideMultipleMemberQualifier1(): String {
     return "MultipleMemberQualifier-id1-string"
 }
 
-@MultipleMemberQualifier("id2", Int::class)
+@MultipleMemberQualifier(kClass = Int::class)
 @Provides
 fun provideMultipleMemberQualifier2(): String {
-    return "MultipleMemberQualifier-id2-int"
+    return "MultipleMemberQualifier-default-int"
 }
 
 @Provides
@@ -82,6 +88,8 @@ class QualifierWithMembersHolder(
     val stringQualifier1: String,
     @StringQualifier("id2")
     val stringQualifier2: String,
+    @StringQualifier()
+    val stringQualifierDefault: String,
     @EnumQualifier(QualifierEnum.ID1)
     val enumQualifier1: String,
     @EnumQualifier(QualifierEnum.ID2)
@@ -92,6 +100,6 @@ class QualifierWithMembersHolder(
     val classQualifier2: String,
     @MultipleMemberQualifier("id1", String::class)
     val multipleMemberQualifier1: String,
-    @MultipleMemberQualifier("id2", Int::class)
+    @MultipleMemberQualifier(kClass = Int::class)
     val multipleMemberQualifier2: String,
 )

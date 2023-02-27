@@ -115,7 +115,7 @@ internal sealed class ProviderDeclaration(
             get() = ksType.toTypeName()
 
         override val qualifier by lazy {
-            QualifierAnnotation.ofOrNull(function)
+            function.findQualifierAnnotation()
         }
     }
 
@@ -139,7 +139,7 @@ internal sealed class ProviderDeclaration(
             get() = ksType.toTypeName()
 
         override val qualifier by lazy {
-            QualifierAnnotation.ofOrNull(function)
+            function.findQualifierAnnotation()
         }
     }
 }

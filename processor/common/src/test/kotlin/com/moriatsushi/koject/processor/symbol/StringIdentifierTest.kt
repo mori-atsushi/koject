@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.typeOf
 import kotlin.test.assertEquals
@@ -65,7 +66,8 @@ class StringIdentifierTest {
     @Test
     fun asCodeName_named() {
         val typeName = Int::class.asTypeName()
-        val target = StringIdentifier(typeName.toString(), "Named(name)")
+        val qualifier = QualifierAnnotation("Named(name)", CodeBlock.of("Named(name)"))
+        val target = StringIdentifier.of(typeName, qualifier)
         val actual = target.asCodeName()
         val expected = "kotlin_Int__0GxX6UJlK7NHytJ_"
         assertEquals(expected, actual)

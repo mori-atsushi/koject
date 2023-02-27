@@ -13,7 +13,7 @@ internal class DependencyType(
     companion object {
         fun of(node: KSValueParameter): DependencyType {
             val ksType = node.type.resolve()
-            val qualifier = QualifierAnnotation.ofOrNull(node)
+            val qualifier = node.findQualifierAnnotation()
             return DependencyType(ksType, qualifier)
         }
     }

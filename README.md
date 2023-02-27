@@ -18,18 +18,34 @@ fun provideDB(): DB {
     return DB.create()
 }
 
+@Binds
 @Singleton
 @Provides
-class Repository(
+class RepositoryImpl(
     private val api: Api,
     private val db: DB,
-)
+): Repository
+
+interface Repository
 
 @Provides
 class Controller(
     private val repository: Repository
 )
 ```
+## Table of Contents
+* [Features](#features)
+* [Setup](#setup)
+  * [Multiplatform](#multiplatform)
+  * [Single platform](#single-platform)
+  * [Library module](#library-module)
+* [Usage](#usage)
+  * [Provide from functions](#provide-from-functions)
+  * [Singleton Scope](#singleton-scope)
+  * [Qualifier](#qualifier)
+  * [Binds](#binds)
+* [TODO](#todo)
+* [Related libraries](#related-libraries)
 
 ## Features
 
@@ -63,7 +79,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha05")
++                implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha06")
             }
         }
     }
@@ -71,7 +87,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -94,8 +110,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha05")
-+    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05")
++    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha06")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06")
 }
 ```
 
@@ -109,8 +125,8 @@ Use `koject-processor-lib` to avoid generating `Container` in library modules.
 ```diff
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha05"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha06"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -125,9 +141,9 @@ dependencies {
 
 ```diff
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha05")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha05")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha05")
+    implementation("com.moriatsushi.koject:koject-core:1.0.0-alpha06")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-alpha06")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-alpha06")
 }
 ```
 
@@ -280,6 +296,40 @@ val db1 = inject<DB>("db1")
 val db2 = inject<DB>("db2")
 ```
 
+### Binds
+By using a `@Binds` annotation, it is easy to provide as a supertypes.
+
+```kotlin
+@Binds
+@Provides
+class RepositoryImpl: Repository
+
+interface Repository
+```
+
+This is a shortcut for the following implementation.
+
+```kotlin
+class RepositoryImpl: Repository
+
+interface Repository
+
+@Provides
+fun provideRepository(): Repository {
+    return RepositoryImpl()
+}
+```
+
+If a type has multiple supertypes, use `to` parameter to specify the type.
+
+```kotlin
+@Binds(to = Type2::class)
+@Provides
+class Type: Type1, Type2
+
+interface Type1
+interface Type2
+```
 
 ## TODO
 This library is incomplete and the following features will be added later.
@@ -287,7 +337,15 @@ This library is incomplete and the following features will be added later.
 - [x] [Allow provide from function #18](https://github.com/Mori-Atsushi/koject/issues/18)
 - [x] [Support singleton #19](https://github.com/Mori-Atsushi/koject/issues/19)
 - [x] [Allow provide same types #20](https://github.com/Mori-Atsushi/koject/issues/20)
-- [ ] [Make type binding easier #21](https://github.com/Mori-Atsushi/koject/issues/21)
+- [x] [Make type binding easier #21](https://github.com/Mori-Atsushi/koject/issues/21)
 - [ ] [Make compile-time error messages easier to understand #22](https://github.com/Mori-Atsushi/koject/issues/22)
 - [ ] [Add example projects #29](https://github.com/Mori-Atsushi/koject/issues/29)
 - [ ] [Complete documentation #27](https://github.com/Mori-Atsushi/koject/issues/27)
+
+## Related libraries
+Koject is inspired by the following libraries.
+
+* [google/dagger](https://github.com/google/dagger)
+* [InsertKoinIO/koin](https://github.com/InsertKoinIO/koin)
+* [evant/kotlin-inject](https://github.com/evant/kotlin-inject)
+* [mars885/hilt-binder](https://github.com/mars885/hilt-binder)

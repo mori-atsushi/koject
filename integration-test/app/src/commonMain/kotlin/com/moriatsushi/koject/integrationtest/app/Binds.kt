@@ -9,7 +9,16 @@ class BindsImplement : BindsInterface
 
 interface BindsInterface
 
+@Binds(to = BindsInterface2::class)
+@Provides
+class BindsMultipleImplement : BindsInterface1, BindsInterface2
+
+interface BindsInterface1
+
+interface BindsInterface2
+
 @Provides
 class BindsInterfaceHolder(
-    val value: BindsInterface,
+    val single: BindsInterface,
+    val multiple: BindsInterface2,
 )

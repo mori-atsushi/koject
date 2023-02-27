@@ -21,8 +21,7 @@ internal fun KSClassDeclaration.findBindAnnotation(): BindsAnnotation? {
     val toType = if (argument != null && !argument.isNothing) {
         argument
     } else {
-        val firstType = superTypes.first().resolve()
-        firstType
+        superTypes.first().resolve()
     }
     return BindsAnnotation(
         toTypeName = toType.toTypeName(),

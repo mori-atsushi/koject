@@ -26,9 +26,9 @@ internal sealed class ProviderDeclaration(
     abstract val typeName: TypeName
     abstract val qualifier: QualifierAnnotation?
 
-    val dependencies: List<DependencyType>
+    val dependencies: List<TypedIdentifier>
         get() = function.parameters
-            .map { DependencyType.of(it) }
+            .map { TypedIdentifier.of(it) }
 
     val containingFile: KSFile
         get() = declaration.containingFile!!

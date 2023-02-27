@@ -5,7 +5,7 @@ import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
-import com.moriatsushi.koject.processor.symbol.ProviderParameter
+import com.moriatsushi.koject.processor.symbol.FactoryParameter
 import com.moriatsushi.koject.processor.symbol.displayName
 
 internal class DependencyValidator {
@@ -22,7 +22,7 @@ internal class DependencyValidator {
     private fun validate(
         allFactories: AllFactoryDeclarations,
         target: FactoryDeclaration,
-        dependency: ProviderParameter,
+        dependency: FactoryParameter,
     ) {
         val dependencyFactory = allFactories.getOrNull(dependency.identifier)
         when {

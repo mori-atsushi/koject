@@ -61,12 +61,12 @@ internal class FactoryFileSpecFactory {
     private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.constructorBuilder().apply {
             provider.dependencies.forEach {
-                val providerName = Names.providerNameOf(it.identifier)
+                val providerName = Names.providerNameOf(it.asStringIdentifier())
                 val parameter = ParameterSpec.builder(
                     providerName,
                     LambdaTypeName.get(returnType = ANY),
                 ).apply {
-                    addAnnotation(it.identifier.asAnnotationSpec())
+                    addAnnotation(it.asStringIdentifier().asAnnotationSpec())
                 }.build()
                 addParameter(parameter)
             }
@@ -92,8 +92,8 @@ internal class FactoryFileSpecFactory {
                 add("\n")
                 indent()
                 provider.dependencies.forEach {
-                    val providerName = Names.providerNameOf(it.identifier)
-                    add("$providerName() as %T,\n", it.asTypeName())
+                    val providerName = Names.providerNameOf(it.asStringIdentifier())
+                    add("$providerName() as %T,\n", it.typeName)
                 }
                 unindent()
             }

@@ -19,10 +19,10 @@ internal class FactoryDeclaration(
         // null for other modules
         get() = ksClass.containingFile
 
-    val parameters: List<ProviderParameter>
+    val parameters: List<FactoryParameter>
         get() = ksClass.primaryConstructor?.parameters
             .orEmpty()
-            .map { ProviderParameter(it) }
+            .map { FactoryParameter(it) }
 
     val isSingleton: Boolean
         get() = ksClass.hasAnnotation<Singleton>()

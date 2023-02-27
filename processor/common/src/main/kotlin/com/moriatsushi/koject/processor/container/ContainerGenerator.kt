@@ -3,6 +3,7 @@ package com.moriatsushi.koject.processor.container
 import com.google.devtools.ksp.processing.Resolver
 import com.moriatsushi.koject.processor.file.FileGenerator
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
+import com.moriatsushi.koject.processor.symbol.collectAllFactoryDeclarations
 
 internal class ContainerGenerator(
     private val dependencyValidator: DependencyValidator,
@@ -11,7 +12,7 @@ internal class ContainerGenerator(
     private val startFileSpecFactory: StartFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
-        val allFactories = AllFactoryDeclarations.of(resolver)
+        val allFactories = resolver.collectAllFactoryDeclarations()
         dependencyValidator.validate(allFactories)
 
         generateContainer(allFactories)

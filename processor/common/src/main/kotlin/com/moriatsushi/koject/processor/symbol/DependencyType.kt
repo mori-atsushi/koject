@@ -19,7 +19,7 @@ internal class DependencyType(
     }
 
     val identifier by lazy {
-        StringIdentifier.of(ksType, qualifier)
+        StringIdentifier.of(ksType.toTypeName(), qualifier)
     }
 
     fun asTypeName(): TypeName {

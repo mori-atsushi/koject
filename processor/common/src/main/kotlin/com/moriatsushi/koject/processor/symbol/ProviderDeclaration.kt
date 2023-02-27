@@ -79,9 +79,9 @@ internal sealed class ProviderDeclaration(
         override val identifier by lazy {
             if (hasBindsAnnotation) {
                 val type = ksClass.superTypes.first().resolve()
-                StringIdentifier.of(type, qualifier)
+                StringIdentifier.of(type.toTypeName(), qualifier)
             } else {
-                StringIdentifier.of(ksClass)
+                StringIdentifier.of(ksClass.toClassName())
             }
         }
 
@@ -102,7 +102,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier by lazy {
-            StringIdentifier.of(ksType, qualifier)
+            StringIdentifier.of(ksType.toTypeName(), qualifier)
         }
 
         val memberName: MemberName
@@ -126,7 +126,7 @@ internal sealed class ProviderDeclaration(
         private val ksType = function.returnType!!.resolve()
 
         override val identifier: StringIdentifier by lazy {
-            StringIdentifier.of(ksType, qualifier)
+            StringIdentifier.of(ksType.toTypeName(), qualifier)
         }
 
         val parentName: ClassName

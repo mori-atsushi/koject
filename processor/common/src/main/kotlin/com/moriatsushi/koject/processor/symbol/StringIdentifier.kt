@@ -1,33 +1,27 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSDeclaration
-import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 import java.security.MessageDigest
 import java.util.Base64
 
-internal fun StringIdentifier.Companion.of(classDeclaration: KSClassDeclaration): StringIdentifier {
-    return StringIdentifier(classDeclaration.fullName)
-}
-
 internal fun StringIdentifier.Companion.of(
-    typeDeclaration: KSType,
-    qualifier: QualifierAnnotation?,
+    typeName: TypeName,
+    qualifier: QualifierAnnotation? = null,
 ): StringIdentifier {
     return StringIdentifier(
-        typeDeclaration.fullName,
+        typeName.toString(),
         qualifier?.fullName ?: "",
     )
 }
 
-internal fun StringIdentifier.Companion.ofOrNull(node: KSAnnotated): StringIdentifier? {
-    val annotation = node.findAnnotation<StringIdentifier>() ?: return null
+fun KSAnnotated.findStringIdentifier(): StringIdentifier? {
+    val annotation = this.findAnnotation<StringIdentifier>() ?: return null
     val type = annotation.findArgumentByName<String>("type")!!
     val qualifier = annotation.findArgumentByName<String>("qualifier").orEmpty()
     return StringIdentifier(type, qualifier)
@@ -64,21 +58,6 @@ internal fun StringIdentifier.asAnnotationSpec(): AnnotationSpec {
     }.build()
 }
 
-private val KSType.fullName: String
-    get() = buildString {
-        append(declaration.fullName)
-        if (arguments.isNotEmpty()) {
-            append("<")
-            arguments.joinTo(this, ", ") {
-                it.type?.resolve()?.fullName.toString()
-            }
-            append(">")
-        }
-        if (isMarkedNullable) {
-            append("?")
-        }
-    }
-
 private val String.escaped: String
     get() = this
         .replace(" ", "")
@@ -96,6 +75,3 @@ private val String.hash: String
             .take(16)
             .replace("-", "_")
     }
-
-private val KSDeclaration.fullName: String
-    get() = (qualifiedName ?: simpleName).asString()

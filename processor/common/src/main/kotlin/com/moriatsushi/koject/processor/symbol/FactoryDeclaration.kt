@@ -12,7 +12,7 @@ internal class FactoryDeclaration(
     private val ksClass: KSClassDeclaration,
 ) {
     val identifier: StringIdentifier by lazy {
-        StringIdentifier.ofOrNull(ksClass)!!
+        ksClass.findStringIdentifier()!!
     }
 
     val containingFile: KSFile?

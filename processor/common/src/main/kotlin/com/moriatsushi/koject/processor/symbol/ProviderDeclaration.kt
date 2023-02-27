@@ -63,14 +63,8 @@ private fun ProviderDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
 ): ProviderDeclaration {
     val bindAnnotation = ksClass.findBindAnnotation()
-    val typeName = if (bindAnnotation != null) {
-        bindAnnotation.toTypeName ?: run {
-            val firstType = ksClass.superTypes.first().resolve()
-            firstType.toTypeName()
-        }
-    } else {
-        ksClass.toClassName()
-    }
+    val typeName = bindAnnotation?.toTypeName
+        ?: ksClass.toClassName()
 
     return ProviderDeclaration.Class(
         className = ksClass.toClassName(),

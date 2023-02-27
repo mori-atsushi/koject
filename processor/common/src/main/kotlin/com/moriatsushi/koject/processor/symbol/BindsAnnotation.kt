@@ -10,20 +10,22 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 
 @JvmInline
 internal value class BindsAnnotation(
-    val toTypeName: TypeName?,
+    val toTypeName: TypeName,
 ) {
     companion object
 }
 
 internal fun KSClassDeclaration.findBindAnnotation(): BindsAnnotation? {
     val annotation = findAnnotation<Binds>() ?: return null
-    val toType = annotation.findArgumentByName<KSType>("to")
+    val argument = annotation.findArgumentByName<KSType>("to")
+    val toType = if (argument != null && !argument.isNothing) {
+        argument
+    } else {
+        val firstType = superTypes.first().resolve()
+        firstType
+    }
     return BindsAnnotation(
-        toTypeName = if (toType != null && !toType.isNothing) {
-            toType.toTypeName()
-        } else {
-            null
-        },
+        toTypeName = toType.toTypeName(),
     )
 }
 

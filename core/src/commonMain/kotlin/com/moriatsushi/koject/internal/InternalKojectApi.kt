@@ -2,6 +2,7 @@ package com.moriatsushi.koject.internal
 
 /**
  * Marks declarations that are internal in Koject API.
+ *
  * Don't use it outside of Koject.
  * API will change without notice in future releases.
  */

@@ -1,14 +1,14 @@
 package com.moriatsushi.koject
 
 /**
- * Marks it distributable with DI Container
+ * Marks it providable by Koject DI Container
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class Provides
 
 /**
- * Mark as a type that a DI container instantiate only once
+ * Mark as a type that Koject DI container instantiate only once
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
@@ -28,3 +28,11 @@ annotation class Qualifier
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
 @Qualifier
 annotation class Named(val name: String)
+
+/**
+ * You can provide as a supertype.
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS)
+@Qualifier
+annotation class Binds

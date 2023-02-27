@@ -7,6 +7,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
@@ -70,12 +71,27 @@ internal sealed class ProviderDeclaration(
         ksClass,
         ksClass.primaryConstructor!!,
     ) {
+        private val hasBindsAnnotation = ksClass.hasAnnotation<Binds>()
+
+        val className: ClassName
+            get() = ksClass.toClassName()
+
         override val identifier by lazy {
-            StringIdentifier.of(ksClass)
+            if (hasBindsAnnotation) {
+                val type = ksClass.superTypes.first().resolve()
+                StringIdentifier.of(type, qualifier)
+            } else {
+                StringIdentifier.of(ksClass)
+            }
         }
 
         override val typeName: TypeName
-            get() = ksClass.toClassName()
+            get() = if (hasBindsAnnotation) {
+                val type = ksClass.superTypes.first().resolve()
+                type.toTypeName()
+            } else {
+                ksClass.toClassName()
+            }
 
         override val qualifier: QualifierAnnotation? = null
     }

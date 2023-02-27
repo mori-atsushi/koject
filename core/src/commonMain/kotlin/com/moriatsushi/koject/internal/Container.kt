@@ -3,7 +3,7 @@ package com.moriatsushi.koject.internal
 import com.moriatsushi.koject.internal.identifier.Identifier
 
 /**
- * DI container
+ * Koject DI container
  *
  * Resolve of dependencies.
  */

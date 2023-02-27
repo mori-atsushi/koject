@@ -78,7 +78,7 @@ internal class FactoryFileSpecFactory {
             add("return ")
             when (provider) {
                 is ProviderDeclaration.Class -> {
-                    add("%T", provider.typeName)
+                    add("%T", provider.className)
                 }
                 is ProviderDeclaration.TopLevelFunction -> {
                     add("%M", provider.memberName)

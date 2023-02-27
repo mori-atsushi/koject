@@ -15,7 +15,7 @@ internal class AllFactoryDeclarations(
             val all = resolver
                 .getDeclarationsFromPackage(Names.factoryPackageName)
                 .filterIsInstance<KSClassDeclaration>()
-                .map { FactoryDeclaration(it) }
+                .map { FactoryDeclaration.of(it) }
                 .associateBy { it.identifier }
             return AllFactoryDeclarations(all)
         }

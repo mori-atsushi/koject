@@ -8,26 +8,27 @@ import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
-internal class FactoryDeclaration(
-    private val ksClass: KSClassDeclaration,
+internal data class FactoryDeclaration(
+    val identifier: StringIdentifier,
+    val className: ClassName,
+    val dependencies: List<StringIdentifier>,
+    val isSingleton: Boolean,
+    val containingFile: KSFile?,
 ) {
-    val identifier: StringIdentifier by lazy {
-        ksClass.findStringIdentifier()!!
-    }
+    companion object
+}
 
-    val containingFile: KSFile?
-        // null for other modules
-        get() = ksClass.containingFile
-
-    val parameters: List<FactoryParameter>
-        get() = ksClass.primaryConstructor?.parameters
-            .orEmpty()
-            .map { FactoryParameter(it) }
-
-    val isSingleton: Boolean
-        get() = ksClass.hasAnnotation<Singleton>()
-
-    fun asClassName(): ClassName {
-        return ksClass.toClassName()
-    }
+internal fun FactoryDeclaration.Companion.of(
+    ksClass: KSClassDeclaration,
+): FactoryDeclaration {
+    val dependencies = ksClass.primaryConstructor?.parameters
+        .orEmpty()
+        .map { it.findStringIdentifier()!! }
+    return FactoryDeclaration(
+        identifier = ksClass.findStringIdentifier()!!,
+        className = ksClass.toClassName(),
+        dependencies = dependencies,
+        isSingleton = ksClass.hasAnnotation<Singleton>(),
+        containingFile = ksClass.containingFile,
+    )
 }

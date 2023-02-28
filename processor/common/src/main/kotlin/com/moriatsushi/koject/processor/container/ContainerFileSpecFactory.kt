@@ -1,7 +1,7 @@
 package com.moriatsushi.koject.processor.container
 
 import com.moriatsushi.koject.internal.Container
-import com.moriatsushi.koject.internal.identifier.Identifier
+import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon

@@ -1,7 +1,7 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSValueParameter
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.moriatsushi.koject.internal.StringIdentifier
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toTypeName

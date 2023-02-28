@@ -4,7 +4,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName

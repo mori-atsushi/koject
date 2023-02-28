@@ -1,10 +1,10 @@
 package com.moriatsushi.koject.processor.factory
 
-import com.moriatsushi.koject.internal.identifier.Identifier
-import com.moriatsushi.koject.processor.analytics.primaryConstructorWithParameters
+import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
+import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
 import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
 import com.squareup.kotlinpoet.ANY

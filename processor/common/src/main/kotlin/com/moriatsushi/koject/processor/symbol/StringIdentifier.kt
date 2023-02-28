@@ -1,7 +1,7 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.squareup.kotlinpoet.AnnotationSpec

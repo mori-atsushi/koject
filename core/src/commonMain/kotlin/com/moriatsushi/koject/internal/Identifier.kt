@@ -1,6 +1,5 @@
-package com.moriatsushi.koject.internal.identifier
+package com.moriatsushi.koject.internal
 
-import com.moriatsushi.koject.internal.InternalKojectApi
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 

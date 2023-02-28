@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.processor.analytics
+package com.moriatsushi.koject.processor.code
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -8,7 +8,7 @@ import com.squareup.kotlinpoet.TypeSpec
 /**
  * Set primary constructor and set all its parameters as properties.
  */
-fun TypeSpec.Builder.primaryConstructorWithParameters(
+internal fun TypeSpec.Builder.primaryConstructorWithParameters(
     primaryConstructor: FunSpec,
     modifiers: Iterable<KModifier> = emptySet(),
 ): TypeSpec.Builder {

@@ -73,7 +73,7 @@ class DIProcessorMultimoduleTest {
                 
                 import com.moriatsushi.koject.`internal`.InternalKojectApi
                 import com.moriatsushi.koject.internal.Location
-                import com.moriatsushi.koject.`internal`.identifier.StringIdentifier
+                import com.moriatsushi.koject.`internal`.StringIdentifier
                 import kotlin.Any
                 
                 @InternalKojectApi
@@ -115,8 +115,8 @@ class DIProcessorMultimoduleTest {
         |package com.moriatsushi.koject.generated
         |
         |import com.moriatsushi.koject.`internal`.Container
+        |import com.moriatsushi.koject.`internal`.Identifier
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
-        |import com.moriatsushi.koject.`internal`.identifier.Identifier
         |import com.moriatsushi.koject.generated.factory._com_app_SampleClass2_Factory
         |import com.moriatsushi.koject.generated.factory._com_lib_SampleClass1_Factory
         |import kotlin.Any
@@ -148,8 +148,8 @@ class DIProcessorMultimoduleTest {
         |package com.moriatsushi.koject.generated
         |
         |import com.moriatsushi.koject.`internal`.Container
+        |import com.moriatsushi.koject.`internal`.Identifier
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
-        |import com.moriatsushi.koject.`internal`.identifier.Identifier
         |import com.moriatsushi.koject.generated.factory._com_lib_SampleClass1_Factory
         |import kotlin.Any
         |

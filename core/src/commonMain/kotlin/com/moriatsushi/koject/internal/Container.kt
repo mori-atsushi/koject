@@ -1,7 +1,5 @@
 package com.moriatsushi.koject.internal
 
-import com.moriatsushi.koject.internal.identifier.Identifier
-
 /**
  * Koject DI container
  *

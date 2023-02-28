@@ -1,6 +1,6 @@
 package com.moriatsushi.koject.processor.code
 
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.symbol.asCodeName
 import com.squareup.kotlinpoet.ClassName
 

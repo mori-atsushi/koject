@@ -1,6 +1,6 @@
 package com.moriatsushi.koject.processor.symbol
 
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
+import com.moriatsushi.koject.internal.StringIdentifier
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.typeOf

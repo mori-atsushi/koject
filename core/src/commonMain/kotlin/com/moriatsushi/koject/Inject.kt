@@ -1,7 +1,7 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.NotProvidedException
-import com.moriatsushi.koject.internal.identifier.Identifier
+import com.moriatsushi.koject.internal.Identifier
 
 /**
  * Inject an instance with resolved dependencies

@@ -45,11 +45,13 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
-        val location = "Test.kt:9"
+        val location1 = "Test.kt:6"
+        val location2 = "Test.kt:9"
         val expectedErrorMessage =
-            "com.testpackage.SampleClass is already provided."
+            "com.testpackage.SampleClass provide is duplicated."
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, location)
+        assertContains(result.messages, location1)
+        assertContains(result.messages, location2)
         assertContains(result.messages, expectedErrorMessage)
     }
 

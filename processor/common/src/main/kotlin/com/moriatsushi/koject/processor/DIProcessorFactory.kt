@@ -59,6 +59,7 @@ class DIProcessorFactory(
             createFactoryGenerator(),
             createContainerGenerator(),
             environment.codeGenerator,
+            environment.logger,
         )
     }
 }

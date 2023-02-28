@@ -27,11 +27,11 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = NotProvidedException::class
-        val expectedErrorMessage1 = "com.testpackage.NotProvided is not provided."
-        val expectedErrorMessage2 = "It is requested by com.testpackage.SampleClass."
+        val expectedErrorMessage =
+            "com.testpackage.NotProvided is not provided. " +
+                "It is requested by com.testpackage.SampleClass."
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage1)
-        assertContains(result.messages, expectedErrorMessage2)
+        assertContains(result.messages, expectedErrorMessage)
     }
 
     @Test
@@ -44,14 +44,12 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = WrongScopeException::class
-        val expectedErrorMessage1 =
+        val expectedErrorMessage =
             "com.testpackage.SingletonScope cannot be created " +
-                "because com.testpackage.NormalScope is not a singleton."
-        val expectedErrorMessage2 =
-            "Only a singleton can be requested from a singleton."
+                "because com.testpackage.NormalScope is not a singleton. " +
+                "Only a singleton can be injected into singletons."
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage1)
-        assertContains(result.messages, expectedErrorMessage2)
+        assertContains(result.messages, expectedErrorMessage)
     }
 
     @Test
@@ -64,13 +62,10 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = CodeGenerationException::class
-        val expectedErrorMessage1 =
+        val expectedErrorMessage =
             "java.util.ArrayList is an unsupported annotation member type."
-        val expectedErrorMessage2 =
-            "at com.testpackage.ArrayQualifier.array"
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage1)
-        assertContains(result.messages, expectedErrorMessage2)
+        assertContains(result.messages, expectedErrorMessage)
     }
 
     private val notProvidedInputCode = SourceFile.kotlin(

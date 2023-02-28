@@ -39,11 +39,8 @@ internal class DependencyValidator {
         dependency: StringIdentifier,
     ) {
         throw NotProvidedException(
-            """
-            |"${dependency.displayName} is not provided.
-            |It is requested by ${target.displayName}.",
-            |
-            """.trimMargin(),
+            "${dependency.displayName} is not provided. " +
+                "It is requested by ${target.displayName}.",
         )
     }
 
@@ -52,11 +49,9 @@ internal class DependencyValidator {
         dependency: StringIdentifier,
     ) {
         throw WrongScopeException(
-            """
-            |${target.displayName} cannot be created because ${dependency.displayName} is not a singleton.
-            |Only a singleton can be requested from a singleton.
-            |
-            """.trimMargin(),
+            "${target.displayName} cannot be created " +
+                "because ${dependency.displayName} is not a singleton. " +
+                "Only a singleton can be injected into singletons.",
         )
     }
 }

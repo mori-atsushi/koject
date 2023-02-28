@@ -37,15 +37,10 @@ private fun throwCodeGenerationException(
     annotationType: KSType,
     argument: KSValueArgument,
 ): Nothing {
-    val annotationTypeName = annotationType.declaration.qualifiedName!!.asString()
-    val variableName = argument.name!!.asString()
     val variableTypeName = argument.value!!::class.qualifiedName
     throw CodeGenerationException(
-        """
-        |$variableTypeName is an unsupported annotation member type.",
-        |at $annotationTypeName.$variableName
-        |
-        """.trimMargin(),
+        "$variableTypeName is an unsupported annotation member type.",
+        annotationType.declaration,
     )
 }
 

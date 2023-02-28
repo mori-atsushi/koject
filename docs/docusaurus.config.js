@@ -26,8 +26,12 @@ const config = {
   presets: [
     [
       'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        docs: {
+          sidebarPath: require.resolve('./sidebars.js'),
+          editUrl:
+            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -47,6 +51,30 @@ const config = {
             href: 'https://github.com/mori-atsushi/koject',
             label: 'GitHub',
             position: 'right',
+          },
+          {
+            to: 'docs/setup',
+            label: 'Setup',
+            position: 'left',
+          },
+          {
+            type: 'dropdown',
+            label: 'Usage',
+            position: 'left',
+            items: [
+              {
+                to: 'docs/usage/basic',
+                label: 'Start Koject',
+              },
+              {
+                to: 'docs/usage/qualifier',
+                label: 'Qualifier',
+              },
+              {
+                to: 'docs/usage/binds',
+                label: 'Binds',
+              },
+            ],
           },
         ],
       },

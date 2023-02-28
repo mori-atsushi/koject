@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.processor.factory
 
+import com.google.devtools.ksp.containingFile
 import com.moriatsushi.koject.internal.identifier.Identifier
 import com.moriatsushi.koject.processor.analytics.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
@@ -53,7 +54,7 @@ internal class FactoryFileSpecFactory {
             }
             addAnnotation(identifierAnnotationSpec)
 
-            provider.containingFile?.let {
+            provider.declaration.containingFile?.let {
                 addOriginatingKSFile(it)
             }
         }.build()

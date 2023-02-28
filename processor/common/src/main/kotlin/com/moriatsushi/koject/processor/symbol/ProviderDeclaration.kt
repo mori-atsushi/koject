@@ -5,8 +5,8 @@ import com.google.devtools.ksp.symbol.FunctionKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
-import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSNode
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
@@ -19,14 +19,14 @@ internal sealed interface ProviderDeclaration {
     val identifier: TypedIdentifier
     val dependencies: List<TypedIdentifier>
     val isSingleton: Boolean
-    val containingFile: KSFile?
+    val declaration: KSNode
 
     data class Class(
         val className: ClassName,
         override val identifier: TypedIdentifier,
         override val dependencies: List<TypedIdentifier>,
         override val isSingleton: Boolean,
-        override val containingFile: KSFile?,
+        override val declaration: KSNode,
     ) : ProviderDeclaration
 
     data class TopLevelFunction(
@@ -34,7 +34,7 @@ internal sealed interface ProviderDeclaration {
         override val identifier: TypedIdentifier,
         override val dependencies: List<TypedIdentifier>,
         override val isSingleton: Boolean,
-        override val containingFile: KSFile?,
+        override val declaration: KSNode,
     ) : ProviderDeclaration
 
     data class ObjectFunction(
@@ -43,7 +43,7 @@ internal sealed interface ProviderDeclaration {
         override val identifier: TypedIdentifier,
         override val dependencies: List<TypedIdentifier>,
         override val isSingleton: Boolean,
-        override val containingFile: KSFile?,
+        override val declaration: KSNode,
     ) : ProviderDeclaration
 
     companion object
@@ -72,7 +72,7 @@ private fun ProviderDeclaration.Companion.of(
         identifier = TypedIdentifier(typeName, qualifier),
         dependencies = ksClass.primaryConstructor!!.dependencies,
         isSingleton = ksClass.isSingleton,
-        containingFile = ksClass.containingFile,
+        declaration = ksClass,
     )
 }
 
@@ -104,7 +104,7 @@ private fun ProviderDeclaration.Companion.createTopLevelFunction(
         identifier = ksFunction.identifier,
         dependencies = ksFunction.dependencies,
         isSingleton = ksFunction.isSingleton,
-        containingFile = ksFunction.containingFile,
+        declaration = ksFunction,
     )
 }
 
@@ -121,7 +121,7 @@ private fun ProviderDeclaration.Companion.createObjectFunction(
         identifier = ksFunction.identifier,
         dependencies = ksFunction.dependencies,
         isSingleton = ksFunction.isSingleton,
-        containingFile = ksFunction.containingFile,
+        declaration = ksFunction,
     )
 }
 

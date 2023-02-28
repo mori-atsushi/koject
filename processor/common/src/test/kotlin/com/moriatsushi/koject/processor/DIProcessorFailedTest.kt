@@ -3,6 +3,7 @@ package com.moriatsushi.koject.processor
 import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.moriatsushi.koject.processor.error.CodeGenerationException
+import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.tschuchort.compiletesting.SourceFile
@@ -30,6 +31,22 @@ class DIProcessorFailedTest {
         val expectedErrorMessage =
             "com.testpackage.NotProvided is not provided. " +
                 "It is requested by com.testpackage.SampleClass."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun duplicateProvided() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(duplicateProvidedInputCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = DuplicateProvidedException::class
+        val expectedErrorMessage =
+            "com.testpackage.SampleClass is already provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, expectedErrorMessage)
     }
@@ -81,6 +98,23 @@ class DIProcessorFailedTest {
                 class SampleClass(
                     private val notProvided: NotProvided
                 )
+            """,
+    )
+
+    private val duplicateProvidedInputCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                class SampleClass
+
+                @Provides
+                fun provideSampleClass(): SampleClass {
+                    return SampleClass()
+                }
             """,
     )
 

@@ -28,8 +28,8 @@ internal class FactoryGenerator(
             fileGenerator.createNewFile(fileSpec, false)
         } catch (e: FileAlreadyExistsException) {
             throw DuplicateProvidedException(
-                "${provider.identifier.displayName} is already provided.",
-                provider.declaration,
+                "${provider.location.value}: " +
+                    "${provider.identifier.displayName} is already provided.",
             )
         }
     }

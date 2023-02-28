@@ -28,10 +28,10 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = NotProvidedException::class
-        val expectedErrorMessage =
-            "com.testpackage.NotProvided is not provided. " +
-                "It is requested by com.testpackage.SampleClass."
+        val location = "Test.kt:9"
+        val expectedErrorMessage = "com.testpackage.NotProvided is not provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
         assertContains(result.messages, expectedErrorMessage)
     }
 
@@ -45,9 +45,11 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
+        val location = "Test.kt:9"
         val expectedErrorMessage =
             "com.testpackage.SampleClass is already provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
         assertContains(result.messages, expectedErrorMessage)
     }
 
@@ -61,11 +63,12 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = WrongScopeException::class
+        val location = "Test.kt:12"
         val expectedErrorMessage =
-            "com.testpackage.SingletonScope cannot be created " +
-                "because com.testpackage.NormalScope is not a singleton. " +
+            "com.testpackage.NormalScope cannot be injected because it is not a singleton. " +
                 "Only a singleton can be injected into singletons."
         assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
         assertContains(result.messages, expectedErrorMessage)
     }
 

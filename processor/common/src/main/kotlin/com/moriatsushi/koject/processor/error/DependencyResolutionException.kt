@@ -1,14 +1,10 @@
 package com.moriatsushi.koject.processor.error
 
-import com.google.devtools.ksp.symbol.KSNode
-
 /**
  * Failed to resolve dependencies
  */
-internal sealed class DependencyResolutionException(
-    message: String,
-    symbol: KSNode? = null,
-) : CodeGenerationException(message, symbol)
+internal sealed class DependencyResolutionException(message: String) :
+    CodeGenerationException(message)
 
 /**
  * Required dependencies not provided
@@ -21,8 +17,7 @@ internal class NotProvidedException(message: String) :
  */
 internal class DuplicateProvidedException(
     message: String,
-    symbol: KSNode,
-) : DependencyResolutionException(message, symbol)
+) : DependencyResolutionException(message)
 
 /**
  * Injecting in wrong scope

@@ -6,6 +6,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSName
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSValueArgument
+import com.moriatsushi.koject.processor.analytics.locationString
 import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -39,8 +40,8 @@ private fun throwCodeGenerationException(
 ): Nothing {
     val variableTypeName = argument.value!!::class.qualifiedName
     throw CodeGenerationException(
-        "$variableTypeName is an unsupported annotation member type.",
-        annotationType.declaration,
+        "${annotationType.declaration.locationString}: " +
+            "$variableTypeName is an unsupported annotation member type.",
     )
 }
 

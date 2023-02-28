@@ -34,7 +34,7 @@ internal class DIProcessor(
         } catch (e: Throwable) {
             if (e is CodeGenerationException) {
                 logger.error(e::class.qualifiedName!!)
-                logger.error(e.message, e.symbol)
+                logger.error(e.message)
             } else {
                 logger.exception(e)
             }

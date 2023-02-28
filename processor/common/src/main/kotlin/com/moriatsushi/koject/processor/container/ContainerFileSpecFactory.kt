@@ -99,15 +99,15 @@ internal class ContainerFileSpecFactory {
     ): CodeBlock {
         return buildCodeBlock {
             add("%T(", factoryClass.className)
-            if (factoryClass.dependencies.isNotEmpty()) {
+            if (factoryClass.parameters.isNotEmpty()) {
                 add("\n")
                 indent()
-                factoryClass.dependencies.forEach {
-                    val factory = allFactories.get(it)
+                factoryClass.parameters.forEach {
+                    val factory = allFactories.get(it.identifier)
                     if (factory.isSingleton) {
-                        add("{ ${Names.instanceNameOf(it)} }")
+                        add("{ ${Names.instanceNameOf(it.identifier)} }")
                     } else {
-                        add(Names.providerNameOf(it))
+                        add(Names.providerNameOf(it.identifier))
                     }
                     add(",\n")
                 }

@@ -134,6 +134,7 @@ class DIProcessorTest {
         |import com.testpackage.SampleClass1
         |import com.testpackage.SampleClass2
         |import kotlin.Any
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass2")
@@ -143,6 +144,7 @@ class DIProcessorTest {
         |    @Location("${folder.path}/sources/Test.kt:10")
         |    private val provide_com_testpackage_SampleClass1: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = SampleClass2(
         |        provide_com_testpackage_SampleClass1() as SampleClass1,
         |    )
@@ -168,6 +170,7 @@ class DIProcessorTest {
         |import com.testpackage.SampleClass2
         |import com.testpackage.SampleClass3
         |import kotlin.Any
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass3")
@@ -180,6 +183,7 @@ class DIProcessorTest {
         |    @Location("${folder.path}/sources/Test.kt:16")
         |    private val provide_com_testpackage_SampleClass2: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = SampleClass3(
         |        provide_com_testpackage_SampleClass1() as SampleClass1,
         |        provide_com_testpackage_SampleClass2() as SampleClass2,

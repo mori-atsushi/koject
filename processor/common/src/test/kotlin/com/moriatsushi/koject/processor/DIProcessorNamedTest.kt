@@ -149,6 +149,7 @@ class DIProcessorNamedTest {
         |import com.testpackage.SampleClass
         |import kotlin.Any
         |import kotlin.String
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
@@ -167,6 +168,7 @@ class DIProcessorNamedTest {
         |    @Location("${folder.path}/sources/Test.kt:23")
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = SampleClass(
         |        provide_${expectedName1Identifier.asCodeName()}() as String,
         |        provide_${expectedName2Identifier.asCodeName()}() as String,
@@ -194,6 +196,7 @@ class DIProcessorNamedTest {
         |import com.testpackage.provideSampleClass
         |import kotlin.Any
         |import kotlin.String
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier(
@@ -215,6 +218,7 @@ class DIProcessorNamedTest {
         |    @Location("${folder.path}/sources/Test.kt:30")
         |    private val provide_${expectedName2Identifier.asCodeName()}: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = provideSampleClass(
         |        provide_${expectedName1Identifier.asCodeName()}() as String,
         |        provide_${expectedName2Identifier.asCodeName()}() as String,

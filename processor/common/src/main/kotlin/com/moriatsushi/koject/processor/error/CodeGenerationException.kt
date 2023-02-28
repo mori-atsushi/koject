@@ -1,3 +1,5 @@
 package com.moriatsushi.koject.processor.error
 
-class CodeGenerationException(message: String) : Exception(message)
+internal open class CodeGenerationException(
+    override val message: String,
+) : Exception(message)

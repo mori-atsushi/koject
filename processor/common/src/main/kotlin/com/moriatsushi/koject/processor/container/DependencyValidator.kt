@@ -1,10 +1,10 @@
 package com.moriatsushi.koject.processor.container
 
-import com.moriatsushi.koject.internal.identifier.StringIdentifier
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
+import com.moriatsushi.koject.processor.symbol.FactoryParameter
 import com.moriatsushi.koject.processor.symbol.displayName
 
 internal class DependencyValidator {
@@ -12,7 +12,7 @@ internal class DependencyValidator {
         allFactories: AllFactoryDeclarations,
     ) {
         allFactories.all.forEach { targetClass ->
-            targetClass.dependencies.forEach {
+            targetClass.parameters.forEach {
                 validate(allFactories, targetClass, it)
             }
         }
@@ -20,43 +20,37 @@ internal class DependencyValidator {
 
     private fun validate(
         allFactories: AllFactoryDeclarations,
-        target: FactoryDeclaration,
-        dependency: StringIdentifier,
+        factory: FactoryDeclaration,
+        parameter: FactoryParameter,
     ) {
-        val dependencyFactory = allFactories.getOrNull(dependency)
+        val dependencyFactory = allFactories.getOrNull(parameter.identifier)
         when {
             dependencyFactory == null -> {
-                throwNotProvidedException(target.identifier, dependency)
+                throwNotProvidedException(parameter)
             }
-            target.isSingleton && !dependencyFactory.isSingleton -> {
-                throwWrongScopeException(target.identifier, dependency)
+            factory.isSingleton && !dependencyFactory.isSingleton -> {
+                throwWrongScopeException(parameter)
             }
         }
     }
 
     private fun throwNotProvidedException(
-        target: StringIdentifier,
-        dependency: StringIdentifier,
+        parameter: FactoryParameter,
     ) {
         throw NotProvidedException(
-            """
-            |"${dependency.displayName} is not provided.
-            |It is requested by ${target.displayName}.",
-            |
-            """.trimMargin(),
+            "${parameter.location.value}: " +
+                "${parameter.identifier.displayName} is not provided.",
         )
     }
 
     private fun throwWrongScopeException(
-        target: StringIdentifier,
-        dependency: StringIdentifier,
+        parameter: FactoryParameter,
     ) {
         throw WrongScopeException(
-            """
-            |${target.displayName} cannot be created because ${dependency.displayName} is not a singleton.
-            |Only a singleton can be requested from a singleton.
-            |
-            """.trimMargin(),
+            "${parameter.location.value}: " +
+                "${parameter.identifier.displayName} cannot be injected " +
+                "because it is not a singleton. " +
+                "Only a singleton can be injected into singletons.",
         )
     }
 }

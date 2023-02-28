@@ -3,6 +3,7 @@ package com.moriatsushi.koject.processor
 import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.moriatsushi.koject.processor.error.CodeGenerationException
+import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.tschuchort.compiletesting.SourceFile
@@ -27,11 +28,31 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = NotProvidedException::class
-        val expectedErrorMessage1 = "com.testpackage.NotProvided is not provided."
-        val expectedErrorMessage2 = "It is requested by com.testpackage.SampleClass."
+        val location = "Test.kt:9"
+        val expectedErrorMessage = "com.testpackage.NotProvided is not provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage1)
-        assertContains(result.messages, expectedErrorMessage2)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun duplicateProvided() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(duplicateProvidedInputCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = DuplicateProvidedException::class
+        val location1 = "Test.kt:6"
+        val location2 = "Test.kt:9"
+        val expectedErrorMessage =
+            "com.testpackage.SampleClass provide is duplicated."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location1)
+        assertContains(result.messages, location2)
+        assertContains(result.messages, expectedErrorMessage)
     }
 
     @Test
@@ -44,14 +65,13 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = WrongScopeException::class
-        val expectedErrorMessage1 =
-            "com.testpackage.SingletonScope cannot be created " +
-                "because com.testpackage.NormalScope is not a singleton."
-        val expectedErrorMessage2 =
-            "Only a singleton can be requested from a singleton."
+        val location = "Test.kt:12"
+        val expectedErrorMessage =
+            "com.testpackage.NormalScope cannot be injected because it is not a singleton. " +
+                "Only a singleton can be injected into singletons."
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage1)
-        assertContains(result.messages, expectedErrorMessage2)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
     }
 
     @Test
@@ -64,13 +84,10 @@ class DIProcessorFailedTest {
         assertCompileFailed(result)
 
         val expectedError = CodeGenerationException::class
-        val expectedErrorMessage1 =
+        val expectedErrorMessage =
             "java.util.ArrayList is an unsupported annotation member type."
-        val expectedErrorMessage2 =
-            "at com.testpackage.ArrayQualifier.array"
         assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage1)
-        assertContains(result.messages, expectedErrorMessage2)
+        assertContains(result.messages, expectedErrorMessage)
     }
 
     private val notProvidedInputCode = SourceFile.kotlin(
@@ -86,6 +103,23 @@ class DIProcessorFailedTest {
                 class SampleClass(
                     private val notProvided: NotProvided
                 )
+            """,
+    )
+
+    private val duplicateProvidedInputCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                class SampleClass
+
+                @Provides
+                fun provideSampleClass(): SampleClass {
+                    return SampleClass()
+                }
             """,
     )
 

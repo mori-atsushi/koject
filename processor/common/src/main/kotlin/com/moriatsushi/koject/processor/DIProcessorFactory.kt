@@ -9,6 +9,7 @@ import com.moriatsushi.koject.processor.container.DependencyValidator
 import com.moriatsushi.koject.processor.container.StartFileSpecFactory
 import com.moriatsushi.koject.processor.factory.FactoryFileSpecFactory
 import com.moriatsushi.koject.processor.factory.FactoryGenerator
+import com.moriatsushi.koject.processor.factory.ProviderValidator
 import com.moriatsushi.koject.processor.file.FileGenerator
 
 @InternalKojectApi
@@ -19,6 +20,10 @@ class DIProcessorFactory(
         return FileGenerator(environment.codeGenerator)
     }
 
+    private fun createProviderValidator(): ProviderValidator {
+        return ProviderValidator()
+    }
+
     private fun createFactoryFileSpecFactory(): FactoryFileSpecFactory {
         return FactoryFileSpecFactory()
     }
@@ -26,6 +31,7 @@ class DIProcessorFactory(
     private fun createFactoryGenerator(): FactoryGenerator {
         return FactoryGenerator(
             createFileGenerator(),
+            createProviderValidator(),
             createFactoryFileSpecFactory(),
         )
     }

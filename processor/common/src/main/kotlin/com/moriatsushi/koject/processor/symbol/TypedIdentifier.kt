@@ -21,6 +21,9 @@ internal data class TypedIdentifier(
         return asStringIdentifier().asAnnotationSpec()
     }
 
+    val displayName: String
+        get() = asStringIdentifier().displayName
+
     companion object
 }
 

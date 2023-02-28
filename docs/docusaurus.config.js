@@ -26,8 +26,12 @@ const config = {
   presets: [
     [
       'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        docs: {
+          sidebarPath: require.resolve('./sidebars.js'),
+          editUrl:
+            'https://github.com/Mori-Atsushi/koject/tree/main/docs/',
+        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -38,8 +42,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/ogp.png',
       navbar: {
         title: 'Koject',
         items: [
@@ -47,6 +50,30 @@ const config = {
             href: 'https://github.com/mori-atsushi/koject',
             label: 'GitHub',
             position: 'right',
+          },
+          {
+            to: 'docs/setup',
+            label: 'Setup',
+            position: 'left',
+          },
+          {
+            type: 'dropdown',
+            label: 'Usage',
+            position: 'left',
+            items: [
+              {
+                to: 'docs/usage/basic',
+                label: 'Start Koject',
+              },
+              {
+                to: 'docs/usage/qualifier',
+                label: 'Qualifier',
+              },
+              {
+                to: 'docs/usage/binds',
+                label: 'Binds',
+              },
+            ],
           },
         ],
       },

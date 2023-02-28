@@ -170,6 +170,7 @@ class DIProcessorQualifierWithMembersTest {
         |import com.testpackage.SampleClass
         |import kotlin.Any
         |import kotlin.String
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
@@ -188,6 +189,7 @@ class DIProcessorQualifierWithMembersTest {
         |    @Location("${folder.path}/sources/Test.kt:32")
         |    private val provide_${expectedID2Identifier.asCodeName()}: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = SampleClass(
         |        provide_${expectedID1Identifier.asCodeName()}() as String,
         |        provide_${expectedID2Identifier.asCodeName()}() as String,
@@ -216,6 +218,7 @@ class DIProcessorQualifierWithMembersTest {
         |import com.testpackage.provideSampleClass
         |import kotlin.Any
         |import kotlin.String
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier(
@@ -237,6 +240,7 @@ class DIProcessorQualifierWithMembersTest {
         |    @Location("${folder.path}/sources/Test.kt:39")
         |    private val provide_kotlin_String__FNY6AOVynHWo6Pm3: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = provideSampleClass(
         |        provide_kotlin_String__qWa2qxo1MEvyXwkR() as String,
         |        provide_kotlin_String__FNY6AOVynHWo6Pm3() as String,

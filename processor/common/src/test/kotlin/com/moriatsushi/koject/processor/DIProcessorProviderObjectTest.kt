@@ -121,6 +121,7 @@ class DIProcessorProviderObjectTest {
         |import com.testpackage.ProviderObjectWithParameters
         |import kotlin.Any
         |import kotlin.Int
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.ProviderObjectWithParameters")
@@ -130,6 +131,7 @@ class DIProcessorProviderObjectTest {
         |    @Location("${folder.path}/sources/Test.kt:13")
         |    private val provide_kotlin_Int: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = ProviderObject.provideWithParameters(
         |        provide_kotlin_Int() as Int,
         |    )

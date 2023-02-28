@@ -27,4 +27,10 @@ internal object AnnotationSpecFactory {
         return AnnotationSpec.builder(Singleton::class.asClassName())
             .build()
     }
+
+    fun createSuppress(vararg names: String): AnnotationSpec {
+        return AnnotationSpec.builder(Suppress::class.asClassName()).apply {
+            names.forEach { addMember("%S", it) }
+        }.build()
+    }
 }

@@ -165,6 +165,7 @@ class DIProcessorSingletonTest {
         |import com.testpackage.SingletonClass1
         |import com.testpackage.SingletonClass2
         |import kotlin.Any
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@Singleton
@@ -175,6 +176,7 @@ class DIProcessorSingletonTest {
         |    @Location("${folder.path}/sources/Test.kt:13")
         |    private val provide_com_testpackage_SingletonClass1: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = SingletonClass2(
         |        provide_com_testpackage_SingletonClass1() as SingletonClass1,
         |    )
@@ -229,6 +231,7 @@ class DIProcessorSingletonTest {
         |import com.testpackage.SingletonHolderClass
         |import com.testpackage.SingletonInterface
         |import kotlin.Any
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SingletonHolderClass")
@@ -241,6 +244,7 @@ class DIProcessorSingletonTest {
         |    @Location("${folder.path}/sources/Test.kt:27")
         |    private val provide_com_testpackage_SingletonInterface: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = SingletonHolderClass(
         |        provide_com_testpackage_SingletonClass2() as SingletonClass2,
         |        provide_com_testpackage_SingletonInterface() as SingletonInterface,

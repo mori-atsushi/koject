@@ -104,6 +104,9 @@ internal class FactoryFileSpecFactory {
         return FunSpec.builder("create").apply {
             returns(ANY)
             addCode(code)
+            if (provider.parameters.isNotEmpty()) {
+                addAnnotation(AnnotationSpecFactory.createSuppress("UNCHECKED_CAST"))
+            }
         }.build()
     }
 

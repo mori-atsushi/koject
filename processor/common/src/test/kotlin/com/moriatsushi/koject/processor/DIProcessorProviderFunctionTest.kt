@@ -165,6 +165,7 @@ class DIProcessorProviderFunctionTest {
         |import com.testpackage.provideSampleClass
         |import kotlin.Any
         |import kotlin.String
+        |import kotlin.Suppress
         |
         |@InternalKojectApi
         |@StringIdentifier("com.testpackage.SampleClass")
@@ -177,6 +178,7 @@ class DIProcessorProviderFunctionTest {
         |    @Location("${folder.path}/sources/Test.kt:16")
         |    private val provide_com_testpackage_SampleInterface: () -> Any,
         |) {
+        |    @Suppress("UNCHECKED_CAST")
         |    public fun create(): Any = provideSampleClass(
         |        provide_kotlin_String() as String,
         |        provide_com_testpackage_SampleInterface() as SampleInterface,

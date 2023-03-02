@@ -11,7 +11,6 @@ import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.buildCodeBlock
-import com.squareup.kotlinpoet.ksp.toAnnotationSpec
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
@@ -64,16 +63,9 @@ private fun valueCodeBlock(value: Any): CodeBlock? {
                 ClassName.bestGuess(value.getQualifier()),
                 value.getShortName(),
             )
-        is KSAnnotation -> CodeBlock.of("%L", value.toAnnotationSpec())
-        is Class<*> -> CodeBlock.of("%T::class", value)
-        is Enum<*> -> CodeBlock.of("%T.%L", value.javaClass, value.name)
         is String -> CodeBlock.of("%S", value)
-        is Float -> CodeBlock.of("%Lf", value)
-        is Double -> CodeBlock.of("%L", value)
-        is Char -> CodeBlock.of("$value.toChar()")
-        is Byte -> CodeBlock.of("$value.toByte()")
-        is Short -> CodeBlock.of("$value.toShort()")
-        is Int, is Boolean -> CodeBlock.of("%L", value)
+        is Char -> CodeBlock.of("\'$value\'")
+        is Number, is Boolean -> CodeBlock.of("%L", value)
         else -> null
     }
 }

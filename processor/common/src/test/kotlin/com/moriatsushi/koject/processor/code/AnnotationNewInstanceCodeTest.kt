@@ -244,4 +244,73 @@ class AnnotationNewInstanceCodeTest {
             |""".trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
+
+    @Test
+    fun defaultAnnotation() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        val inputCode = SourceFile.kotlin(
+            "Test.kt",
+            """
+                package com.testpackage
+
+                annotation class DefaultAnnotation(val value: String = "default")
+
+                @DefaultAnnotation
+                @DefaultAnnotation("a")
+                val value = 0
+            """,
+        )
+        complication.sources = listOf(inputCode)
+        val result = complication.compile()
+
+        assertCompileSucceed(result)
+
+        val generatedFile = folder.resolve(generated)
+        assertFileExists(generatedFile)
+
+        val expectedCode = """
+            |import com.testpackage.DefaultAnnotation
+            |
+            |public val annotation0: DefaultAnnotation = DefaultAnnotation(value = "default")
+            |
+            |public val annotation1: DefaultAnnotation = DefaultAnnotation(value = "a")
+            |""".trimMargin()
+        assertFileTextEquals(expectedCode, generatedFile)
+    }
+
+    @Test
+    fun multipleMemberAnnotation() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        val inputCode = SourceFile.kotlin(
+            "Test.kt",
+            """
+                package com.testpackage
+
+                annotation class MultipleMemberAnnotation(
+                    val string: String,
+                    val int: Int,
+                )
+
+                @MultipleMemberAnnotation("string", 100)
+                val value = 0
+            """,
+        )
+        complication.sources = listOf(inputCode)
+        val result = complication.compile()
+
+        assertCompileSucceed(result)
+
+        val generatedFile = folder.resolve(generated)
+        assertFileExists(generatedFile)
+
+        val expectedCode = """
+            |import com.testpackage.MultipleMemberAnnotation
+            |
+            |public val annotation0: MultipleMemberAnnotation = MultipleMemberAnnotation(string = "string", int =
+            |    100)
+            |""".trimMargin()
+        assertFileTextEquals(expectedCode, generatedFile)
+    }
 }

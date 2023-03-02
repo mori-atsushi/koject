@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.android.library)
 }
 
@@ -23,7 +24,11 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(project(":core"))
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -57,11 +62,17 @@ android {
     compileSdk = 33
     defaultConfig {
         minSdk = 23
-        targetSdk = 33
     }
 
     compileOptions {
         sourceCompatibility(JavaVersion.VERSION_11)
         targetCompatibility(JavaVersion.VERSION_11)
     }
+}
+
+dependencies {
+    add("kspAndroid", project(":processor:app"))
+    add("kspIosX64", project(":processor:app"))
+    add("kspIosArm64", project(":processor:app"))
+    add("kspIosSimulatorArm64", project(":processor:app"))
 }

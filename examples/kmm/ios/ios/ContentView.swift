@@ -2,7 +2,7 @@ import SwiftUI
 import shared
 
 struct ContentView: View {
-	let greet = Greeting().greet()
+    let greet = KojectHelperKt.injectGreeting().greet()
 
 	var body: some View {
 		Text(greet)

@@ -1,3 +1,6 @@
-<resources>
-    <style name="AppTheme" parent="android:Theme.Material.NoActionBar"/>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+    </style>
 </resources>

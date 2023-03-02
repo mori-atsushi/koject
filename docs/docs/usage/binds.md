@@ -1,5 +1,5 @@
 # Binds
-By using a `@Binds` annotation, it is easy to provide as a supertypes.
+Using the `@Binds` annotation, it's easy to provide a type as supertypes.
 
 ```kotlin
 @Binds
@@ -22,7 +22,7 @@ fun provideRepository(): Repository {
 }
 ```
 
-If a type has multiple supertypes, use `to` parameter to specify the type.
+If a type has multiple supertypes, use the `to` parameter to specify the target type.
 
 ```kotlin
 @Binds(to = Type2::class)
@@ -31,4 +31,84 @@ class Type: Type1, Type2
 
 interface Type1
 interface Type2
+```
+
+## Provide as multiple types
+`@Binds` can only be used to provide one type and cannot be injected as its original type.
+
+For example, given the following code:
+
+```kotlin
+@Binds
+@Provides
+class RepositoryImpl: Repository
+
+interface Repository
+```
+
+You can only inject `Repository`, but not `RepositoryImpl`.`
+
+```kotlin
+val repository = inject<Repository>()
+val repositoryImpl = inject<RepositoryImpl>() // NotProvidedException!
+```
+
+To provide one type as multiple types, you can use the [@Provides](/docs/usage/basic#provide-from-functions) annotation.
+
+Here is an example that provides both `RepositoryImpl` and `Repository`:
+
+```kotlin
+@Provides
+class RepositoryImpl: Repository {
+    companion object {
+        @Provides
+        fun provideAsRepository(impl: RepositoryImpl): Repository {
+            return impl
+        }
+    }
+}
+
+interface Repository
+```
+
+You can now inject both `Repository` and `RepositoryImpl` respectively.
+
+```kotlin
+val repository = inject<Repository>() // RepositoryImpl
+val repositoryImpl = inject<RepositoryImpl>() // RepositoryImpl
+```
+
+## With Qualifier
+Types may conflict as a result of providing them with supertypes using `@Binds`.
+To distinguish between them, you can use [qualifiers](/docs/usage/qualifier).
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ID1
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ID2
+
+@ID1
+@Binds
+@Provides
+class DB1: DB
+
+@ID1
+@Binds
+@Provides
+class DB2: DB
+
+interface DB
+```
+
+In the example above, both `DB1` and `DB2` are bound to `DB` using `@Binds`.
+To distinguish between them when injecting, qualifiers `ID1` and `ID2` are used.
+In this way, you can get the specific instance you need by providing the corresponding qualifier.
+
+```kotlin
+val db1 = inject<DB>(ID1()) // DB1
+val db2 = inject<DB>(ID2()) // DB2
 ```

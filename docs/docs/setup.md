@@ -7,6 +7,7 @@ sidebar_position: 1
 ## Multiplatform
 
 You need to enable [KSP](https://github.com/google/ksp).
+Add according to the platforms you need.
 
 ```diff title="build.gradle.kts"
 plugins {
@@ -60,7 +61,8 @@ dependencies {
 ```
 
 ## Library module
-Use `koject-processor-lib` to avoid generating `Container` in library modules.
+In the library modules, use `koject-processor-lib` instead of `koject-processor-app`.
+This prevents the container from being generated in the library module.
 
 ### Multiplatform
 
@@ -77,7 +79,7 @@ dependencies {
 }
 ```
 
-### single platform
+### Single platform
 
 ```diff title="build.gradle.kts"
 dependencies {

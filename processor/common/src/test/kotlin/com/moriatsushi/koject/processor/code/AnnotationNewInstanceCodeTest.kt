@@ -46,7 +46,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.SimpleAnnotation
             |
             |public val annotation0: SimpleAnnotation = SimpleAnnotation()
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -77,7 +78,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.LongAnnotation
             |
             |public val annotation0: LongAnnotation = LongAnnotation(value = 100)
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -114,7 +116,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.SampleEnum
             |
             |public val annotation0: EnumAnnotation = EnumAnnotation(value = SampleEnum.TypeA)
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -148,7 +151,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.Sample
             |
             |public val annotation0: ClassAnnotation = ClassAnnotation(value = Sample::class)
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -179,7 +183,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.StringAnnotation
             |
             |public val annotation0: StringAnnotation = StringAnnotation(value = "sample-string")
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -210,7 +215,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.CharAnnotation
             |
             |public val annotation0: CharAnnotation = CharAnnotation(value = 'a')
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -241,7 +247,8 @@ class AnnotationNewInstanceCodeTest {
             |import com.testpackage.BooleanAnnotation
             |
             |public val annotation0: BooleanAnnotation = BooleanAnnotation(value = false)
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -275,7 +282,8 @@ class AnnotationNewInstanceCodeTest {
             |public val annotation0: DefaultAnnotation = DefaultAnnotation(value = "default")
             |
             |public val annotation1: DefaultAnnotation = DefaultAnnotation(value = "a")
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 
@@ -310,7 +318,8 @@ class AnnotationNewInstanceCodeTest {
             |
             |public val annotation0: MultipleMemberAnnotation = MultipleMemberAnnotation(string = "string", int =
             |    100)
-            |""".trimMargin()
+            |
+        """.trimMargin()
         assertFileTextEquals(expectedCode, generatedFile)
     }
 }

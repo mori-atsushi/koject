@@ -5,6 +5,8 @@ plugins {
 }
 
 kotlin {
+    version = "1.8.0" // for compose
+
     android {
         compilations.all {
             kotlinOptions {
@@ -27,6 +29,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
         val commonTest by getting {
@@ -34,7 +37,17 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+                implementation("androidx.compose.ui:ui:1.3.3")
+                implementation("androidx.compose.ui:ui-tooling:1.3.3")
+                implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
+                implementation("androidx.compose.foundation:foundation:1.3.1")
+                implementation("androidx.compose.material:material:1.3.1")
+            }
+        }
         val androidUnitTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -71,6 +84,10 @@ android {
 
     buildFeatures {
         buildConfig = false
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
 }
 

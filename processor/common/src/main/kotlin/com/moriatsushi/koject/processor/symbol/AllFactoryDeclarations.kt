@@ -7,9 +7,9 @@ import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.code.Names
 
 internal class AllFactoryDeclarations(
-    private val map: Map<StringIdentifier, FactoryDeclaration>,
+    sequence: Sequence<FactoryDeclaration>,
 ) {
-    val all = map.values.sortedBy { it.identifier.type }
+    val all = sequence.sortedBy { it.identifier.displayName }
     val normals = all.filter { !it.isSingleton }
     val singletons = all.filter { it.isSingleton }
 
@@ -18,7 +18,7 @@ internal class AllFactoryDeclarations(
     }
 
     fun getOrNull(identifier: StringIdentifier): FactoryDeclaration? {
-        return map[identifier]
+        return all.find { it.identifier == identifier }
     }
 
     companion object
@@ -29,6 +29,5 @@ internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
     val all = getDeclarationsFromPackage(Names.factoryPackageName)
         .filterIsInstance<KSClassDeclaration>()
         .map { FactoryDeclaration.of(it) }
-        .associateBy { it.identifier }
     return AllFactoryDeclarations(all)
 }

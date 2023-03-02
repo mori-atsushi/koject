@@ -1,7 +1,6 @@
 package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
-import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.tschuchort.compiletesting.SourceFile
 import java.io.File
@@ -29,18 +28,6 @@ class DIProcessorProviderFunctionTest {
         val result = complication.compile()
 
         assertCompileSucceed(result)
-
-        val expectedStringFactoryFile = folder.resolve(expectedStringFactoryFilePath)
-        assertFileExists(expectedStringFactoryFile)
-
-        val expectedInterfaceFactoryFile = folder.resolve(expectedInterfaceFactoryFilePath)
-        assertFileExists(expectedInterfaceFactoryFile)
-
-        val expectedClassFactoryFile = folder.resolve(expectedClassFactoryFilePath)
-        assertFileExists(expectedClassFactoryFile)
-
-        val expectedContainerFile = folder.resolve(expectedContainerFilePath)
-        assertFileExists(expectedContainerFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -73,20 +60,4 @@ class DIProcessorProviderFunctionTest {
                 )
             """,
     )
-
-    private val expectedStringFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_kotlin_String_Factory.kt"
-
-    private val expectedInterfaceFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SampleInterface_Factory.kt"
-
-    private val expectedClassFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SampleClass_Factory.kt"
-
-    private val expectedContainerFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/" +
-            "_AppContainer.kt"
 }

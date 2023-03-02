@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.code
 
 import com.moriatsushi.koject.internal.StringIdentifier
+import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
 import com.moriatsushi.koject.processor.symbol.asCodeName
 import com.squareup.kotlinpoet.ClassName
 
@@ -19,7 +20,27 @@ internal object Names {
         return identifier.asCodeName()
     }
 
-    fun factoryNameOf(identifier: StringIdentifier): String {
-        return "_${identifier.asCodeName()}_Factory"
+    fun factoryNameOf(provider: ProviderDeclaration): String {
+        val identifier = provider.identifier.asStringIdentifier()
+        val functionName = when (provider) {
+            is ProviderDeclaration.Class -> {
+                null
+            }
+            is ProviderDeclaration.ObjectFunction -> {
+                provider.functionName
+            }
+            is ProviderDeclaration.TopLevelFunction -> {
+                provider.functionName
+            }
+        }
+        return buildString {
+            append("_")
+            append(identifier.asCodeName())
+            if (functionName != null) {
+                append("__")
+                append(functionName.canonicalName.hashForCode)
+            }
+            append("_Factory")
+        }
     }
 }

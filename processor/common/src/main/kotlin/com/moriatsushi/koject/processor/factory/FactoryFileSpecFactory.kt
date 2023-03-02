@@ -32,7 +32,7 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createClassSpec(provider: ProviderDeclaration): TypeSpec {
-        val factoryName = Names.factoryNameOf(provider.identifier.asStringIdentifier())
+        val factoryName = Names.factoryNameOf(provider)
         val constructorSpec = createConstructorSpec(provider)
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =

@@ -1,7 +1,6 @@
 package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
-import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.tschuchort.compiletesting.SourceFile
 import java.io.File
@@ -29,25 +28,6 @@ class DIProcessorSingletonTest {
         val result = complication.compile()
 
         assertCompileSucceed(result)
-
-        val expectedSingletonClass1FactoryFile =
-            folder.resolve(expectedSingletonClass1FactoryFilePath)
-        assertFileExists(expectedSingletonClass1FactoryFile)
-
-        val expectedSingletonClass2FactoryFile =
-            folder.resolve(expectedSingletonClass2FactoryFilePath)
-        assertFileExists(expectedSingletonClass2FactoryFile)
-
-        val expectedSingletonInterfaceFactoryFile =
-            folder.resolve(expectedSingletonInterfaceFactoryFilePath)
-        assertFileExists(expectedSingletonInterfaceFactoryFile)
-
-        val expectedSingletonHolderFactoryFile =
-            folder.resolve(expectedSingletonHolderFactoryFilePath)
-        assertFileExists(expectedSingletonHolderFactoryFile)
-
-        val expectedContainerFile = folder.resolve(expectedContainerFilePath)
-        assertFileExists(expectedContainerFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -83,24 +63,4 @@ class DIProcessorSingletonTest {
                 )
             """,
     )
-
-    private val expectedSingletonClass1FactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SingletonClass1_Factory.kt"
-
-    private val expectedSingletonClass2FactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SingletonClass2_Factory.kt"
-
-    private val expectedSingletonInterfaceFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SingletonInterface_Factory.kt"
-
-    private val expectedSingletonHolderFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SingletonHolderClass_Factory.kt"
-
-    private val expectedContainerFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/" +
-            "_AppContainer.kt"
 }

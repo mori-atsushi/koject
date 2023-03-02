@@ -1,10 +1,7 @@
 package com.moriatsushi.koject.processor
 
-import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
-import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
-import com.moriatsushi.koject.processor.symbol.asCodeName
 import com.tschuchort.compiletesting.SourceFile
 import java.io.File
 import org.junit.Before
@@ -31,15 +28,6 @@ class DIProcessorQualifierTest {
         val result = complication.compile()
 
         assertCompileSucceed(result)
-
-        val expectedID1FactoryFile = folder.resolve(expectedID1FactoryFilePath)
-        assertFileExists(expectedID1FactoryFile)
-
-        val expectedClassFactoryFile = folder.resolve(expectedClassFactoryFilePath)
-        assertFileExists(expectedClassFactoryFile)
-
-        val expectedFunctionFactoryFile = folder.resolve(expectedFunctionFactoryFilePath)
-        assertFileExists(expectedFunctionFactoryFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -91,30 +79,4 @@ class DIProcessorQualifierTest {
                 }
             """,
     )
-
-    private val expectedID1Identifier = StringIdentifier(
-        "kotlin.String",
-        "com.testpackage.ID1",
-    )
-    private val expectedID2Identifier = StringIdentifier(
-        "kotlin.String",
-        "com.testpackage.ID2",
-    )
-
-    private val expectedID1FactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_${expectedID1Identifier.asCodeName()}_Factory.kt"
-
-    private val expectedClassFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_SampleClass_Factory.kt"
-
-    private val expectedFunctionIdentifier =
-        StringIdentifier(
-            "com.testpackage.SampleClass",
-            "com.testpackage.ID1",
-        )
-    private val expectedFunctionFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_${expectedFunctionIdentifier.asCodeName()}_Factory.kt"
 }

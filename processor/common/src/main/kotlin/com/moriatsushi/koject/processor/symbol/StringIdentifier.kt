@@ -4,11 +4,11 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import com.moriatsushi.koject.processor.code.escapedForCode
+import com.moriatsushi.koject.processor.code.hashForCode
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
-import java.security.MessageDigest
-import java.util.Base64
 
 internal fun StringIdentifier.Companion.of(
     typeName: TypeName,
@@ -32,10 +32,10 @@ fun KSAnnotated.findStringIdentifier(): StringIdentifier? {
  */
 internal fun StringIdentifier.asCodeName(): String {
     return buildString {
-        append(type.escaped)
+        append(type.escapedForCode)
         if (qualifier.isNotEmpty()) {
             append("__")
-            append(qualifier.hash)
+            append(qualifier.hashForCode)
         }
     }
 }
@@ -57,21 +57,3 @@ internal fun StringIdentifier.asAnnotationSpec(): AnnotationSpec {
         }
     }.build()
 }
-
-private val String.escaped: String
-    get() = this
-        .replace(" ", "")
-        .replace(".", "_")
-        .replace("<", "__")
-        .replace(">", "__")
-        .replace(",", "__")
-        .replace("?", "_nullable")
-
-private val String.hash: String
-    get() {
-        val sha256 = MessageDigest.getInstance("SHA-256").digest(this.toByteArray())
-        return Base64.getUrlEncoder().withoutPadding()
-            .encodeToString(sha256)
-            .take(16)
-            .replace("-", "_")
-    }

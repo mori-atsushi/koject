@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.processor.container
 
+import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
@@ -11,17 +12,18 @@ internal class DependencyValidator {
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
-        allFactories.all.forEach { targetClass ->
-            targetClass.parameters.forEach {
-                validate(allFactories, targetClass, it)
+        allFactories.all.forEach { factory ->
+            validateDuplicates(factory, allFactories)
+            factory.parameters.forEach {
+                validateParameter(it, factory, allFactories)
             }
         }
     }
 
-    private fun validate(
-        allFactories: AllFactoryDeclarations,
-        factory: FactoryDeclaration,
+    private fun validateParameter(
         parameter: FactoryParameter,
+        factory: FactoryDeclaration,
+        allFactories: AllFactoryDeclarations,
     ) {
         val dependencyFactory = allFactories.getOrNull(parameter.identifier)
         when {
@@ -31,6 +33,24 @@ internal class DependencyValidator {
             factory.isSingleton && !dependencyFactory.isSingleton -> {
                 throwWrongScopeException(parameter)
             }
+        }
+    }
+
+    private fun validateDuplicates(
+        factory: FactoryDeclaration,
+        allFactories: AllFactoryDeclarations,
+    ) {
+        val duplicate = allFactories.all.filter {
+            it.identifier == factory.identifier
+        }
+        if (duplicate.count() > 1) {
+            val errorMessage = buildString {
+                appendLine("${factory.identifier.displayName} provide is duplicated.")
+                duplicate.forEachIndexed { index, it ->
+                    appendLine("    ${index + 1}. ${it.location.value}")
+                }
+            }
+            throw DuplicateProvidedException(errorMessage)
         }
     }
 

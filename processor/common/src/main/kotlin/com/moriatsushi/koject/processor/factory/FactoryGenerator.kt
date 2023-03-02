@@ -8,12 +8,10 @@ import com.moriatsushi.koject.processor.symbol.of
 
 internal class FactoryGenerator(
     private val fileGenerator: FileGenerator,
-    private val validator: ProviderValidator,
     private val factoryFileSpecFactory: FactoryFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
         val providers = searchProviders(resolver)
-        validator.validate(providers)
         providers.forEach {
             processNode(it)
         }

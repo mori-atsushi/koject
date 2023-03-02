@@ -1,0 +1,239 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Qualifier
+You can use the `@Qualifier` annotation to distinguish between different instances of the same type.
+
+First, define the qualifier annotations with `@Qualifier`.
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ID1
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ID2
+```
+
+Then, use the annotations to specify the qualifier when providing the instances.
+
+```kotlin
+@ID1
+@Provide
+fun provideDB1(): DB {
+    DB.create("id1")
+}
+
+@ID1
+@Provide
+fun provideDB2(): DB {
+    DB.create("id2")
+}
+```
+
+Finally, use the qualifiers to inject the instances you need.
+
+```kotlin
+class Repository(
+    @ID1
+    val db1: DB,
+    @ID2
+    val db2: DB
+)
+```
+
+You can also use qualifier annotations when calling the `inject()` function.
+
+```kotlin
+val db1 = inject<DB>(ID1())
+val db2 = inject<DB>(ID2())
+```
+
+This allows you to provide and inject multiple instances of the same type without ambiguity.
+
+## Distinguishing with Qualifier Members
+Qualifier annotations can also have members to further distinguish between instances.
+
+For example, you can use the enum class like this:
+
+```kotlin
+enum class QualifierType {
+    ID1,
+    ID2
+}
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class EnumQualifier(val type: QualifierType)
+```
+```kotlin
+@EnumQualifier(QualifierType.ID1)
+@Provide
+fun provideDB1(): DB {
+    DB.create("id1")
+}
+
+@EnumQualifier(QualifierType.ID2)
+@Provide
+fun provideDB2(): DB {
+    DB.create("id2")
+}
+```
+```kotlin
+val db1 = inject<DB>(@EnumQualifier(QualifierType.ID1))
+val db2 = inject<DB>(@EnumQualifier(QualifierType.ID2))
+```
+
+The following types can be used as qualifier members:
+
+<Tabs>
+  <TabItem value="number" label="Number" default>
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IntQualifier(val value: Int)
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FloatQualifier(val value: Float)
+```
+
+  </TabItem>
+  <TabItem value="boolean" label="Boolean">
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class BooleanQualifier(val value: Boolean)
+```
+
+  </TabItem>
+  <TabItem value="byte" label="Byte">
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ByteQualifier(val value: Byte)
+```
+
+  </TabItem>
+  <TabItem value="char" label="Char">
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CharQualifier(val value: Char)
+```
+
+  </TabItem>
+  <TabItem value="string" label="String">
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class StringQualifier(val value: String)
+```
+
+  </TabItem>
+  <TabItem value="kclass" label="KClass">
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ClassQualifier(val value: KClass<*>)
+```
+
+  </TabItem>
+  <TabItem value="enums" label="Enums">
+
+```kotlin
+enum class QualifierType {
+    ID1,
+    ID2
+}
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class EnumQualifier(val type: QualifierType)
+```
+
+  </TabItem>
+</Tabs>
+
+The following types are currently not supported:
+
+<Tabs>
+  <TabItem value="annotations" label="Other annotations" default>
+
+```kotlin
+annotation class OtherAnnotation(val value: String)
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AnnotationQualifier(
+    val value: OtherAnnotation // Not supported!
+)
+```
+
+  </TabItem>
+  <TabItem value="array" label="Array (including varargs)" default>
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class StringArrayQualifier(val value: Array<String>) // Not supported!
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IntArrayQualifier(val value: IntArray) // Not supported!
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class VarargArrayQualifier(vararg val value: Int) // Not supported!
+```
+
+  </TabItem>
+</Tabs>
+
+Qualifier members can have multiple values ​​and can have default values:
+
+```kotlin
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CustomQualifier(
+    val int: Int,
+    val string: String = "default",
+)
+```
+
+## Named annotation
+
+You can also use the `@Named` qualifier to distinguish between different instances of the same type based on a string value.
+
+```kotlin
+@Named("db1")
+@Provide
+fun provideDB1(): DB {
+    DB.create("id1")
+}
+
+@Named("db2")
+@Provide
+fun provideDB2(): DB {
+    DB.create("id2")
+}
+```
+```kotlin
+class Repository(
+    @Named("db1")
+    val db1: DB,
+    @Named("db2")
+    val db2: DB
+)
+```
+```kotlin
+val db1 = inject<DB>("db1")
+val db2 = inject<DB>("db2")
+```

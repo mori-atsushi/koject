@@ -221,12 +221,12 @@ interface Repository
 ```
 
 #### More details
-For more detailed usage, please refer to the [documentation]((https://mori-atsushi.github.io/koject/docs/usage)).
+For more detailed usage, please refer to the [documentation](/docs/usage).
 
 ### Support for Kotlin Multiplatform
 Koject supports Kotlin Multiplatform, allowing you to create dependency graphs for each platform and even swap classes depending on the platform.
 
-Check out the [setup instructions](https://mori-atsushi.github.io/koject/docs/setup) specific to each platform.
+Check out the [setup instructions](/docs/setup) specific to each platform.
 
 ### Checking the Dependency Graph at Compile Time
 Koject works by generating code using [KSP](https://github.com/google/ksp).

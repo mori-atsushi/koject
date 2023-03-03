@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.0.0-beta02")
++                implementation("com.moriatsushi.koject:koject-core:1.0.0-beta03")
             }
         }
     }
@@ -35,7 +35,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-beta02"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-beta03"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -55,8 +55,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.0.0-beta02")
-+    ksp("com.moriatsushi.koject:koject-processor-app1.0.0-beta02")
++    implementation("com.moriatsushi.koject:koject-core:1.0.0-beta03")
++    ksp("com.moriatsushi.koject:koject-processor-app1.0.0-beta03")
 }
 ```
 
@@ -69,8 +69,8 @@ This prevents the container from being generated in the library module.
 ```diff title="build.gradle.kts"
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-beta02"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-beta02"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.0.0-beta03"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.0.0-beta03"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -83,9 +83,9 @@ dependencies {
 
 ```diff title="build.gradle.kts"
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.0.0-beta02")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-beta02")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-beta02")
+    implementation("com.moriatsushi.koject:koject-core:1.0.0-beta03")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.0.0-beta03")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.0.0-beta03")
 }
 ```
 
@@ -94,7 +94,7 @@ Copy the following snippets if you are using [gradle verion catalog](https://doc
 
 ```xml title="libs.versions.toml"
 [versions]
-koject = "1.0.0-beta02"
+koject = "1.0.0-beta03"
 
 [libraries]
 koject-core = { group = "com.moriatsushi.koject", name = "koject-core", version.ref = "koject" }

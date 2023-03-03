@@ -5,5 +5,9 @@ import com.moriatsushi.koject.Provides
 
 @Provides
 class AndroidTodoListViewModel(
-    common: TodoListViewModel,
-) : ViewModel(), TodoListViewModel by common
+    private val common: TodoListViewModel,
+) : ViewModel(), TodoListViewModel by common {
+    override fun onCleared() {
+        common.onCleared()
+    }
+}

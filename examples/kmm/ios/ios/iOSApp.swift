@@ -4,7 +4,7 @@ import shared
 @main
 struct iOSApp: App {
     init() {
-        KojectHelperKt.startKoject()
+        KojectHelper_iosKt.startKoject()
     }
     
 	var body: some Scene {

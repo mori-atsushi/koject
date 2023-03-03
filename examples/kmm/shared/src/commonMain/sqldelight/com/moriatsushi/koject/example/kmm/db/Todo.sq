@@ -1,0 +1,13 @@
+CREATE TABLE TodoTask (
+    id          TEXT    NOT NULL PRIMARY KEY,
+    title       TEXT    NOT NULL,
+    isCompleted INTEGER NOT NULL
+);
+
+insertTodoTask:
+INSERT INTO TodoTask(id, title, isCompleted)
+VALUES(?, ?, ?);
+
+selectAllTodoTasks:
+SELECT TodoTask.*
+FROM TodoTask;

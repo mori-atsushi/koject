@@ -225,13 +225,13 @@ interface Repository
 
 #### 詳細な利用方法
 
-より詳細な利用方法については[ドキュメント](https://mori-atsushi.github.io/koject/docs/usage)を確認してください。
+より詳細な利用方法については[ドキュメント](/docs/usage)を確認してください。
 
 ### Kotlin Multiplatformに対応
 KojectはKotlin Multiplatformに対応しています。
 依存グラフはそれぞれのプラットフォーム毎に作成され、プラットフォームによってクラスを差し替えることも可能です。
 
-各プラットフォームに合わせた[セットアップ方法](https://mori-atsushi.github.io/koject/docs/setup)を確認してください。
+各プラットフォームに合わせた[セットアップ方法](/docs/setup)を確認してください。
 
 ### コンパイル時の依存グラフの確認
 Kojectは[KSP](https://github.com/google/ksp)を使ったコード生成によって動作します。

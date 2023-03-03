@@ -9,7 +9,7 @@ internal fun List<TodoTaskEntity>.toModel(): TodoList {
         TodoTask(
             it.id,
             it.title,
-            it.isCompleted == 1L,
+            it.isCompleted,
         )
     }
     return TodoList(list)

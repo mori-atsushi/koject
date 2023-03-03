@@ -22,7 +22,7 @@ internal class TodoDaoImpl(
     override suspend fun insertTodoTask(
         id: String,
         title: String,
-        isCompleted: Long,
+        isCompleted: Boolean,
     ) {
         withContext(ioDispatcher) {
             db.todoQueries.insertTodoTask(id, title, isCompleted)
@@ -32,7 +32,7 @@ internal class TodoDaoImpl(
     override suspend fun updateTodoTask(
         id: String,
         title: String,
-        isCompleted: Long,
+        isCompleted: Boolean,
     ) {
         withContext(ioDispatcher) {
             db.todoQueries.updateTodoTask(title, isCompleted, id)

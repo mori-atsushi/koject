@@ -6,12 +6,12 @@ interface TodoDao {
     suspend fun insertTodoTask(
         id: String,
         title: String,
-        isCompleted: Long,
+        isCompleted: Boolean,
     )
 
     suspend fun updateTodoTask(
         id: String,
         title: String,
-        isCompleted: Long,
+        isCompleted: Boolean,
     )
 }

@@ -19,7 +19,7 @@ internal class TodoRepositoryImpl(
         todoDao.insertTodoTask(
             task.id,
             task.title,
-            if (task.isCompleted) 1L else 0,
+            task.isCompleted,
         )
     }
 
@@ -27,7 +27,7 @@ internal class TodoRepositoryImpl(
         todoDao.updateTodoTask(
             task.id,
             task.title,
-            if (task.isCompleted) 1L else 0,
+            task.isCompleted,
         )
     }
 }

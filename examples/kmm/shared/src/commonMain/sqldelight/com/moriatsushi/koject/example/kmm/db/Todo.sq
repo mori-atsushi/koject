@@ -1,7 +1,7 @@
 CREATE TABLE TodoTask (
-    id          TEXT    NOT NULL PRIMARY KEY,
-    title       TEXT    NOT NULL,
-    isCompleted INTEGER NOT NULL
+    id          TEXT                      NOT NULL PRIMARY KEY,
+    title       TEXT                      NOT NULL,
+    isCompleted INTEGER AS kotlin.Boolean NOT NULL
 );
 
 insertTodoTask:

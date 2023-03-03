@@ -1,0 +1,21 @@
+CREATE TABLE TodoTask (
+    id          TEXT                      NOT NULL PRIMARY KEY,
+    title       TEXT                      NOT NULL,
+    isCompleted INTEGER AS kotlin.Boolean NOT NULL,
+    createdAt   TEXT                      NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+insertTodoTask:
+INSERT INTO TodoTask(id, title, isCompleted)
+VALUES(?, ?, ?);
+
+selectAllTodoTasks:
+SELECT TodoTask.*
+FROM TodoTask
+ORDER BY createdAt DESC;
+
+updateTodoTask:
+UPDATE TodoTask
+SET title = :title,
+    isCompleted = :isCompleted
+WHERE id = :id;

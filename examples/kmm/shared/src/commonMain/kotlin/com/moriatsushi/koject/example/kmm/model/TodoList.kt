@@ -11,13 +11,9 @@ data class TodoList(
         return TodoList(listOf(task) + value)
     }
 
-    fun changeCompleted(task: TodoTask, isCompleted: Boolean): TodoList {
+    fun update(task: TodoTask): TodoList {
         val newList = value.map {
-            if (it == task) {
-                task.updatedCompleted(isCompleted)
-            } else {
-                it
-            }
+            if (it.id == task.id) task else it
         }
         return TodoList(newList)
     }

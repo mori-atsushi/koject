@@ -1,7 +1,8 @@
 CREATE TABLE TodoTask (
     id          TEXT                      NOT NULL PRIMARY KEY,
     title       TEXT                      NOT NULL,
-    isCompleted INTEGER AS kotlin.Boolean NOT NULL
+    isCompleted INTEGER AS kotlin.Boolean NOT NULL,
+    createdAt   TEXT                      NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 insertTodoTask:
@@ -10,7 +11,8 @@ VALUES(?, ?, ?);
 
 selectAllTodoTasks:
 SELECT TodoTask.*
-FROM TodoTask;
+FROM TodoTask
+ORDER BY createdAt DESC;
 
 updateTodoTask:
 UPDATE TodoTask

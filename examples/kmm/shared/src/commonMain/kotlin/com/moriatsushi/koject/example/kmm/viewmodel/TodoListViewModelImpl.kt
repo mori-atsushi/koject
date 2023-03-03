@@ -47,8 +47,12 @@ internal class TodoListViewModelImpl(
     }
 
     override fun changeComplete(task: TodoTask, isCompleted: Boolean) {
+        val newTask = task.updatedCompleted(isCompleted)
         _tasks.update { list ->
-            list.changeCompleted(task, isCompleted)
+            list.update(newTask)
+        }
+        coroutineScope.launch {
+            todoRepository.update(newTask)
         }
     }
 

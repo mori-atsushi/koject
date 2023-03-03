@@ -11,3 +11,9 @@ VALUES(?, ?, ?);
 selectAllTodoTasks:
 SELECT TodoTask.*
 FROM TodoTask;
+
+updateTodoTask:
+UPDATE TodoTask
+SET title = :title,
+    isCompleted = :isCompleted
+WHERE id = :id;

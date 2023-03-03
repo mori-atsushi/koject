@@ -8,4 +8,10 @@ interface TodoDao {
         title: String,
         isCompleted: Long,
     )
+
+    suspend fun updateTodoTask(
+        id: String,
+        title: String,
+        isCompleted: Long,
+    )
 }

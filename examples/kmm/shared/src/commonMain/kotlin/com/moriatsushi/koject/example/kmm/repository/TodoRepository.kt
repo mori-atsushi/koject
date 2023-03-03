@@ -7,4 +7,6 @@ interface TodoRepository {
     suspend fun fetchTodoList(): TodoList
 
     suspend fun save(task: TodoTask)
+
+    suspend fun update(task: TodoTask)
 }

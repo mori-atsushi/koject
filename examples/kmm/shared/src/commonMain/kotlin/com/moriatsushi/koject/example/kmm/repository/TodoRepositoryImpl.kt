@@ -22,4 +22,12 @@ internal class TodoRepositoryImpl(
             if (task.isCompleted) 1L else 0,
         )
     }
+
+    override suspend fun update(task: TodoTask) {
+        todoDao.updateTodoTask(
+            task.id,
+            task.title,
+            if (task.isCompleted) 1L else 0,
+        )
+    }
 }

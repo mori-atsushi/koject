@@ -28,4 +28,14 @@ internal class TodoDaoImpl(
             db.todoQueries.insertTodoTask(id, title, isCompleted)
         }
     }
+
+    override suspend fun updateTodoTask(
+        id: String,
+        title: String,
+        isCompleted: Long,
+    ) {
+        withContext(ioDispatcher) {
+            db.todoQueries.updateTodoTask(title, isCompleted, id)
+        }
+    }
 }

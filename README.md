@@ -35,9 +35,9 @@ class Controller(
 ```
 
 ## Features
-
 * Support [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)
 * Easy provide with annotations
+* Check dependency graph at compile time
 * Code generation with [KSP](https://github.com/google/ksp)
 * Support multi-module project
 
@@ -47,6 +47,9 @@ class Controller(
   * [Start Koject](https://mori-atsushi.github.io/koject/docs/usage/basic)
   * [Qualifier](https://mori-atsushi.github.io/koject/docs/usage/qualifier)
   * [Binds](https://mori-atsushi.github.io/koject/docs/usage/binds)
+
+## Examples
+* [Koject TODO (KMM)](https://github.com/Mori-Atsushi/koject/tree/main/examples/kmm)
 
 ## Related libraries
 Koject is inspired by the following libraries.

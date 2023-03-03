@@ -29,13 +29,33 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/Mori-Atsushi/koject/tree/main/docs/',
+          editUrl: 'https://github.com/Mori-Atsushi/koject/tree/main/docs/',
+        },
+        blog: {
+          showReadingTime: true,
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
+          editUrl: 'https://github.com/Mori-Atsushi/koject/tree/main/docs/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
       }),
+    ],
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        id: 'japanese-blog',
+        routeBasePath: 'blog/jp/',
+        path: './blog-jp',
+        showReadingTime: false,
+        blogSidebarTitle: '全ての投稿',
+        blogSidebarCount: 'ALL',
+        editUrl: 'https://github.com/Mori-Atsushi/koject/tree/main/docs/',
+      },
     ],
   ],
 
@@ -46,11 +66,6 @@ const config = {
       navbar: {
         title: 'Koject',
         items: [
-          {
-            href: 'https://github.com/mori-atsushi/koject',
-            label: 'GitHub',
-            position: 'right',
-          },
           {
             to: 'docs/setup',
             label: 'Setup',
@@ -74,6 +89,26 @@ const config = {
                 label: 'Binds',
               },
             ],
+          },
+          {
+            type: 'dropdown',
+            label: 'Blog',
+            position: 'left',
+            items: [
+              {
+                href: '/blog',
+                label: 'English',
+              },
+              {
+                href: '/blog/jp',
+                label: '日本語',
+              },
+            ],
+          },
+          {
+            href: 'https://github.com/mori-atsushi/koject',
+            label: 'GitHub',
+            position: 'right',
           },
         ],
       },

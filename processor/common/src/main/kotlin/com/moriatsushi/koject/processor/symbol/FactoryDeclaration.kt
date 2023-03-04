@@ -1,7 +1,6 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSFile
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.internal.StringIdentifier
@@ -15,7 +14,6 @@ internal data class FactoryDeclaration(
     val parameters: List<FactoryParameter>,
     val isSingleton: Boolean,
     val location: Location,
-    val containingFile: KSFile?,
 ) {
     companion object
 }
@@ -29,7 +27,6 @@ internal fun FactoryDeclaration.Companion.of(
         parameters = ksClass.factoryParameters,
         isSingleton = ksClass.hasAnnotation<Singleton>(),
         location = ksClass.findLocationAnnotation()!!,
-        containingFile = ksClass.containingFile,
     )
 }
 

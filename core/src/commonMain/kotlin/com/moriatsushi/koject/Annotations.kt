@@ -45,8 +45,24 @@ annotation class Named(val name: String)
 annotation class Binds(val to: KClass<*> = Nothing::class)
 
 /**
- * Marks declarations that are still experimental
+ * Mark for dependency injection at runtime.
+ *
+ * Don't forget to provide using [ExtrasBuilder].
+ * It is not checked to be provided at compile time.
+ */
+@ExperimentalKojectApi
+@Target(AnnotationTarget.VALUE_PARAMETER)
+annotation class RuntimeInject
+
+/**
+ * Marks declarations that is still experimental in Koject API
+ *
+ * API will change in future releases.
  */
 @Retention(value = AnnotationRetention.BINARY)
-@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "This is still experimental Koject API " +
+            "API will change in future releases.",
+)
 annotation class ExperimentalKojectApi

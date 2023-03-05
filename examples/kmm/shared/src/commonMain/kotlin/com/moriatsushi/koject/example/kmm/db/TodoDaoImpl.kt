@@ -2,11 +2,13 @@ package com.moriatsushi.koject.example.kmm.db
 
 import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.Provides
+import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.example.kmm.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 @Provides
+@Singleton
 @Binds
 internal class TodoDaoImpl(
     private val db: Database,

@@ -10,7 +10,7 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RuntimeInjectTest {
+class DynamicTest {
     @AfterTest
     fun clear() {
         Koject.stop()
@@ -20,7 +20,7 @@ class RuntimeInjectTest {
     fun successInject_class() {
         Koject.start()
 
-        val value = inject<RuntimeInjectClass> {
+        val value = inject<DynamicClass> {
             provides { "runtime-string-class" }
         }
         assertEquals("runtime-string-class", value.id)
@@ -30,7 +30,7 @@ class RuntimeInjectTest {
     fun successInject_interface() {
         Koject.start()
 
-        val value = inject<RuntimeInjectInterface> {
+        val value = inject<DynamicInterface> {
             provides { "runtime-string-interface" }
         }
         assertEquals("runtime-string-interface", value.id)
@@ -40,7 +40,7 @@ class RuntimeInjectTest {
     fun successInject_holder() {
         Koject.start()
 
-        val holder = inject<RuntimeInjectHolder> {
+        val holder = inject<DynamicHolder> {
             provides { "runtime-string" }
         }
 

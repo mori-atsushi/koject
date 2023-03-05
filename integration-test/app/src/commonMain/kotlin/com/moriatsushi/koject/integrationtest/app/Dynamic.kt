@@ -4,34 +4,34 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Provides
-import com.moriatsushi.koject.RuntimeInject
+import com.moriatsushi.koject.Dynamic
 
 @Provides
-class RuntimeInjectClass(
-    @RuntimeInject
+class DynamicClass(
+    @Dynamic
     val id: String,
     val appClass: AppClass1,
 )
 
 @Provides
-fun provideRuntimeInjectFunction(
-    @RuntimeInject
+fun provideDynamicFunction(
+    @Dynamic
     id: String,
     appClass: AppClass1,
-): RuntimeInjectInterface {
-    return object : RuntimeInjectInterface {
+): DynamicInterface {
+    return object : DynamicInterface {
         override val id: String = id
         override val appClass: AppClass1 = appClass
     }
 }
 
-interface RuntimeInjectInterface {
+interface DynamicInterface {
     val id: String
     val appClass: AppClass1
 }
 
 @Provides
-class RuntimeInjectHolder(
-    val value1: RuntimeInjectClass,
-    val value2: RuntimeInjectInterface,
+class DynamicHolder(
+    val value1: DynamicClass,
+    val value2: DynamicInterface,
 )

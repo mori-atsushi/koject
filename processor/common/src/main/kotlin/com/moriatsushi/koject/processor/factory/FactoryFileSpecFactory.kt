@@ -67,7 +67,7 @@ internal class FactoryFileSpecFactory {
     private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.constructorBuilder().apply {
             provider.parameters
-                .filterNot { it.isRuntimeInject }
+                .filterNot { it.isDynamic }
                 .forEach {
                     val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
                     val parameter = ParameterSpec.builder(
@@ -101,7 +101,7 @@ internal class FactoryFileSpecFactory {
                 add("\n")
                 indent()
                 provider.parameters.forEach {
-                    if (it.isRuntimeInject) {
+                    if (it.isDynamic) {
                         add("extras.resolve(")
                         add(it.identifier.newInstanceCode)
                         add(")")

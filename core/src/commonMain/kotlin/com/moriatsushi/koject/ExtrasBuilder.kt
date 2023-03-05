@@ -6,7 +6,7 @@ import com.moriatsushi.koject.internal.Identifier
 /**
  * Add dependencies at runtime
  *
- * Add [RuntimeInject] to runtime dependencies.
+ * Add [Dynamic] to runtime dependencies.
  */
 @ExperimentalKojectApi
 class ExtrasBuilder internal constructor() {

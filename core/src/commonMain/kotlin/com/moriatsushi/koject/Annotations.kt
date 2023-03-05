@@ -52,7 +52,7 @@ annotation class Binds(val to: KClass<*> = Nothing::class)
  */
 @ExperimentalKojectApi
 @Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class RuntimeInject
+annotation class Dynamic
 
 /**
  * Marks declarations that is still experimental in Koject API

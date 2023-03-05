@@ -81,8 +81,8 @@ fun provideDB2(): DB {
 }
 ```
 ```kotlin
-val db1 = inject<DB>(@EnumQualifier(QualifierType.ID1))
-val db2 = inject<DB>(@EnumQualifier(QualifierType.ID2))
+val db1 = inject<DB>(EnumQualifier(QualifierType.ID1))
+val db2 = inject<DB>(EnumQualifier(QualifierType.ID2))
 ```
 
 The following types can be used as qualifier members:

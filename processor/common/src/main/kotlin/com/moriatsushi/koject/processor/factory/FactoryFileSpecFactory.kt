@@ -40,8 +40,6 @@ internal class FactoryFileSpecFactory {
         val factoryName = Names.factoryNameOf(provider)
         val constructorSpec = createConstructorSpec(provider)
         val createFunSpec = createCreateFunSpec(provider)
-        val internalAnnotationSpec =
-            AnnotationSpecFactory.createInternal()
         val companionObject = createCompanionObjectSpec(provider)
 
         return TypeSpec.classBuilder(factoryName).apply {
@@ -51,7 +49,9 @@ internal class FactoryFileSpecFactory {
             )
             addFunction(createFunSpec)
             addType(companionObject)
-            addAnnotation(internalAnnotationSpec)
+            addAnnotation(AnnotationSpecFactory.createInternal())
+            addAnnotation(AnnotationSpecFactory.createOptInExperimental())
+
             if (provider.isSingleton) {
                 addAnnotation(AnnotationSpecFactory.createSingleton())
             }

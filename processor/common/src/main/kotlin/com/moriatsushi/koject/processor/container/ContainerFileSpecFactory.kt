@@ -35,9 +35,6 @@ internal class ContainerFileSpecFactory {
     }
 
     private fun createContainerClass(allFactories: AllFactoryDeclarations): TypeSpec {
-        val internalAnnotationSpec =
-            AnnotationSpecFactory.createInternal()
-
         return TypeSpec.classBuilder(Names.containerClassName).apply {
             addSuperinterface(Container::class)
             allFactories.singletons.forEach {
@@ -47,7 +44,8 @@ internal class ContainerFileSpecFactory {
                 addProperty(createProviderPropertySpec(allFactories, it))
             }
             addFunction(createGetFunSpec(allFactories))
-            addAnnotation(internalAnnotationSpec)
+            addAnnotation(AnnotationSpecFactory.createInternal())
+            addAnnotation(AnnotationSpecFactory.createOptInExperimental())
         }.build()
     }
 

@@ -10,6 +10,10 @@ internal object AnnotationSpecFactory {
         "com.moriatsushi.koject.internal",
         "InternalKojectApi",
     )
+    private val experimentalAnnotationName = ClassName(
+        "com.moriatsushi.koject",
+        "ExperimentalKojectApi",
+    )
     private val optInAnnotationName = ClassName("kotlin", "OptIn")
 
     fun createInternal(): AnnotationSpec {
@@ -20,6 +24,12 @@ internal object AnnotationSpecFactory {
     fun createOptInInternal(): AnnotationSpec {
         return AnnotationSpec.builder(optInAnnotationName).apply {
             addMember("%T::class", internalAnnotationName)
+        }.build()
+    }
+
+    fun createOptInExperimental(): AnnotationSpec {
+        return AnnotationSpec.builder(optInAnnotationName).apply {
+            addMember("%T::class", experimentalAnnotationName)
         }.build()
     }
 

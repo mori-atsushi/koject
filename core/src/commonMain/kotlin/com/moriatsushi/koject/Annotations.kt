@@ -43,3 +43,10 @@ annotation class Named(val name: String)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
 annotation class Binds(val to: KClass<*> = Nothing::class)
+
+/**
+ * Marks declarations that are still experimental
+ */
+@Retention(value = AnnotationRetention.BINARY)
+@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+annotation class ExperimentalKojectApi

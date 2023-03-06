@@ -7,7 +7,7 @@ import com.moriatsushi.koject.internal.Identifier
  * Create [Extras]
  */
 @ExperimentalKojectApi
-class ExtrasBuilder internal constructor() {
+class ExtrasBuilder {
     private val map = mutableMapOf<Identifier, () -> Any>()
 
     /**
@@ -43,7 +43,7 @@ class ExtrasBuilder internal constructor() {
         map[identifier] = builder
     }
 
-    internal fun build(): Extras {
+    fun build(): Extras {
         return if (map.isNotEmpty()) {
             ExtrasImpl(map)
         } else {
@@ -56,10 +56,8 @@ class ExtrasBuilder internal constructor() {
  * Create [Extras]
  */
 @ExperimentalKojectApi
-fun buildExtras(builder: (ExtrasBuilder.() -> Unit)? = null): Extras {
-    return if (builder == null) {
-        Extras.empty
-    } else {
-        ExtrasBuilder().apply { builder() }.build()
-    }
+inline fun buildExtras(
+    crossinline builder: ExtrasBuilder.() -> Unit,
+): Extras {
+    return ExtrasBuilder().apply { builder() }.build()
 }

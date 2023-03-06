@@ -5,6 +5,9 @@ import com.moriatsushi.koject.internal.Identifier
 
 /**
  * Inject an instance with resolved dependencies
+ *
+ * @param qualifier Qualifier for identification.
+ *   Specify the instantiation of the annotation with [Qualifier].
  */
 @OptIn(ExperimentalKojectApi::class)
 inline fun <reified T : Any> inject(
@@ -14,12 +17,16 @@ inline fun <reified T : Any> inject(
 }
 
 /**
- * Inject an instance with resolved dependencies
+ * Inject an instance with resolved dependencies (experimental)
+ *
+ * @param qualifier Qualifier for identification.
+ *   Specify the instantiation of the annotation with [Qualifier].
+ * @param extras [Dynamic] dependencies
  */
 @ExperimentalKojectApi
 inline fun <reified T : Any> inject(
     qualifier: Any? = null,
-    noinline extras: (ExtrasBuilder.() -> Unit)? = null,
+    extras: Extras = Extras.empty,
 ): T {
     val id = Identifier.of<T>(qualifier)
     return injectOrNull(id, extras) as? T
@@ -27,19 +34,53 @@ inline fun <reified T : Any> inject(
 }
 
 /**
+ * Inject an instance with resolved dependencies (experimental)
+ *
+ * @param qualifier Qualifier for identification.
+ *   Specify the instantiation of the annotation with [Qualifier].
+ * @param extras [Dynamic] dependencies
+ */
+@ExperimentalKojectApi
+inline fun <reified T : Any> inject(
+    qualifier: Any? = null,
+    crossinline extras: ExtrasBuilder.() -> Unit,
+): T {
+    return inject(qualifier, buildExtras(extras))
+}
+
+/**
  * Inject an [Named] instance with resolved dependencies
+ *
+ * @param name name of [Named]
  */
 inline fun <reified T : Any> inject(name: String): T {
     return inject(Named(name))
 }
 
 /**
- * Inject an [Named] instance with resolved dependencies
+ * Inject an [Named] instance with resolved dependencies (experimental)
+ *
+ * @param name name of [Named]
+ * @param extras [Dynamic] dependencies
  */
 @ExperimentalKojectApi
 inline fun <reified T : Any> inject(
     name: String,
-    noinline extras: (ExtrasBuilder.() -> Unit)? = null,
+    extras: Extras = Extras.empty,
+): T {
+    return inject(Named(name), extras)
+}
+
+/**
+ * Inject an [Named] instance with resolved dependencies (experimental)
+ *
+ * @param name name of [Named]
+ * @param extras [Dynamic] dependencies
+ */
+@ExperimentalKojectApi
+inline fun <reified T : Any> inject(
+    name: String,
+    crossinline extras: ExtrasBuilder.() -> Unit,
 ): T {
     return inject(Named(name), extras)
 }
@@ -48,7 +89,7 @@ inline fun <reified T : Any> inject(
 @PublishedApi
 internal fun injectOrNull(
     id: Identifier,
-    extras: (ExtrasBuilder.() -> Unit)?,
+    extras: Extras,
 ): Any? {
-    return Koject.container.resolve(id, buildExtras(extras))
+    return Koject.container.resolve(id, extras)
 }

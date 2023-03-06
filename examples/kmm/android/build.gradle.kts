@@ -3,10 +3,6 @@ plugins {
     kotlin("android")
 }
 
-kotlin {
-    version = "1.8.0" // for compose
-}
-
 android {
     namespace = "com.moriatsushi.koject.example.kmm"
     compileSdk = 33

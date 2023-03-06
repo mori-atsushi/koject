@@ -6,8 +6,6 @@ plugins {
 }
 
 kotlin {
-    version = "1.8.0" // for compose
-
     android {
         compilations.all {
             kotlinOptions {

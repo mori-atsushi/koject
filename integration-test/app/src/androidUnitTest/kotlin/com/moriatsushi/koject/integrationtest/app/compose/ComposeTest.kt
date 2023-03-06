@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.integrationtest.compose
+package com.moriatsushi.koject.integrationtest.app.compose
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -49,7 +49,9 @@ kotlin {
             dependencies {
                 implementation(project(":android:viewmodel"))
                 implementation(project(":compose:core"))
+                implementation(project(":compose:viewmodel"))
                 implementation(libs.androidx.activity)
+                implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.fragment)
                 implementation(libs.androidx.fragment.testing)
                 implementation(libs.androidx.lifecycle.viewmodel)

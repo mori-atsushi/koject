@@ -17,7 +17,8 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion =
+            libs.versions.androidx.compose.compiler.get()
     }
     packagingOptions {
         resources {
@@ -40,7 +41,7 @@ android {
 
 dependencies {
     implementation(project(":examples:kmm:shared"))
-    implementation("androidx.compose.ui:ui:1.3.3")
+    implementation(libs.androidx.compose.ui)
     implementation("androidx.compose.ui:ui-tooling:1.3.3")
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
     implementation("androidx.compose.foundation:foundation:1.3.1")

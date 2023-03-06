@@ -46,10 +46,22 @@ kotlin {
 
         val androidMain by getting {
             dependsOn(jvmMain)
+            dependencies {
+                implementation(project(":android:viewmodel"))
+                implementation(libs.androidx.activity)
+                implementation(libs.androidx.fragment)
+                implementation(libs.androidx.fragment.testing)
+                implementation(libs.androidx.lifecycle.viewmodel)
+            }
         }
 
         val androidUnitTest by getting {
             dependsOn(jvmTest)
+            dependencies {
+                implementation(libs.androidx.test.core)
+                implementation(libs.androidx.test.ext.junit)
+                implementation(libs.robolectric)
+            }
         }
 
         val nativeMain by creating {
@@ -146,11 +158,17 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
         sourceCompatibility(JavaVersion.VERSION_11)
         targetCompatibility(JavaVersion.VERSION_11)
+    }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 

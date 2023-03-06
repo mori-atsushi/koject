@@ -17,7 +17,7 @@ class DynamicTest {
     }
 
     @Test
-    fun successInject_class() {
+    fun successInject_providesWhenInject_class() {
         Koject.start()
 
         val value = inject<DynamicClass> {
@@ -27,7 +27,17 @@ class DynamicTest {
     }
 
     @Test
-    fun successInject_interface() {
+    fun successInject_providesWhenStart_class() {
+        Koject.start {
+            provides { "runtime-string-class" }
+        }
+
+        val value = inject<DynamicClass>()
+        assertEquals("runtime-string-class", value.id)
+    }
+
+    @Test
+    fun successInject_providesWhenInject_interface() {
         Koject.start()
 
         val value = inject<DynamicInterface> {
@@ -37,12 +47,34 @@ class DynamicTest {
     }
 
     @Test
-    fun successInject_holder() {
+    fun successInject_providesWhenStart_interface() {
+        Koject.start {
+            provides { "runtime-string-interface" }
+        }
+
+        val value = inject<DynamicInterface>()
+        assertEquals("runtime-string-interface", value.id)
+    }
+
+    @Test
+    fun successInject_providesWhenInject_holder() {
         Koject.start()
 
         val holder = inject<DynamicHolder> {
             provides { "runtime-string" }
         }
+
+        assertEquals("runtime-string", holder.value1.id)
+        assertEquals("runtime-string", holder.value2.id)
+    }
+
+    @Test
+    fun successInject_providesWhenStart_holder() {
+        Koject.start {
+            provides { "runtime-string" }
+        }
+
+        val holder = inject<DynamicHolder>()
 
         assertEquals("runtime-string", holder.value1.id)
         assertEquals("runtime-string", holder.value2.id)

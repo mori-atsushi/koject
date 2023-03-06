@@ -1,5 +1,8 @@
 [versions]
-androidGradlePlugin = "7.4.2"
+android-gradle-plugin = "7.4.2"
+androidx-activity = "1.6.1"
+androidx-fragment = "1.5.5"
+androidx-lifecycle = "2.5.1"
 kotlin = "1.8.10"
 kotlin-compile-testing = "1.5.0"
 kotlinpoet = "1.12.0"
@@ -9,13 +12,16 @@ publish = "0.24.0"
 spotless = "6.16.0"
 
 [libraries]
+androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 kotlin-compile-testing-ksp = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing-ksp", version.ref = "kotlin-compile-testing" }
 kotlinpoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version.ref = "kotlinpoet" }
 ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }

@@ -1,7 +1,6 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.NotProvidedException
-import com.moriatsushi.koject.internal.Extras
 import com.moriatsushi.koject.internal.Identifier
 
 /**
@@ -51,8 +50,5 @@ internal fun injectOrNull(
     id: Identifier,
     extras: (ExtrasBuilder.() -> Unit)?,
 ): Any? {
-    return Koject.container.resolve(
-        id,
-        Extras.of(extras),
-    )
+    return Koject.container.resolve(id, buildExtras(extras))
 }

@@ -3,8 +3,8 @@
 package com.moriatsushi.koject.processor.container
 
 import com.moriatsushi.koject.ExperimentalKojectApi
+import com.moriatsushi.koject.Extras
 import com.moriatsushi.koject.internal.Container
-import com.moriatsushi.koject.internal.Extras
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names

@@ -102,7 +102,7 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated.factory
         |
         |import com.moriatsushi.koject.ExperimentalKojectApi
-        |import com.moriatsushi.koject.`internal`.Extras
+        |import com.moriatsushi.koject.Extras
         |import com.moriatsushi.koject.`internal`.Factory
         |import com.moriatsushi.koject.`internal`.Identifier
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
@@ -133,7 +133,7 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated.factory
         |
         |import com.moriatsushi.koject.ExperimentalKojectApi
-        |import com.moriatsushi.koject.`internal`.Extras
+        |import com.moriatsushi.koject.Extras
         |import com.moriatsushi.koject.`internal`.Factory
         |import com.moriatsushi.koject.`internal`.Identifier
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
@@ -173,7 +173,7 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated.factory
         |
         |import com.moriatsushi.koject.ExperimentalKojectApi
-        |import com.moriatsushi.koject.`internal`.Extras
+        |import com.moriatsushi.koject.Extras
         |import com.moriatsushi.koject.`internal`.Factory
         |import com.moriatsushi.koject.`internal`.Identifier
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
@@ -218,8 +218,8 @@ class DIProcessorTest {
         |package com.moriatsushi.koject.generated
         |
         |import com.moriatsushi.koject.ExperimentalKojectApi
+        |import com.moriatsushi.koject.Extras
         |import com.moriatsushi.koject.`internal`.Container
-        |import com.moriatsushi.koject.`internal`.Extras
         |import com.moriatsushi.koject.`internal`.Identifier
         |import com.moriatsushi.koject.`internal`.InternalKojectApi
         |import com.moriatsushi.koject.generated.factory._com_testpackage_SampleClass1_Factory

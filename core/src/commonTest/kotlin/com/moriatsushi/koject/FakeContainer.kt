@@ -3,7 +3,6 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.internal.Container
-import com.moriatsushi.koject.internal.Extras
 import com.moriatsushi.koject.internal.Identifier
 
 class FakeContainer : Container {

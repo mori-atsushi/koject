@@ -48,10 +48,12 @@ kotlin {
             dependsOn(jvmMain)
             dependencies {
                 implementation(project(":android:viewmodel"))
+                implementation(project(":compose:core"))
                 implementation(libs.androidx.activity)
                 implementation(libs.androidx.fragment)
                 implementation(libs.androidx.fragment.testing)
                 implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.compose.ui)
             }
         }
 
@@ -60,6 +62,7 @@ kotlin {
             dependencies {
                 implementation(libs.androidx.test.core)
                 implementation(libs.androidx.test.ext.junit)
+                implementation(libs.androidx.compose.ui.test)
                 implementation(libs.robolectric)
             }
         }
@@ -165,6 +168,15 @@ android {
     compileOptions {
         sourceCompatibility(JavaVersion.VERSION_11)
         targetCompatibility(JavaVersion.VERSION_11)
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion =
+            libs.versions.androidx.compose.compiler.get()
     }
 
     testOptions {

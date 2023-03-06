@@ -1,12 +1,10 @@
 package com.moriatsushi.koject
 
-import com.moriatsushi.koject.internal.Extras
+import com.moriatsushi.koject.internal.ExtrasImpl
 import com.moriatsushi.koject.internal.Identifier
 
 /**
- * Add dependencies at runtime
- *
- * Add [Dynamic] to runtime dependencies.
+ * Create [Extras]
  */
 @ExperimentalKojectApi
 class ExtrasBuilder internal constructor() {
@@ -47,9 +45,21 @@ class ExtrasBuilder internal constructor() {
 
     internal fun build(): Extras {
         return if (map.isNotEmpty()) {
-            Extras(map)
+            ExtrasImpl(map)
         } else {
             Extras.empty
         }
+    }
+}
+
+/**
+ * Create [Extras]
+ */
+@ExperimentalKojectApi
+fun buildExtras(builder: (ExtrasBuilder.() -> Unit)? = null): Extras {
+    return if (builder == null) {
+        Extras.empty
+    } else {
+        ExtrasBuilder().apply { builder() }.build()
     }
 }

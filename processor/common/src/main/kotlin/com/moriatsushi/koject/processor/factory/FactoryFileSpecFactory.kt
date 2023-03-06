@@ -3,7 +3,7 @@
 package com.moriatsushi.koject.processor.factory
 
 import com.moriatsushi.koject.ExperimentalKojectApi
-import com.moriatsushi.koject.internal.Extras
+import com.moriatsushi.koject.Extras
 import com.moriatsushi.koject.internal.Factory
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
@@ -104,7 +104,7 @@ internal class FactoryFileSpecFactory {
                 indent()
                 provider.parameters.forEach {
                     if (it.isDynamic) {
-                        add("extras.resolve(")
+                        add("extras.get(")
                         add(it.identifier.newInstanceCode)
                         add(")")
                     } else {

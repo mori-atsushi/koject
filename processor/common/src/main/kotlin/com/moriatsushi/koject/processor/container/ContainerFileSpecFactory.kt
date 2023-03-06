@@ -44,8 +44,8 @@ internal class ContainerFileSpecFactory {
                 addProperty(createProviderPropertySpec(allFactories, it))
             }
             addFunction(createGetFunSpec(allFactories))
-            addAnnotation(AnnotationSpecFactory.createInternal())
             addAnnotation(AnnotationSpecFactory.createOptInExperimental())
+            addAnnotation(AnnotationSpecFactory.createInternal())
         }.build()
     }
 
@@ -59,7 +59,7 @@ internal class ContainerFileSpecFactory {
             add("lazy·{\n")
             indent()
             add(factoryCode)
-            add(".create()\n")
+            add(".create(%T.empty)\n", Extras::class.asTypeName())
             unindent()
             add("}")
         }

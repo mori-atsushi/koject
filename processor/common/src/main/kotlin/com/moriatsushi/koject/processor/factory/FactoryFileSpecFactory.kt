@@ -4,6 +4,7 @@ package com.moriatsushi.koject.processor.factory
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.internal.Extras
+import com.moriatsushi.koject.internal.Factory
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
@@ -47,10 +48,11 @@ internal class FactoryFileSpecFactory {
                 constructorSpec,
                 setOf(KModifier.PRIVATE),
             )
+            addSuperinterface(Factory::class.asTypeName())
             addFunction(createFunSpec)
             addType(companionObject)
-            addAnnotation(AnnotationSpecFactory.createInternal())
             addAnnotation(AnnotationSpecFactory.createOptInExperimental())
+            addAnnotation(AnnotationSpecFactory.createInternal())
 
             if (provider.isSingleton) {
                 addAnnotation(AnnotationSpecFactory.createSingleton())
@@ -117,9 +119,8 @@ internal class FactoryFileSpecFactory {
         }
         return FunSpec.builder("create").apply {
             returns(ANY)
-            if (!provider.isSingleton) {
-                addParameter("extras", Extras::class.asTypeName())
-            }
+            addModifiers(KModifier.OVERRIDE)
+            addParameter("extras", Extras::class.asTypeName())
             addCode(code)
             if (provider.parameters.isNotEmpty()) {
                 addAnnotation(AnnotationSpecFactory.createSuppress("UNCHECKED_CAST"))

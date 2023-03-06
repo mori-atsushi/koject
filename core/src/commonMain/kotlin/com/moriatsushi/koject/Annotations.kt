@@ -63,6 +63,6 @@ annotation class Dynamic
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
     message = "This is still experimental Koject API " +
-            "API will change in future releases.",
+        "API will change in future releases.",
 )
 annotation class ExperimentalKojectApi

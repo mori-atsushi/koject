@@ -2,9 +2,9 @@
 
 package com.moriatsushi.koject.integrationtest.app
 
+import com.moriatsushi.koject.Dynamic
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Provides
-import com.moriatsushi.koject.Dynamic
 
 @Provides
 class DynamicClass(

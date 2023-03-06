@@ -9,8 +9,8 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Dynamic
+import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.hasAnnotation

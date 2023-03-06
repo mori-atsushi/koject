@@ -2,6 +2,7 @@ package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.DynamicDependencyResolutionException
 import com.moriatsushi.koject.internal.Identifier
+import com.moriatsushi.koject.internal.MergedExtras
 
 /**
  * Extra dependencies
@@ -37,4 +38,14 @@ interface Extras {
             }
         }
     }
+}
+
+/**
+ * Merge two [Extras]
+ *
+ * [other] takes precedence when duplicating.
+ */
+@ExperimentalKojectApi
+infix fun Extras.merge(other: Extras): Extras {
+    return MergedExtras(this, other)
 }

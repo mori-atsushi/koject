@@ -4,26 +4,18 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
+import com.moriatsushi.koject.error.DynamicDependencyResolutionException
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.start
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
-class DynamicTest {
+class DynamicWithSingletonTest {
     @AfterTest
     fun clear() {
         Koject.stop()
-    }
-
-    @Test
-    fun successInject_providesWhenInject_class() {
-        Koject.start()
-
-        val value = inject<DynamicClass> {
-            provides { "runtime-string-class" }
-        }
-        assertEquals("runtime-string-class", value.id)
     }
 
     @Test
@@ -32,18 +24,19 @@ class DynamicTest {
             provides { "runtime-string-class" }
         }
 
-        val value = inject<DynamicClass>()
+        val value = inject<DynamicWithSingletonClass>()
         assertEquals("runtime-string-class", value.id)
     }
 
     @Test
-    fun successInject_providesWhenInject_interface() {
+    fun failedInject_providesWhenInject_class() {
         Koject.start()
 
-        val value = inject<DynamicInterface> {
-            provides { "runtime-string-interface" }
+        assertFailsWith<DynamicDependencyResolutionException> {
+            inject<DynamicWithSingletonClass> {
+                provides { "runtime-string-class" }
+            }
         }
-        assertEquals("runtime-string-interface", value.id)
     }
 
     @Test
@@ -52,20 +45,19 @@ class DynamicTest {
             provides { "runtime-string-interface" }
         }
 
-        val value = inject<DynamicInterface>()
+        val value = inject<DynamicWithSingletonInterface>()
         assertEquals("runtime-string-interface", value.id)
     }
 
     @Test
-    fun successInject_providesWhenInject_holder() {
+    fun failedInject_providesWhenInject_interface() {
         Koject.start()
 
-        val holder = inject<DynamicHolder> {
-            provides { "runtime-string" }
+        assertFailsWith<DynamicDependencyResolutionException> {
+            inject<DynamicWithSingletonInterface> {
+                provides { "runtime-string-interface" }
+            }
         }
-
-        assertEquals("runtime-string", holder.value1.id)
-        assertEquals("runtime-string", holder.value2.id)
     }
 
     @Test
@@ -74,9 +66,20 @@ class DynamicTest {
             provides { "runtime-string" }
         }
 
-        val holder = inject<DynamicHolder>()
+        val holder = inject<DynamicWithSingletonHolder>()
 
         assertEquals("runtime-string", holder.value1.id)
         assertEquals("runtime-string", holder.value2.id)
+    }
+
+    @Test
+    fun failedInject_providesWhenInject_holder() {
+        Koject.start()
+
+        assertFailsWith<DynamicDependencyResolutionException> {
+            inject<DynamicWithSingletonHolder> {
+                provides { "runtime-string" }
+            }
+        }
     }
 }

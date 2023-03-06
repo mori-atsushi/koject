@@ -225,12 +225,15 @@ class DIProcessorTest {
         |import com.moriatsushi.koject.generated.factory._com_testpackage_SampleClass1_Factory
         |import com.moriatsushi.koject.generated.factory._com_testpackage_SampleClass2_Factory
         |import com.moriatsushi.koject.generated.factory._com_testpackage_SampleClass3_Factory
+        |import com.moriatsushi.koject.merge
         |import kotlin.Any
         |import kotlin.OptIn
         |
         |@OptIn(ExperimentalKojectApi::class)
         |@InternalKojectApi
-        |public class _AppContainer : Container {
+        |public class _AppContainer(
+        |    private val appExtras: Extras,
+        |) : Container {
         |    private val provide_com_testpackage_SampleClass1: (Extras) -> Any by lazy { {
         |                _com_testpackage_SampleClass1_Factory().create(it)
         |            } }
@@ -248,14 +251,17 @@ class DIProcessorTest {
         |                ).create(it)
         |            } }
         |
-        |    public override fun resolve(id: Identifier, extras: Extras): Any? = when (id) {
-        |        _com_testpackage_SampleClass1_Factory.identifier ->
-        |                provide_com_testpackage_SampleClass1(extras)
-        |        _com_testpackage_SampleClass2_Factory.identifier ->
-        |                provide_com_testpackage_SampleClass2(extras)
-        |        _com_testpackage_SampleClass3_Factory.identifier ->
-        |                provide_com_testpackage_SampleClass3(extras)
-        |        else -> null
+        |    public override fun resolve(id: Identifier, extras: Extras): Any? {
+        |        val mergedExtras = appExtras merge extras
+        |        return when (id) {
+        |            _com_testpackage_SampleClass1_Factory.identifier ->
+        |                    provide_com_testpackage_SampleClass1(mergedExtras)
+        |            _com_testpackage_SampleClass2_Factory.identifier ->
+        |                    provide_com_testpackage_SampleClass2(mergedExtras)
+        |            _com_testpackage_SampleClass3_Factory.identifier ->
+        |                    provide_com_testpackage_SampleClass3(mergedExtras)
+        |            else -> null
+        |        }
         |    }
         |}
         |
@@ -272,9 +278,16 @@ class DIProcessorTest {
         |import kotlin.OptIn
         |import kotlin.Unit
         |
-        |@OptIn(InternalKojectApi::class)
+        |@OptIn(ExperimentalKojectApi::class)
         |public fun Koject.start(): Unit {
-        |    Koject._start(_AppContainer())
+        |    start(extras = {})
+        |}
+        |
+        |@OptIn(InternalKojectApi::class)
+        |@ExperimentalKojectApi
+        |public fun Koject.start(extras: ExtrasBuilder.() -> Unit = {}): Unit {
+        |    val container = _AppContainer(buildExtras(extras))
+        |    Koject._start(container)
         |}
         |
         """.trimMargin()

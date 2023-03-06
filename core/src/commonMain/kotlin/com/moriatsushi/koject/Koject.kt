@@ -43,10 +43,26 @@ object Koject {
  * Will be replaced by automatic code generation.
  * Not actually called.
  */
-@Suppress("unused")
+@Suppress("UNUSED", "UNUSED_PARAMETER")
 fun Koject.start(
-    @Suppress("UNUSED_PARAMETER")
     nothing: Nothing = codeNotGeneratedError(),
+) {
+    codeNotGeneratedError()
+}
+
+/**
+ * Start application (experimental)
+ *
+ * Will be replaced by automatic code generation.
+ * Not actually called.
+ *
+ * @param extras [Dynamic] dependencies
+ */
+@ExperimentalKojectApi
+@Suppress("UNUSED", "UNUSED_PARAMETER")
+fun Koject.start(
+    nothing: Nothing = codeNotGeneratedError(),
+    extras: ExtrasBuilder.() -> Unit = {},
 ) {
     codeNotGeneratedError()
 }

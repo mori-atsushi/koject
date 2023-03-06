@@ -47,5 +47,8 @@ interface Extras {
  */
 @ExperimentalKojectApi
 infix fun Extras.merge(other: Extras): Extras {
+    if (this === Extras.empty) return other
+    if (other === Extras.empty) return this
+
     return MergedExtras(this, other)
 }

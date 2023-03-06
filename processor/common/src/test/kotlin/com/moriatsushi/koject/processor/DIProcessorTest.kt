@@ -280,14 +280,19 @@ class DIProcessorTest {
         |
         |@OptIn(ExperimentalKojectApi::class)
         |public fun Koject.start(): Unit {
-        |    start(extras = {})
+        |    start(extras = Extras.empty)
         |}
         |
         |@OptIn(InternalKojectApi::class)
         |@ExperimentalKojectApi
-        |public fun Koject.start(extras: ExtrasBuilder.() -> Unit = {}): Unit {
-        |    val container = _AppContainer(buildExtras(extras))
+        |public fun Koject.start(extras: Extras = Extras.empty): Unit {
+        |    val container = _AppContainer(extras)
         |    Koject._start(container)
+        |}
+        |
+        |@ExperimentalKojectApi
+        |public inline fun Koject.start(crossinline extras: ExtrasBuilder.() -> Unit): Unit {
+        |    start(buildExtras(extras))
         |}
         |
         """.trimMargin()

@@ -16,6 +16,9 @@ annotation class StringIdentifier(
     companion object
 }
 
+/**
+ * Definition location
+ */
 @InternalKojectApi
 @Retention(value = AnnotationRetention.BINARY)
 @Target(

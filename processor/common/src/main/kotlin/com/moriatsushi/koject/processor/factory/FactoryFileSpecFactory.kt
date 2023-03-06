@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalKojectApi::class)
+
 package com.moriatsushi.koject.processor.factory
 
+import com.moriatsushi.koject.ExperimentalKojectApi
+import com.moriatsushi.koject.internal.Extras
+import com.moriatsushi.koject.internal.Factory
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
@@ -7,6 +12,7 @@ import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
 import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
+import com.moriatsushi.koject.processor.symbol.newInstanceCode
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -35,8 +41,6 @@ internal class FactoryFileSpecFactory {
         val factoryName = Names.factoryNameOf(provider)
         val constructorSpec = createConstructorSpec(provider)
         val createFunSpec = createCreateFunSpec(provider)
-        val internalAnnotationSpec =
-            AnnotationSpecFactory.createInternal()
         val companionObject = createCompanionObjectSpec(provider)
 
         return TypeSpec.classBuilder(factoryName).apply {
@@ -44,9 +48,12 @@ internal class FactoryFileSpecFactory {
                 constructorSpec,
                 setOf(KModifier.PRIVATE),
             )
+            addSuperinterface(Factory::class.asTypeName())
             addFunction(createFunSpec)
             addType(companionObject)
-            addAnnotation(internalAnnotationSpec)
+            addAnnotation(AnnotationSpecFactory.createOptInExperimental())
+            addAnnotation(AnnotationSpecFactory.createInternal())
+
             if (provider.isSingleton) {
                 addAnnotation(AnnotationSpecFactory.createSingleton())
             }
@@ -61,17 +68,19 @@ internal class FactoryFileSpecFactory {
 
     private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.constructorBuilder().apply {
-            provider.parameters.forEach {
-                val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
-                val parameter = ParameterSpec.builder(
-                    providerName,
-                    LambdaTypeName.get(returnType = ANY),
-                ).apply {
-                    addAnnotation(it.identifier.asAnnotationSpec())
-                    addAnnotation(it.location.asAnnotationSpec())
-                }.build()
-                addParameter(parameter)
-            }
+            provider.parameters
+                .filterNot { it.isDynamic }
+                .forEach {
+                    val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
+                    val parameter = ParameterSpec.builder(
+                        providerName,
+                        LambdaTypeName.get(returnType = ANY),
+                    ).apply {
+                        addAnnotation(it.identifier.asAnnotationSpec())
+                        addAnnotation(it.location.asAnnotationSpec())
+                    }.build()
+                    addParameter(parameter)
+                }
         }.build()
     }
 
@@ -94,8 +103,15 @@ internal class FactoryFileSpecFactory {
                 add("\n")
                 indent()
                 provider.parameters.forEach {
-                    val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
-                    add("$providerName() as %T,\n", it.identifier.typeName)
+                    if (it.isDynamic) {
+                        add("extras.resolve(")
+                        add(it.identifier.newInstanceCode)
+                        add(")")
+                    } else {
+                        val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
+                        add("$providerName() as %T", it.identifier.typeName)
+                    }
+                    add(",\n")
                 }
                 unindent()
             }
@@ -103,6 +119,8 @@ internal class FactoryFileSpecFactory {
         }
         return FunSpec.builder("create").apply {
             returns(ANY)
+            addModifiers(KModifier.OVERRIDE)
+            addParameter("extras", Extras::class.asTypeName())
             addCode(code)
             if (provider.parameters.isNotEmpty()) {
                 addAnnotation(AnnotationSpecFactory.createSuppress("UNCHECKED_CAST"))
@@ -111,18 +129,7 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
-        val initializerCode = buildCodeBlock {
-            add("%T.of<%T>(", Identifier::class.asTypeName(), provider.identifier.typeName)
-            val qualifier = provider.identifier.qualifier
-            if (qualifier != null) {
-                add("\n")
-                indent()
-                add(qualifier.newInstanceCode)
-                unindent()
-                add("\n")
-            }
-            add(")")
-        }
+        val initializerCode = provider.identifier.newInstanceCode
         val identifierProperty = PropertySpec.builder("identifier", Identifier::class).apply {
             initializer(initializerCode)
         }.build()

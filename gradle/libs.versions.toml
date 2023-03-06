@@ -14,7 +14,7 @@ kotlinpoet = "1.12.0"
 ksp = "1.8.0-1.0.9"
 ktlint = "0.48.1"
 publish = "0.24.0"
-robolectric = "4.9"
+robolectric = "4.9.2"
 spotless = "6.16.0"
 
 [libraries]

@@ -3,9 +3,11 @@ package com.moriatsushi.koject.android.viewmodel
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlin.reflect.KClass
 
 /**
@@ -56,10 +58,10 @@ internal inline fun <reified VM : ViewModel> internalInjectViewModels(
     qualifier: Any? = null,
     noinline ownerProducer: () -> ViewModelStoreOwner,
 ): Lazy<VM> {
-    val factory = kojectViewModelFactory<VM>(qualifier)
+    val factoryProducer = { kojectViewModelFactory<VM>(qualifier) }
     val clazz = VM::class
     return lazy(LazyThreadSafetyMode.NONE) {
-        ownerProducer().get(clazz, factory)
+        ownerProducer().get(clazz, factoryProducer())
     }
 }
 
@@ -68,6 +70,15 @@ internal fun <VM : ViewModel> ViewModelStoreOwner.get(
     clazz: KClass<VM>,
     factory: ViewModelProvider.Factory,
 ): VM {
-    val provider = ViewModelProvider(viewModelStore, factory)
+    val provider = ViewModelProvider(
+        viewModelStore,
+        factory,
+        viewModelCreationExtras,
+    )
     return provider[clazz.java]
 }
+
+private val ViewModelStoreOwner.viewModelCreationExtras: CreationExtras
+    get() = (this as? HasDefaultViewModelProviderFactory)
+        ?.defaultViewModelCreationExtras
+        ?: CreationExtras.Empty

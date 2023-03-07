@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.integrationtest.viewmodel
+package com.moriatsushi.koject.integrationtest.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.moriatsushi.koject.Provides

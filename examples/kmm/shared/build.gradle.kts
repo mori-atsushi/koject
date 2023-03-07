@@ -38,8 +38,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(project(":compose:viewmodel"))
                 implementation(libs.androidx.lifecycle.viewmodel)
-                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
                 implementation(libs.androidx.compose.ui)
                 implementation("androidx.compose.ui:ui-tooling:1.3.3")
                 implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")

@@ -1,9 +1,10 @@
-package com.moriatsushi.koject.integrationtest.viewmodel
+package com.moriatsushi.koject.integrationtest.app.viewmodel
 
-import androidx.activity.ComponentActivity
-import androidx.test.core.app.launchActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
+import com.moriatsushi.koject.android.viewmodel.injectActivityViewModels
 import com.moriatsushi.koject.android.viewmodel.injectViewModels
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.start
@@ -15,7 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ActivityViewModelTest {
+class FragmentViewModelTest {
     @After
     fun clear() {
         Koject.stop()
@@ -25,9 +26,20 @@ class ActivityViewModelTest {
     fun injectViewModel() {
         Koject.start()
 
-        val scenario = launchActivity<ComponentActivity>()
-        scenario.onActivity {
+        val scenario = launchFragment<Fragment>()
+        scenario.onFragment {
             val viewModel: SampleViewModel by it.injectViewModels()
+            assertIs<SampleViewModel>(viewModel)
+        }
+    }
+
+    @Test
+    fun injectActivityViewModel() {
+        Koject.start()
+
+        val scenario = launchFragment<Fragment>()
+        scenario.onFragment {
+            val viewModel: SampleViewModel by it.injectActivityViewModels()
             assertIs<SampleViewModel>(viewModel)
         }
     }
@@ -36,18 +48,18 @@ class ActivityViewModelTest {
     fun injectSameViewModelAfterRecreate() {
         Koject.start()
 
-        val scenario = launchActivity<ComponentActivity>()
+        val scenario = launchFragment<Fragment>()
         lateinit var viewModel1: SampleViewModel
         lateinit var viewModel2: SampleViewModel
 
-        scenario.onActivity {
+        scenario.onFragment {
             val viewModel: SampleViewModel by it.injectViewModels()
             viewModel1 = viewModel
         }
 
         scenario.recreate()
 
-        scenario.onActivity {
+        scenario.onFragment {
             val viewModel: SampleViewModel by it.injectViewModels()
             viewModel2 = viewModel
         }
@@ -59,8 +71,8 @@ class ActivityViewModelTest {
     fun failedInjectViewModel_whenNotProvided() {
         Koject.start()
 
-        val scenario = launchActivity<ComponentActivity>()
-        scenario.onActivity {
+        val scenario = launchFragment<Fragment>()
+        scenario.onFragment {
             val viewModel: NotProvidedViewModel by it.injectViewModels()
             assertFailsWith<NotProvidedException> {
                 print(viewModel)

@@ -17,6 +17,14 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        buildConfig = false
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion =
+            libs.versions.androidx.compose.compiler.get()
+    }
 }
 
 kotlin {
@@ -29,7 +37,6 @@ kotlin {
 
 dependencies {
     implementation(project(":core"))
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(project(":android:viewmodel"))
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 }

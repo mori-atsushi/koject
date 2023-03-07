@@ -19,21 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.moriatsushi.koject.compose.viewmodel.injectViewModel
 import com.moriatsushi.koject.example.kmm.model.TodoList
 import com.moriatsushi.koject.example.kmm.model.TodoTask
 import com.moriatsushi.koject.example.kmm.ui.component.MyTopAppBar
 import com.moriatsushi.koject.example.kmm.viewmodel.AndroidTodoListViewModel
 import com.moriatsushi.koject.example.kmm.viewmodel.TodoListViewModel
-import com.moriatsushi.koject.inject
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TodoListPage(
     modifier: Modifier = Modifier,
-    viewModel: TodoListViewModel = viewModel {
-        inject<AndroidTodoListViewModel>()
-    },
+    viewModel: TodoListViewModel = injectViewModel<AndroidTodoListViewModel>(),
 ) {
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
     val list by viewModel.list.collectAsState()

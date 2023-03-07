@@ -6,6 +6,10 @@
         <activity
                 android:name="androidx.activity.ComponentActivity"
                 android:exported="false" />
+
+        <activity
+                android:name=".compose.viewmodel.RecreationTestActivity"
+                android:exported="false" />
     </application>
 
 </manifest>

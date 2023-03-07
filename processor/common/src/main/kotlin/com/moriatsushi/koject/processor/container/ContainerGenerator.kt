@@ -8,22 +8,44 @@ import com.moriatsushi.koject.processor.symbol.collectAllFactoryDeclarations
 internal class ContainerGenerator(
     private val dependencyValidator: DependencyValidator,
     private val fileGenerator: FileGenerator,
-    private val containerFileSpecFactory: ContainerFileSpecFactory,
+    private val componentContainerFileSpecFactory: ComponentContainerFileSpecFactory,
+    private val appContainerFileSpecFactory: AppContainerFileSpecFactory,
     private val startFileSpecFactory: StartFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
         val allFactories = resolver.collectAllFactoryDeclarations()
-        dependencyValidator.validate(allFactories)
+        //  dependencyValidator.validate(allFactories)
 
         generateContainer(allFactories)
         generateStart()
     }
 
     private fun generateContainer(allFactories: AllFactoryDeclarations) {
-        val fileSpec = containerFileSpecFactory.create(allFactories)
+        val rootComponent = componentContainerFileSpecFactory.createRoot(allFactories.rootComponent)
 
         fileGenerator.createNewFile(
-            fileSpec = fileSpec,
+            fileSpec = rootComponent,
+            aggregating = true,
+        )
+
+        allFactories.components.forEach { component, factories ->
+            val container = componentContainerFileSpecFactory.createComponent(
+                component,
+                factories,
+            )
+
+            fileGenerator.createNewFile(
+                fileSpec = container,
+                aggregating = true,
+            )
+        }
+
+        val app = appContainerFileSpecFactory.create(
+            allFactories.components.keys,
+        )
+
+        fileGenerator.createNewFile(
+            fileSpec = app,
             aggregating = true,
         )
     }

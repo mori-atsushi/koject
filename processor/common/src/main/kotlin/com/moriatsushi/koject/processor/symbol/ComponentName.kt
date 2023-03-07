@@ -7,6 +7,8 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.moriatsushi.koject.Component
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.internal.StringComponent
+import com.moriatsushi.koject.processor.analytics.findAnnotation
+import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.asClassName
@@ -35,4 +37,12 @@ internal fun KSAnnotated.findComponentName(): ComponentName? {
         ?: return null
 
     return ComponentName.of(declaration)
+}
+
+internal fun KSAnnotated.findStringComponentName(): ComponentName? {
+    val name = findAnnotation<StringComponent>()
+        ?.findArgumentByName<String>("name")
+        ?: return null
+
+    return ComponentName(name)
 }

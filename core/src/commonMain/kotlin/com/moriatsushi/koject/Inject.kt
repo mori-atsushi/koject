@@ -29,7 +29,7 @@ inline fun <reified T : Any> inject(
     componentArguments: Any? = null,
 ): T {
     val id = Identifier.of<T>(qualifier)
-    return injectOrNull(id) as? T
+    return injectOrNull(id, componentArguments) as? T
         ?: throw NotProvidedException("$id is not provided")
 }
 
@@ -57,6 +57,9 @@ inline fun <reified T : Any> inject(
 }
 
 @PublishedApi
-internal fun injectOrNull(id: Identifier): Any? {
-    return Koject.container.resolve(id)
+internal fun injectOrNull(
+    id: Identifier,
+    componentArguments: Any?,
+): Any? {
+    return Koject.container.resolve(id, componentArguments)
 }

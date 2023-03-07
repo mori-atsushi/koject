@@ -3,31 +3,35 @@ package com.moriatsushi.koject.processor.symbol
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.code.Names
 
 internal class AllFactoryDeclarations(
-    sequence: Sequence<FactoryDeclaration>,
+    factories: Sequence<FactoryDeclaration>,
+    components: Sequence<ComponentClassDeclaration>,
 ) {
-    val all = sequence.sortedBy { it.identifier.displayName }
-    val normals = all.filter { !it.isSingleton }
-    val singletons = all.filter { it.isSingleton }
+    val rootComponent = ComponentFactoryDeclarations(
+        factories.filter { it.component == null },
+    )
 
-    fun get(identifier: StringIdentifier): FactoryDeclaration {
-        return getOrNull(identifier) ?: error("not found : $identifier")
-    }
-
-    fun getOrNull(identifier: StringIdentifier): FactoryDeclaration? {
-        return all.find { it.identifier == identifier }
-    }
-
-    companion object
+    val components: Map<ComponentClassDeclaration, ComponentFactoryDeclarations> =
+        components
+            .sortedBy { it.className.canonicalName }
+            .associateWith { component ->
+                ComponentFactoryDeclarations(
+                    factories.filter { it.component == component.name },
+                )
+            }
 }
 
 internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
     @OptIn(KspExperimental::class)
-    val all = getDeclarationsFromPackage(Names.factoryPackageName)
+    val factories = getDeclarationsFromPackage(Names.factoryPackageName)
         .filterIsInstance<KSClassDeclaration>()
         .map { FactoryDeclaration.of(it) }
-    return AllFactoryDeclarations(all)
+
+    @OptIn(KspExperimental::class)
+    val components = getDeclarationsFromPackage(Names.componentPackageName)
+        .filterIsInstance<KSClassDeclaration>()
+        .map { ComponentClassDeclaration.of(it) }
+    return AllFactoryDeclarations(factories, components)
 }

@@ -1,14 +1,7 @@
 package com.moriatsushi.koject.processor.container
 
-import com.moriatsushi.koject.processor.error.DuplicateProvidedException
-import com.moriatsushi.koject.processor.error.NotProvidedException
-import com.moriatsushi.koject.processor.error.WrongScopeException
-import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
-import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
-import com.moriatsushi.koject.processor.symbol.FactoryParameter
-import com.moriatsushi.koject.processor.symbol.displayName
-
 internal class DependencyValidator {
+    /*
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
@@ -73,4 +66,5 @@ internal class DependencyValidator {
                 "Only a singleton can be injected into singletons.",
         )
     }
+     */
 }

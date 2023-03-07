@@ -4,8 +4,8 @@ import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
+import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
 import com.moriatsushi.koject.processor.symbol.asCodeName
-import com.moriatsushi.koject.processor.symbol.stringComponentAnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -29,7 +29,7 @@ internal class ComponentFileSpecFactory {
         val name = "_${declaration.asCodeName()}"
         return TypeSpec.objectBuilder(name).apply {
             addAnnotation(AnnotationSpecFactory.createInternal())
-            addAnnotation(declaration.stringComponentAnnotationSpec)
+            addAnnotation(declaration.name.asAnnotationSpec())
             addProperty(createArgumentClassPropertySpec(declaration.arguments.name))
 
             if (declaration.containingFile != null) {

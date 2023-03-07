@@ -5,5 +5,4 @@ import com.moriatsushi.koject.internal.Location
 internal data class ProviderParameter(
     val identifier: TypedIdentifier,
     val location: Location,
-    val isDynamic: Boolean,
 )

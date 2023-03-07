@@ -24,6 +24,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
+import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ContainerFileSpecFactory {
     fun create(allFactories: AllFactoryDeclarations): FileSpec {
@@ -52,6 +53,10 @@ internal class ContainerFileSpecFactory {
             addFunction(createGetFunSpec(allFactories))
             addAnnotation(AnnotationSpecFactory.createOptInExperimental())
             addAnnotation(AnnotationSpecFactory.createInternal())
+
+            allFactories.all
+                .mapNotNull { it.containingFile }
+                .forEach { addOriginatingKSFile(it) }
         }.build()
     }
 

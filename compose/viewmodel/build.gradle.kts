@@ -27,7 +27,16 @@ android {
     }
 }
 
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
+        }
+    }
+}
+
 dependencies {
     implementation(project(":core"))
+    implementation(project(":android:viewmodel"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 }

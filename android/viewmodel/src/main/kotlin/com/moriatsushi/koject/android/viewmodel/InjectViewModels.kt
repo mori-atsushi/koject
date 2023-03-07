@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.moriatsushi.koject.inject
 import kotlin.reflect.KClass
 
 /**
@@ -58,21 +56,18 @@ internal inline fun <reified VM : ViewModel> internalInjectViewModels(
     qualifier: Any? = null,
     noinline ownerProducer: () -> ViewModelStoreOwner,
 ): Lazy<VM> {
-    val initializer = { inject<VM>(qualifier) }
+    val factory = kojectViewModelFactory<VM>(qualifier)
     val clazz = VM::class
     return lazy(LazyThreadSafetyMode.NONE) {
-        ownerProducer().get(clazz, initializer)
+        ownerProducer().get(clazz, factory)
     }
 }
 
 @PublishedApi
 internal fun <VM : ViewModel> ViewModelStoreOwner.get(
     clazz: KClass<VM>,
-    initializer: () -> VM,
+    factory: ViewModelProvider.Factory,
 ): VM {
-    val factory = viewModelFactory {
-        addInitializer(clazz) { initializer() }
-    }
     val provider = ViewModelProvider(viewModelStore, factory)
     return provider[clazz.java]
 }

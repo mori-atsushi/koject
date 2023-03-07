@@ -19,6 +19,14 @@ android {
     }
 }
 
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
+        }
+    }
+}
+
 dependencies {
     implementation(project(":core"))
     implementation(libs.androidx.activity)

@@ -4,10 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.moriatsushi.koject.inject
+import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
 
 @Composable
 inline fun <reified VM : ViewModel> injectViewModel(
@@ -17,12 +16,12 @@ inline fun <reified VM : ViewModel> injectViewModel(
     },
     key: String? = null,
 ): VM {
-    val initializer: CreationExtras.() -> VM = remember(qualifier) {
-        { inject(qualifier) }
+    val factory = remember(qualifier) {
+        kojectViewModelFactory<VM>(qualifier)
     }
     return viewModel(
         viewModelStoreOwner = viewModelStoreOwner,
         key = key,
-        initializer = initializer,
+        factory = factory,
     )
 }

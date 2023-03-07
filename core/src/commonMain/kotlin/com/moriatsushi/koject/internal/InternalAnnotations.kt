@@ -1,5 +1,7 @@
 package com.moriatsushi.koject.internal
 
+import com.moriatsushi.koject.Component
+
 /**
  * String [Identifier]
  */
@@ -12,6 +14,18 @@ package com.moriatsushi.koject.internal
 annotation class StringIdentifier(
     val type: String,
     val qualifier: String = "",
+) {
+    companion object
+}
+
+/**
+ * String [Component]
+ */
+@InternalKojectApi
+@Retention(value = AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS)
+annotation class StringComponent(
+    val name: String,
 ) {
     companion object
 }

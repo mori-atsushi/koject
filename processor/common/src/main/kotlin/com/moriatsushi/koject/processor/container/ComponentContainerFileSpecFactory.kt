@@ -12,7 +12,6 @@ import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -74,19 +73,21 @@ internal class ComponentContainerFileSpecFactory {
         factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
     ): PropertySpec {
+        val providerName = Names.providerNameOf(factoryClass.identifier)
         val factoryCode = createFactoryCodeBlock(factories, factoryClass)
-        val instanceName = Names.instanceNameOf(factoryClass.identifier)
+        val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
             indent()
+            add("val value = ")
             add(factoryCode)
             add(".create()\n")
+            add("return@lazy { value }\n")
             unindent()
             add("}")
         }
 
-        return PropertySpec.builder(instanceName, ANY).apply {
-            addModifiers(KModifier.PRIVATE)
+        return PropertySpec.builder(providerName, type).apply {
             delegate(code)
         }.build()
     }
@@ -108,7 +109,6 @@ internal class ComponentContainerFileSpecFactory {
         }
 
         return PropertySpec.builder(providerName, type).apply {
-            addModifiers(KModifier.PRIVATE)
             delegate(code)
         }.build()
     }
@@ -124,11 +124,7 @@ internal class ComponentContainerFileSpecFactory {
                 indent()
                 factoryClass.parameters.forEach {
                     val factory = factories.get(it.identifier)
-                    if (factory.isSingleton) {
-                        add("{ ${Names.instanceNameOf(it.identifier)} }")
-                    } else {
-                        add(Names.providerNameOf(it.identifier))
-                    }
+                    add(Names.providerNameOf(it.identifier))
                     add(",\n")
                 }
                 unindent()
@@ -145,14 +141,8 @@ internal class ComponentContainerFileSpecFactory {
             addParameter("id", Identifier::class)
             beginControlFlow("return when (id) {")
             factories.all.forEach {
-                val factory = factories.get(it.identifier)
-                if (factory.isSingleton) {
-                    val name = Names.instanceNameOf(it.identifier)
-                    addStatement("%T.identifier -> $name", it.className)
-                } else {
-                    val name = Names.providerNameOf(it.identifier)
-                    addStatement("%T.identifier -> $name()", it.className)
-                }
+                val name = Names.providerNameOf(it.identifier)
+                addStatement("%T.identifier -> $name()", it.className)
             }
             addStatement("else -> null")
             endControlFlow()

@@ -6,6 +6,7 @@ import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
+import com.moriatsushi.koject.processor.symbol.ProviderName
 import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
@@ -81,15 +82,16 @@ internal class FactoryFileSpecFactory {
     private fun createCreateFunSpec(provider: ProviderDeclaration): FunSpec {
         val code = buildCodeBlock {
             add("return ")
-            when (provider) {
-                is ProviderDeclaration.Class -> {
-                    add("%T", provider.className)
+            when (provider.name) {
+                is ProviderName.Class -> {
+                    add("%T", provider.name.className)
                 }
-                is ProviderDeclaration.TopLevelFunction -> {
-                    add("%M", provider.functionName)
-                }
-                is ProviderDeclaration.ObjectFunction -> {
-                    add("%T.%M", provider.objectName, provider.functionName)
+                is ProviderName.Function -> {
+                    if (provider.name.objectName != null) {
+                        add("%T.%M", provider.name.objectName, provider.name.functionName)
+                    } else {
+                        add("%M", provider.name.functionName)
+                    }
                 }
             }
             add("(")

@@ -28,10 +28,10 @@ internal class ContainerGenerator(
             aggregating = true,
         )
 
-        allFactories.components.forEach { component, factories ->
+        allFactories.childComponents.forEach {
             val container = componentContainerFileSpecFactory.createComponent(
-                component,
-                factories,
+                it,
+                allFactories.rootComponent,
             )
 
             fileGenerator.createNewFile(
@@ -40,9 +40,7 @@ internal class ContainerGenerator(
             )
         }
 
-        val app = appContainerFileSpecFactory.create(
-            allFactories.components.keys,
-        )
+        val app = appContainerFileSpecFactory.create(allFactories)
 
         fileGenerator.createNewFile(
             fileSpec = app,

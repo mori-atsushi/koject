@@ -4,8 +4,7 @@ import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.symbol.ComponentClassDeclaration
-import com.moriatsushi.koject.processor.symbol.ComponentFactoryDeclarations
+import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.containerClassName
@@ -22,18 +21,40 @@ import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ComponentContainerFileSpecFactory {
-    fun createRoot(factories: ComponentFactoryDeclarations): FileSpec {
-        val type = TypeSpec.classBuilder(Names.rootComponentContainerClassName).apply {
-            factories.singletons.forEach {
-                addProperty(createSingletonInstancePropertySpec(factories, it))
+    fun createRoot(component: ComponentDeclaration): FileSpec {
+        return internalCreateComponent(component, null)
+    }
+
+    fun createComponent(
+        component: ComponentDeclaration,
+        rootComponent: ComponentDeclaration,
+    ): FileSpec {
+        return internalCreateComponent(component, rootComponent)
+    }
+
+    private fun internalCreateComponent(
+        component: ComponentDeclaration,
+        rootComponent: ComponentDeclaration?,
+    ): FileSpec {
+        val type = TypeSpec.classBuilder(component.containerClassName).apply {
+            if (rootComponent != null) {
+                primaryConstructor(createChildComponentConstructorSpec(rootComponent))
+                addProperty(createExtrasPropertySpec(component.className!!))
+                addProperty(createRootComponentPropertySpec(rootComponent))
             }
-            factories.normals.forEach {
-                addProperty(createProviderPropertySpec(factories, it, null))
+
+            component.singletonFactories.forEach {
+                addProperty(createSingletonInstancePropertySpec(it, component))
             }
-            addFunction(createGetFunSpec(factories, false))
+
+            component.normalFactories.forEach {
+                addProperty(createProviderPropertySpec(it, component))
+            }
+
+            addFunction(createGetFunSpec(component.allFactories, rootComponent != null))
             addAnnotation(AnnotationSpecFactory.createInternal())
 
-            factories.all
+            component.allFactories
                 .mapNotNull { it.containingFile }
                 .forEach { addOriginatingKSFile(it) }
         }.build()
@@ -47,40 +68,13 @@ internal class ComponentContainerFileSpecFactory {
         }.build()
     }
 
-    fun createComponent(
-        component: ComponentClassDeclaration,
-        factories: ComponentFactoryDeclarations,
-    ): FileSpec {
-        val constructor = FunSpec.constructorBuilder().apply {
+    private fun createChildComponentConstructorSpec(
+        component: ComponentDeclaration,
+    ): FunSpec {
+        val name = component.containerClassName
+        return FunSpec.constructorBuilder().apply {
             addParameter("extras", ANY)
-            addParameter(
-                "rootComponent",
-                Names.rootComponentContainerClassName,
-            )
-        }.build()
-
-        val type = TypeSpec.classBuilder(component.containerClassName).apply {
-            primaryConstructor(constructor)
-            addProperty(createExtrasPropertySpec(component.className))
-            addProperty(createRootComponentPropertySpec())
-
-            factories.normals.forEach {
-                addProperty(createProviderPropertySpec(factories, it, component))
-            }
-            addFunction(createGetFunSpec(factories, true))
-            addAnnotation(AnnotationSpecFactory.createInternal())
-
-            factories.all
-                .mapNotNull { it.containingFile }
-                .forEach { addOriginatingKSFile(it) }
-        }.build()
-
-        return FileSpec.builder(
-            Names.generatedPackageName,
-            type.name!!,
-        ).apply {
-            applyCommon()
-            addType(type)
+            addParameter("rootComponent", name)
         }.build()
     }
 
@@ -91,22 +85,22 @@ internal class ComponentContainerFileSpecFactory {
         }.build()
     }
 
-    private fun createRootComponentPropertySpec(): PropertySpec {
-        return PropertySpec.builder(
-            "rootComponent",
-            Names.rootComponentContainerClassName,
-        ).apply {
+    private fun createRootComponentPropertySpec(
+        component: ComponentDeclaration,
+    ): PropertySpec {
+        val name = component.containerClassName
+        return PropertySpec.builder("rootComponent", name).apply {
             initializer("rootComponent")
             addModifiers(KModifier.PRIVATE)
         }.build()
     }
 
     private fun createSingletonInstancePropertySpec(
-        factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
+        component: ComponentDeclaration,
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val factoryCode = createFactoryCodeBlock(factories, factoryClass, null)
+        val factoryCode = createFactoryCodeBlock(factoryClass, component)
         val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
@@ -125,12 +119,11 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createProviderPropertySpec(
-        factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
-        component: ComponentClassDeclaration?,
+        component: ComponentDeclaration,
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val factoryCode = createFactoryCodeBlock(factories, factoryClass, component)
+        val factoryCode = createFactoryCodeBlock(factoryClass, component)
         val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
@@ -147,9 +140,8 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createFactoryCodeBlock(
-        factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
-        component: ComponentClassDeclaration?,
+        component: ComponentDeclaration,
     ): CodeBlock {
         return buildCodeBlock {
             add("%T(", factoryClass.className)
@@ -157,7 +149,7 @@ internal class ComponentContainerFileSpecFactory {
                 add("\n")
                 indent()
                 factoryClass.parameters.forEach {
-                    val code = findDependencyCode(it, factories, component)
+                    val code = findDependencyCode(it, component)
                     add("$code,\n")
                 }
                 unindent()
@@ -168,15 +160,14 @@ internal class ComponentContainerFileSpecFactory {
 
     private fun findDependencyCode(
         target: Dependency,
-        factories: ComponentFactoryDeclarations,
-        component: ComponentClassDeclaration?,
+        component: ComponentDeclaration,
     ): String {
         val providerName = Names.providerNameOf(target.identifier)
-        val extraDependency = component?.findDependency(target.identifier)
+        val extraDependency = component.findExtraDependency(target.identifier)
         if (extraDependency != null) {
             return "this.extras.$providerName"
         }
-        val factory = factories.getOrNull(target.identifier)
+        val factory = component.findFactory(target.identifier)
         if (factory != null) {
             return providerName
         }
@@ -184,14 +175,14 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createGetFunSpec(
-        factories: ComponentFactoryDeclarations,
+        factories: Sequence<FactoryDeclaration>,
         hasRootComponent: Boolean,
     ): FunSpec {
         return FunSpec.builder("resolve").apply {
             returns(ANY.copy(nullable = true))
             addParameter("id", Identifier::class)
             beginControlFlow("return when (id) {")
-            factories.all.forEach {
+            factories.forEach {
                 val name = Names.providerNameOf(it.identifier)
                 addStatement("%T.identifier -> $name()", it.className)
             }

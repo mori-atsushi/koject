@@ -10,51 +10,20 @@ import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
-internal sealed interface ProviderDeclaration {
-    val identifier: TypedIdentifier
-    val component: ComponentName?
-    val parameters: List<ProviderParameter>
-    val isSingleton: Boolean
-    val location: Location
-    val containingFile: KSFile?
-
-    data class Class(
-        val className: ClassName,
-        override val identifier: TypedIdentifier,
-        override val component: ComponentName?,
-        override val parameters: List<ProviderParameter>,
-        override val isSingleton: Boolean,
-        override val location: Location,
-        override val containingFile: KSFile?,
-    ) : ProviderDeclaration
-
-    data class TopLevelFunction(
-        val functionName: MemberName,
-        override val identifier: TypedIdentifier,
-        override val component: ComponentName?,
-        override val parameters: List<ProviderParameter>,
-        override val isSingleton: Boolean,
-        override val location: Location,
-        override val containingFile: KSFile?,
-    ) : ProviderDeclaration
-
-    data class ObjectFunction(
-        val objectName: ClassName,
-        val functionName: MemberName,
-        override val identifier: TypedIdentifier,
-        override val component: ComponentName?,
-        override val parameters: List<ProviderParameter>,
-        override val isSingleton: Boolean,
-        override val location: Location,
-        override val containingFile: KSFile?,
-    ) : ProviderDeclaration
-
+internal data class ProviderDeclaration(
+    val name: ProviderName,
+    val identifier: TypedIdentifier,
+    val component: ComponentName?,
+    val parameters: List<ProviderParameter>,
+    val isSingleton: Boolean,
+    val location: Location,
+    val containingFile: KSFile?,
+) {
     companion object
 }
 
@@ -75,9 +44,12 @@ private fun ProviderDeclaration.Companion.of(
     val bindAnnotation = ksClass.findBindAnnotation()
     val typeName = bindAnnotation?.toTypeName
         ?: ksClass.toClassName()
-
-    return ProviderDeclaration.Class(
+    val name = ProviderName.Class(
         className = ksClass.toClassName(),
+    )
+
+    return ProviderDeclaration(
+        name = name,
         identifier = TypedIdentifier(typeName, qualifier),
         component = ksClass.findComponentName(),
         parameters = ksClass.primaryConstructor!!.providerParameters,
@@ -107,11 +79,14 @@ private fun ProviderDeclaration.Companion.of(
 private fun ProviderDeclaration.Companion.createTopLevelFunction(
     ksFunction: KSFunctionDeclaration,
 ): ProviderDeclaration {
-    return ProviderDeclaration.TopLevelFunction(
+    val name = ProviderName.Function(
         functionName = MemberName(
             ksFunction.packageName.asString(),
             ksFunction.simpleName.asString(),
         ),
+    )
+    return ProviderDeclaration(
+        name = name,
         identifier = ksFunction.identifier,
         component = ksFunction.findComponentName(),
         parameters = ksFunction.providerParameters,
@@ -127,10 +102,13 @@ private fun ProviderDeclaration.Companion.createObjectFunction(
 ): ProviderDeclaration {
     val objectName = parent.toClassName()
     val functionName = objectName.member(ksFunction.simpleName.asString())
-
-    return ProviderDeclaration.ObjectFunction(
+    val name = ProviderName.Function(
         objectName = objectName,
         functionName = functionName,
+    )
+
+    return ProviderDeclaration(
+        name = name,
         identifier = ksFunction.identifier,
         component = ksFunction.findComponentName(),
         parameters = ksFunction.providerParameters,

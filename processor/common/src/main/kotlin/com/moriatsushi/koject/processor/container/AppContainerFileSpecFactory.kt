@@ -5,7 +5,8 @@ import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.symbol.ComponentClassDeclaration
+import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
+import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
@@ -17,40 +18,42 @@ import com.squareup.kotlinpoet.buildCodeBlock
 
 internal class AppContainerFileSpecFactory {
     fun create(
-        components: Set<ComponentClassDeclaration>,
+        allFactoryDeclarations: AllFactoryDeclarations,
     ): FileSpec {
         return FileSpec.builder(
             Names.appContainerClassName.packageName,
             Names.appContainerClassName.simpleName,
         ).apply {
             applyCommon()
-            addType(createContainerClass(components))
+            addType(createContainerClass(allFactoryDeclarations))
         }.build()
     }
 
     private fun createContainerClass(
-        components: Set<ComponentClassDeclaration>,
+        allFactoryDeclarations: AllFactoryDeclarations,
     ): TypeSpec {
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
 
         return TypeSpec.classBuilder(Names.appContainerClassName).apply {
             addSuperinterface(Container::class)
-            addProperty(createGlobalComponentPropertySpec())
-            addFunction(createGetFunSpec(components))
+            addProperty(createGlobalComponentPropertySpec(allFactoryDeclarations.rootComponent))
+            addFunction(createGetFunSpec(allFactoryDeclarations.childComponents))
             addAnnotation(internalAnnotationSpec)
         }.build()
     }
 
-    private fun createGlobalComponentPropertySpec(): PropertySpec {
-        val className = Names.rootComponentContainerClassName
+    private fun createGlobalComponentPropertySpec(
+        rootComponent: ComponentDeclaration,
+    ): PropertySpec {
+        val className = rootComponent.containerClassName
         return PropertySpec.builder("rootComponent", className).apply {
             initializer("%T()", className)
         }.build()
     }
 
     private fun createGetFunSpec(
-        components: Set<ComponentClassDeclaration>,
+        components: Sequence<ComponentDeclaration>,
     ): FunSpec {
         val code = buildCodeBlock {
             add("if (componentExtras == null) {\n")

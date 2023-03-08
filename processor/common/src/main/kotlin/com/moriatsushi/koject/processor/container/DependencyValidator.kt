@@ -12,7 +12,7 @@ internal class DependencyValidator {
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
-        val rootComponentFactories = allFactories.rootComponent.all
+        val rootComponentFactories = allFactories.rootComponent.allFactories
         rootComponentFactories.forEach { factory ->
             validateDuplicates(factory, rootComponentFactories)
             factory.parameters.forEach {

@@ -1,47 +1,70 @@
-@file:OptIn(ExperimentalKojectApi::class)
-
 package com.moriatsushi.koject.processor.symbol
 
-import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.isPrivate
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.google.devtools.ksp.symbol.KSType
-import com.moriatsushi.koject.ExperimentalKojectApi
-import com.moriatsushi.koject.component.ComponentExtras
-import com.moriatsushi.koject.processor.analytics.findAnnotation
-import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import com.moriatsushi.koject.internal.StringIdentifier
+import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.escapedForCode
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ksp.toClassName
 
 internal data class ComponentDeclaration(
     val name: ComponentName,
-    val extras: ComponentExtrasDeclaration,
+    val className: ClassName?,
+    val extras: Sequence<Dependency>,
+    private val factories: Sequence<FactoryDeclaration>,
     val containingFile: KSFile?,
 ) {
-    companion object
+    val allFactories = factories.sortedBy { it.identifier.displayName }
+    val normalFactories = allFactories.filter { !it.isSingleton }
+    val singletonFactories = allFactories.filter { it.isSingleton }
+
+    fun findExtraDependency(identifier: StringIdentifier): Dependency? {
+        return extras.find { it.identifier == identifier }
+    }
+
+    fun findFactory(identifier: StringIdentifier): FactoryDeclaration? {
+        return factories.find { it.identifier == identifier }
+    }
+
+    companion object {
+        fun createRoot(
+            factories: Sequence<FactoryDeclaration>,
+        ): ComponentDeclaration {
+            return ComponentDeclaration(
+                name = ComponentName("RootComponent"),
+                className = null,
+                extras = emptySequence(),
+                factories = factories,
+                containingFile = null,
+            )
+        }
+    }
 }
 
-/**
- * Name that can be used in code for functions, classes, etc.
- */
-internal fun ComponentDeclaration.asCodeName(): String {
-    return name.value.escapedForCode
-}
+internal val ComponentDeclaration.containerClassName: ClassName
+    get() = ClassName(
+        Names.generatedPackageName,
+        "_${name.value.escapedForCode}_Container",
+    )
 
-internal fun Resolver.findComponentDeclarations(): Sequence<ComponentDeclaration> {
-    return getSymbolsWithAnnotation(ComponentExtras::class.qualifiedName!!)
-        .filterIsInstance<KSClassDeclaration>()
-        .map { ComponentDeclaration.of(it) }
-}
-
-private fun ComponentDeclaration.Companion.of(
-    arguments: KSClassDeclaration,
+internal fun ComponentDeclaration.Companion.of(
+    ksClass: KSClassDeclaration,
+    factories: Sequence<FactoryDeclaration>,
 ): ComponentDeclaration {
-    val component = arguments.findAnnotation<ComponentExtras>()!!
-        .findArgumentByName<KSType>("of")!!
-        .declaration
+    val name = ksClass.findStringComponentName()!!
+
     return ComponentDeclaration(
-        name = ComponentName.of(component),
-        extras = ComponentExtrasDeclaration.of(arguments),
-        containingFile = arguments.containingFile,
+        name = name,
+        className = ksClass.toClassName(),
+        extras = ksClass.extraParameters,
+        factories = factories.filter { it.component == name },
+        containingFile = ksClass.containingFile,
     )
 }
+
+private val KSClassDeclaration.extraParameters: Sequence<Dependency>
+    get() = getAllProperties()
+        .filterNot { it.isPrivate() }
+        .map { Dependency.of(it) }

@@ -3,7 +3,7 @@ package com.moriatsushi.koject.processor.component
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
+import com.moriatsushi.koject.processor.symbol.ComponentExtrasDeclaration
 import com.moriatsushi.koject.processor.symbol.ExtrasParameter
 import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
 import com.moriatsushi.koject.processor.symbol.asCodeName
@@ -22,31 +22,31 @@ import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 import kotlin.reflect.KClass
 
 internal class ComponentFileSpecFactory {
-    fun generate(declaration: ComponentDeclaration): FileSpec {
-        val classSpec = createComponentClassSpec(declaration)
+    fun generate(extrasDeclaration: ComponentExtrasDeclaration): FileSpec {
+        val classSpec = createComponentClassSpec(extrasDeclaration)
         return FileSpec.builder(Names.componentPackageName, classSpec.name!!).apply {
             applyCommon()
             addType(classSpec)
         }.build()
     }
 
-    private fun createComponentClassSpec(declaration: ComponentDeclaration): TypeSpec {
-        val name = "_${declaration.asCodeName()}"
+    private fun createComponentClassSpec(extrasDeclaration: ComponentExtrasDeclaration): TypeSpec {
+        val name = "_${extrasDeclaration.asCodeName()}"
         return TypeSpec.classBuilder(name).apply {
             addAnnotation(AnnotationSpecFactory.createInternal())
-            addAnnotation(declaration.name.asAnnotationSpec())
+            addAnnotation(extrasDeclaration.componentName.asAnnotationSpec())
 
             primaryConstructor(createConstructorSpec())
-            addProperty(createExtrasPropertySpec(declaration.extras.name))
+            addProperty(createExtrasPropertySpec(extrasDeclaration.className))
 
-            declaration.extras.parameters.forEach {
+            extrasDeclaration.parameters.forEach {
                 addProperty(createProvidePropertySpec(it))
             }
 
-            addType(createCompanionObjectSpec(declaration.extras.name))
+            addType(createCompanionObjectSpec(extrasDeclaration.className))
 
-            if (declaration.containingFile != null) {
-                addOriginatingKSFile(declaration.containingFile)
+            if (extrasDeclaration.containingFile != null) {
+                addOriginatingKSFile(extrasDeclaration.containingFile)
             }
         }.build()
     }

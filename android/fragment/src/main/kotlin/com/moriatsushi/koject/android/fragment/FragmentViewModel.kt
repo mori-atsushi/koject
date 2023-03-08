@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
 
-
 /**
  * Returns a [Lazy] delegate to access the Fragment's [ViewModel]
  * provided by Koject

@@ -13,7 +13,7 @@ internal data class FactoryDeclaration(
     val identifier: StringIdentifier,
     val component: ComponentName?,
     val className: ClassName,
-    val parameters: List<FactoryParameter>,
+    val parameters: List<Dependency>,
     val isSingleton: Boolean,
     val location: Location,
     val containingFile: KSFile?,
@@ -35,12 +35,7 @@ internal fun FactoryDeclaration.Companion.of(
     )
 }
 
-private val KSClassDeclaration.factoryParameters: List<FactoryParameter>
+private val KSClassDeclaration.factoryParameters: List<Dependency>
     get() = primaryConstructor?.parameters
         .orEmpty()
-        .map {
-            FactoryParameter(
-                identifier = it.findStringIdentifier()!!,
-                location = it.findLocationAnnotation()!!,
-            )
-        }
+        .map { Dependency.of(it) }

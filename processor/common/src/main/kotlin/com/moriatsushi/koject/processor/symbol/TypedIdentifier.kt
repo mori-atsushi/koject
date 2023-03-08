@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.processor.symbol
 
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.internal.StringIdentifier
@@ -38,6 +39,15 @@ internal fun TypedIdentifier.Companion.of(
     val typeName = ksType.toTypeName()
     val qualifier = parameter.findQualifierAnnotation()
     return TypedIdentifier(typeName, qualifier)
+}
+
+internal fun TypedIdentifier.Companion.of(
+    parameter: KSPropertyDeclaration,
+): TypedIdentifier {
+    val ksType = parameter.type.resolve()
+    val typeName = ksType.toTypeName()
+    // TODO: Support qualifier
+    return TypedIdentifier(typeName, null)
 }
 
 /**

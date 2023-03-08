@@ -61,8 +61,15 @@ internal class AppContainerFileSpecFactory {
             add("return when (componentExtras::class) {\n")
             indent()
             components.forEach {
-                add("%T.argumentClass -> ", it.className)
-                add("%T(rootComponent).resolve(id)\n", it.containerClassName)
+                add("%T.argumentClass -> \n", it.className)
+                indent()
+                add("%T(\n", it.containerClassName)
+                indent()
+                add("componentExtras,\n")
+                add("rootComponent,\n")
+                unindent()
+                add(").resolve(id)\n")
+                unindent()
             }
             add("else -> rootComponent.resolve(id)\n")
             unindent()

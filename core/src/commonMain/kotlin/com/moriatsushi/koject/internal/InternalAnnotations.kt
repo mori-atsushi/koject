@@ -10,6 +10,7 @@ import com.moriatsushi.koject.component.Component
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.PROPERTY,
 )
 annotation class StringIdentifier(
     val type: String,
@@ -38,5 +39,6 @@ annotation class StringComponent(
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.PROPERTY,
 )
 annotation class Location(val value: String)

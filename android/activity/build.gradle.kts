@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     kotlin("android")
+    alias(libs.plugins.publish)
 }
 
 android {

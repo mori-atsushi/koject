@@ -3,7 +3,10 @@ package com.moriatsushi.koject.processor
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.moriatsushi.koject.internal.InternalKojectApi
-import com.moriatsushi.koject.processor.container.ContainerFileSpecFactory
+import com.moriatsushi.koject.processor.component.ComponentFileSpecFactory
+import com.moriatsushi.koject.processor.component.ComponentGenerator
+import com.moriatsushi.koject.processor.container.AppContainerFileSpecFactory
+import com.moriatsushi.koject.processor.container.ComponentContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ContainerGenerator
 import com.moriatsushi.koject.processor.container.DependencyValidator
 import com.moriatsushi.koject.processor.container.StartFileSpecFactory
@@ -15,8 +18,8 @@ import com.moriatsushi.koject.processor.file.FileGenerator
 class DIProcessorFactory(
     private val environment: SymbolProcessorEnvironment,
 ) {
-    private fun createFileGenerator(): FileGenerator {
-        return FileGenerator(environment.codeGenerator)
+    private val fileGenerator by lazy {
+        FileGenerator(environment.codeGenerator)
     }
 
     private fun createFactoryFileSpecFactory(): FactoryFileSpecFactory {
@@ -25,8 +28,19 @@ class DIProcessorFactory(
 
     private fun createFactoryGenerator(): FactoryGenerator {
         return FactoryGenerator(
-            createFileGenerator(),
+            fileGenerator,
             createFactoryFileSpecFactory(),
+        )
+    }
+
+    private fun createComponentFileSpecFactory(): ComponentFileSpecFactory {
+        return ComponentFileSpecFactory()
+    }
+
+    private fun createComponentGenerator(): ComponentGenerator {
+        return ComponentGenerator(
+            createComponentFileSpecFactory(),
+            fileGenerator,
         )
     }
 
@@ -34,8 +48,12 @@ class DIProcessorFactory(
         return DependencyValidator()
     }
 
-    private fun createContainerFileSpecFactory(): ContainerFileSpecFactory {
-        return ContainerFileSpecFactory()
+    private fun createComponentContainerFileSpecFactory(): ComponentContainerFileSpecFactory {
+        return ComponentContainerFileSpecFactory()
+    }
+
+    private fun createAppContainerFileSpecFactory(): AppContainerFileSpecFactory {
+        return AppContainerFileSpecFactory()
     }
 
     private fun createStartFileSpecFactory(): StartFileSpecFactory {
@@ -45,8 +63,9 @@ class DIProcessorFactory(
     private fun createContainerGenerator(): ContainerGenerator {
         return ContainerGenerator(
             createDependencyValidator(),
-            createFileGenerator(),
-            createContainerFileSpecFactory(),
+            fileGenerator,
+            createComponentContainerFileSpecFactory(),
+            createAppContainerFileSpecFactory(),
             createStartFileSpecFactory(),
         )
     }
@@ -57,6 +76,7 @@ class DIProcessorFactory(
         return DIProcessor(
             shouldGenerateContainer,
             createFactoryGenerator(),
+            createComponentGenerator(),
             createContainerGenerator(),
             environment.codeGenerator,
         )

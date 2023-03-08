@@ -18,6 +18,7 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal sealed interface ProviderDeclaration {
     val identifier: TypedIdentifier
+    val component: ComponentName?
     val parameters: List<ProviderParameter>
     val isSingleton: Boolean
     val location: Location
@@ -26,6 +27,7 @@ internal sealed interface ProviderDeclaration {
     data class Class(
         val className: ClassName,
         override val identifier: TypedIdentifier,
+        override val component: ComponentName?,
         override val parameters: List<ProviderParameter>,
         override val isSingleton: Boolean,
         override val location: Location,
@@ -35,6 +37,7 @@ internal sealed interface ProviderDeclaration {
     data class TopLevelFunction(
         val functionName: MemberName,
         override val identifier: TypedIdentifier,
+        override val component: ComponentName?,
         override val parameters: List<ProviderParameter>,
         override val isSingleton: Boolean,
         override val location: Location,
@@ -45,6 +48,7 @@ internal sealed interface ProviderDeclaration {
         val objectName: ClassName,
         val functionName: MemberName,
         override val identifier: TypedIdentifier,
+        override val component: ComponentName?,
         override val parameters: List<ProviderParameter>,
         override val isSingleton: Boolean,
         override val location: Location,
@@ -75,6 +79,7 @@ private fun ProviderDeclaration.Companion.of(
     return ProviderDeclaration.Class(
         className = ksClass.toClassName(),
         identifier = TypedIdentifier(typeName, qualifier),
+        component = ksClass.findComponentName(),
         parameters = ksClass.primaryConstructor!!.providerParameters,
         isSingleton = ksClass.isSingleton,
         location = ksClass.createLocationAnnotation(),
@@ -108,6 +113,7 @@ private fun ProviderDeclaration.Companion.createTopLevelFunction(
             ksFunction.simpleName.asString(),
         ),
         identifier = ksFunction.identifier,
+        component = ksFunction.findComponentName(),
         parameters = ksFunction.providerParameters,
         isSingleton = ksFunction.isSingleton,
         location = ksFunction.createLocationAnnotation(),
@@ -126,6 +132,7 @@ private fun ProviderDeclaration.Companion.createObjectFunction(
         objectName = objectName,
         functionName = functionName,
         identifier = ksFunction.identifier,
+        component = ksFunction.findComponentName(),
         parameters = ksFunction.providerParameters,
         isSingleton = ksFunction.isSingleton,
         location = ksFunction.createLocationAnnotation(),

@@ -11,7 +11,7 @@ import com.squareup.kotlinpoet.asTypeName
 internal class StartFileSpecFactory {
     fun create(): FileSpec {
         val packageName = Names.rootPackageName
-        val containerName = Names.containerClassName
+        val containerName = Names.appContainerClassName
 
         val funSpec = FunSpec.builder("start").apply {
             receiver(Koject::class)

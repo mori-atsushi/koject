@@ -9,8 +9,10 @@ internal object Names {
     const val rootPackageName = "com.moriatsushi.koject"
     const val generatedPackageName = "$rootPackageName.generated"
     const val factoryPackageName = "$generatedPackageName.factory"
+    const val componentPackageName = "$generatedPackageName.component"
 
-    val containerClassName = ClassName(generatedPackageName, "_AppContainer")
+    val appContainerClassName = ClassName(generatedPackageName, "_AppContainer")
+    val rootComponentContainerClassName = ClassName(generatedPackageName, "_RootComponentContainer")
 
     fun providerNameOf(identifier: StringIdentifier): String {
         return "provide_${identifier.asCodeName()}"

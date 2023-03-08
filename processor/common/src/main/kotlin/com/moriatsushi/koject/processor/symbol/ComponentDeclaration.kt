@@ -11,7 +11,6 @@ import com.moriatsushi.koject.component.ComponentExtras
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.moriatsushi.koject.processor.code.escapedForCode
-import com.squareup.kotlinpoet.ksp.toClassName
 
 internal data class ComponentDeclaration(
     val name: ComponentName,
@@ -42,7 +41,7 @@ private fun ComponentDeclaration.Companion.of(
         .declaration
     return ComponentDeclaration(
         name = ComponentName.of(component),
-        extras = ComponentExtrasDeclaration(arguments.toClassName()),
+        extras = ComponentExtrasDeclaration.of(arguments),
         containingFile = arguments.containingFile,
     )
 }

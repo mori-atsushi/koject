@@ -4,12 +4,13 @@ import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ComponentClassDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentFactoryDeclarations
+import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -27,7 +28,7 @@ internal class ComponentContainerFileSpecFactory {
                 addProperty(createSingletonInstancePropertySpec(factories, it))
             }
             factories.normals.forEach {
-                addProperty(createProviderPropertySpec(factories, it))
+                addProperty(createProviderPropertySpec(factories, it, null))
             }
             addFunction(createGetFunSpec(factories, false))
             addAnnotation(AnnotationSpecFactory.createInternal())
@@ -51,6 +52,7 @@ internal class ComponentContainerFileSpecFactory {
         factories: ComponentFactoryDeclarations,
     ): FileSpec {
         val constructor = FunSpec.constructorBuilder().apply {
+            addParameter("extras", ANY)
             addParameter(
                 "rootComponent",
                 Names.rootComponentContainerClassName,
@@ -58,12 +60,12 @@ internal class ComponentContainerFileSpecFactory {
         }.build()
 
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
-            primaryConstructorWithParameters(
-                constructor,
-                setOf(KModifier.PRIVATE),
-            )
+            primaryConstructor(constructor)
+            addProperty(createExtrasPropertySpec(component.className))
+            addProperty(createRootComponentPropertySpec())
+
             factories.normals.forEach {
-                addProperty(createProviderPropertySpec(factories, it))
+                addProperty(createProviderPropertySpec(factories, it, component))
             }
             addFunction(createGetFunSpec(factories, true))
             addAnnotation(AnnotationSpecFactory.createInternal())
@@ -82,12 +84,29 @@ internal class ComponentContainerFileSpecFactory {
         }.build()
     }
 
+    private fun createExtrasPropertySpec(className: ClassName): PropertySpec {
+        return PropertySpec.builder("extras", className).apply {
+            initializer("%T(extras)", className)
+            addModifiers(KModifier.PRIVATE)
+        }.build()
+    }
+
+    private fun createRootComponentPropertySpec(): PropertySpec {
+        return PropertySpec.builder(
+            "rootComponent",
+            Names.rootComponentContainerClassName,
+        ).apply {
+            initializer("rootComponent")
+            addModifiers(KModifier.PRIVATE)
+        }.build()
+    }
+
     private fun createSingletonInstancePropertySpec(
         factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val factoryCode = createFactoryCodeBlock(factories, factoryClass)
+        val factoryCode = createFactoryCodeBlock(factories, factoryClass, null)
         val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
@@ -108,9 +127,10 @@ internal class ComponentContainerFileSpecFactory {
     private fun createProviderPropertySpec(
         factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
+        component: ComponentClassDeclaration?,
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val factoryCode = createFactoryCodeBlock(factories, factoryClass)
+        val factoryCode = createFactoryCodeBlock(factories, factoryClass, component)
         val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
@@ -129,6 +149,7 @@ internal class ComponentContainerFileSpecFactory {
     private fun createFactoryCodeBlock(
         factories: ComponentFactoryDeclarations,
         factoryClass: FactoryDeclaration,
+        component: ComponentClassDeclaration?,
     ): CodeBlock {
         return buildCodeBlock {
             add("%T(", factoryClass.className)
@@ -136,19 +157,30 @@ internal class ComponentContainerFileSpecFactory {
                 add("\n")
                 indent()
                 factoryClass.parameters.forEach {
-                    val factory = factories.getOrNull(it.identifier)
-                    val providerName = Names.providerNameOf(it.identifier)
-                    val code = if (factory != null) {
-                        providerName
-                    } else {
-                        "rootComponent.$providerName"
-                    }
+                    val code = findDependencyCode(it, factories, component)
                     add("$code,\n")
                 }
                 unindent()
             }
             add(")")
         }
+    }
+
+    private fun findDependencyCode(
+        target: Dependency,
+        factories: ComponentFactoryDeclarations,
+        component: ComponentClassDeclaration?,
+    ): String {
+        val providerName = Names.providerNameOf(target.identifier)
+        val extraDependency = component?.findDependency(target.identifier)
+        if (extraDependency != null) {
+            return "this.extras.$providerName"
+        }
+        val factory = factories.getOrNull(target.identifier)
+        if (factory != null) {
+            return providerName
+        }
+        return "this.rootComponent.$providerName"
     }
 
     private fun createGetFunSpec(

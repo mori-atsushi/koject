@@ -46,8 +46,8 @@ internal fun TypedIdentifier.Companion.of(
 ): TypedIdentifier {
     val ksType = parameter.type.resolve()
     val typeName = ksType.toTypeName()
-    // TODO: Support qualifier
-    return TypedIdentifier(typeName, null)
+    val qualifier = parameter.findQualifierAnnotation()
+    return TypedIdentifier(typeName, qualifier)
 }
 
 /**

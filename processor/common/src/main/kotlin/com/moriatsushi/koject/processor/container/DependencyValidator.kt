@@ -59,7 +59,11 @@ internal class DependencyValidator {
         }
         if (duplicate.count() > 1) {
             val errorMessage = buildString {
-                appendLine("${factory.identifier.displayName} provide is duplicated.")
+                append("${factory.identifier.displayName} provide is duplicated")
+                if (factory.component != null) {
+                    append(" in Component(${factory.component.value})")
+                }
+                append(".\n")
                 duplicate.forEachIndexed { index, it ->
                     appendLine("    ${index + 1}. ${it.location.value}")
                 }

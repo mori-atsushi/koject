@@ -1,0 +1,44 @@
+# Inject into Composable
+Koject can inject into Composable.
+
+## Setup for Compose
+To inject into Composable, add the following dependencies:
+
+```kotlin
+dependencies {
+    implementation("com.moriatsushi.koject:koject-compose-core:1.1.0-alpha03")
+}
+```
+
+Please also check the [Setup document](/docs/setup).
+
+## Use with Compose
+You can inject a provided type into a Composable using the <a href="/api/compose/core/com.moriatsushi.koject.compose/remember-inject.html" target="_blank">`rememberInject()`</a> Composable function.
+
+```kotlin
+@Provides
+class SampleController
+```
+```kotlin
+@Composable
+fun Sample(
+    controller: SampleController = rememberInject()
+) {
+    /* ... */
+}
+```
+
+:::caution
+
+Do not call the `inject()` function directly inside a Composable function.
+Creating an instance for each render or running the injection process many times can cause performance degradation.
+
+```kotlin
+@Composable
+fun Sample(
+    controller: SampleController = inject() // DO NOT!!
+) {
+    /* ... */
+}
+```
+:::

@@ -1,0 +1,45 @@
+# Inject ViewModels into Composable
+Koject can inject Android [ViewModels](https://developer.android.com/reference/androidx/lifecycle/ViewModel) into Composable.
+
+:::tip LINK
+
+Please also check the [documentation](/docs/android/viewmodel) for details on ViewModel, such as how to inject ViewModel into Activity / Fragment.
+
+:::
+
+## Setup to use ViewModels in Compose
+To inject ViewModels into Composable, add the following dependencies:
+
+```kotlin
+dependencies {
+    implementation("com.moriatsushi.koject:koject-compose-viewmodel:1.1.0-alpha03")
+}
+```
+
+Please also check the [Setup document](/docs/setup).
+
+## Using ViewModels in Compose
+Specify the <a href="/api/android/viewmodel/com.moriatsushi.koject.android.viewmodel/-view-model-component/index.html" target="_blank">`@ViewModelComponent`</a> and <a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a> annotations when defining a ViewModel.
+As with other providing types, constructor injection is available.
+
+```kotlin
+@Provides
+@ViewModelComponent
+class TopViewModel(
+    private val userRepository: UserRepository,
+    private val contentRepository: ContentRepository,
+): ViewModel() {
+    /* ... */
+}
+```
+
+When using ViewModels, use the <a href="/api/compose/viewmodel/com.moriatsushi.koject.compose.viewmodel/inject-view-model.html" target="_blank">`injectViewModel()`</a> Composable function.
+
+```kotlin
+@Composable
+fun TopPage(
+    viewModel: TopViewModel = injectViewModel()
+) {
+    /* ... */
+}
+```

@@ -225,7 +225,7 @@ interface Repository
 
 #### 詳細な利用方法
 
-より詳細な利用方法については[ドキュメント](/docs/usage)を確認してください。
+より詳細な利用方法については[ドキュメント](/docs/core/basic)を確認してください。
 
 ### Kotlin Multiplatformに対応
 KojectはKotlin Multiplatformに対応しています。

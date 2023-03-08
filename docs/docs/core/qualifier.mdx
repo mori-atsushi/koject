@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Qualifier
-You can use the `@Qualifier` annotation to distinguish between different instances of the same type.
+You can use the <a href="/api/core/com.moriatsushi.koject/-qualifier/index.html" target="_blank">`@Qualifier`</a> annotation to distinguish between different instances of the same type.
 
 First, define the qualifier annotations with `@Qualifier`.
 
@@ -43,7 +43,7 @@ class Repository(
 )
 ```
 
-You can also use qualifier annotations when calling the `inject()` function.
+You can also use qualifier annotations when calling the <a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">inject()</a> function.
 
 ```kotlin
 val db1 = inject<DB>(ID1())
@@ -52,7 +52,7 @@ val db2 = inject<DB>(ID2())
 
 This allows you to provide and inject multiple instances of the same type without ambiguity.
 
-## Distinguishing with Qualifier Members
+## Distinguishing with Qualifier members
 Qualifier annotations can also have members to further distinguish between instances.
 
 For example, you can use the enum class like this:
@@ -201,7 +201,7 @@ annotation class CustomQualifier(
 
 ## Named annotation
 
-You can also use the `@Named` qualifier to distinguish between different instances of the same type based on a string value.
+You can also use the <a href="/api/core/com.moriatsushi.koject/-named/index.html" target="_blank">`@Named`</a> qualifier to distinguish between different instances of the same type based on a string value.
 
 ```kotlin
 @Named("db1")

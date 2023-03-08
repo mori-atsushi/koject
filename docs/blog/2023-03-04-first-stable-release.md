@@ -221,7 +221,7 @@ interface Repository
 ```
 
 #### More details
-For more detailed usage, please refer to the [documentation](/docs/usage).
+For more detailed usage, please refer to the [documentation](/docs/core/basic).
 
 ### Support for Kotlin Multiplatform
 Koject supports Kotlin Multiplatform, allowing you to create dependency graphs for each platform and even swap classes depending on the platform.

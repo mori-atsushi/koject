@@ -13,7 +13,7 @@ import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.asClassName
 
-data class ComponentName(
+internal data class ComponentName(
     val value: String,
 ) {
     companion object

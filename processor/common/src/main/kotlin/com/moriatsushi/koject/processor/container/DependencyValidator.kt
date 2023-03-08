@@ -1,24 +1,43 @@
 package com.moriatsushi.koject.processor.container
 
+import com.moriatsushi.koject.processor.error.DuplicateProvidedException
+import com.moriatsushi.koject.processor.error.NotProvidedException
+import com.moriatsushi.koject.processor.error.WrongScopeException
+import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
+import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
+import com.moriatsushi.koject.processor.symbol.FactoryParameter
+import com.moriatsushi.koject.processor.symbol.displayName
+
 internal class DependencyValidator {
-    /*
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
-        allFactories.all.forEach { factory ->
-            validateDuplicates(factory, allFactories)
+        val rootComponentFactories = allFactories.rootComponent.all
+        rootComponentFactories.forEach { factory ->
+            validateDuplicates(factory, rootComponentFactories)
             factory.parameters.forEach {
-                validateParameter(it, factory, allFactories)
+                validateParameter(factory, it, rootComponentFactories)
+            }
+        }
+        allFactories.components.forEach { (_, factories) ->
+            val enables = factories.all + rootComponentFactories
+            factories.all.forEach { factory ->
+                validateDuplicates(factory, enables)
+                factory.parameters.forEach {
+                    validateParameter(factory, it, enables)
+                }
             }
         }
     }
 
     private fun validateParameter(
-        parameter: FactoryParameter,
         factory: FactoryDeclaration,
-        allFactories: AllFactoryDeclarations,
+        parameter: FactoryParameter,
+        enables: Sequence<FactoryDeclaration>,
     ) {
-        val dependencyFactory = allFactories.getOrNull(parameter.identifier)
+        val dependencyFactory = enables.find {
+            it.identifier == parameter.identifier
+        }
         when {
             dependencyFactory == null -> {
                 throwNotProvidedException(parameter)
@@ -31,9 +50,9 @@ internal class DependencyValidator {
 
     private fun validateDuplicates(
         factory: FactoryDeclaration,
-        allFactories: AllFactoryDeclarations,
+        enables: Sequence<FactoryDeclaration>,
     ) {
-        val duplicate = allFactories.all.filter {
+        val duplicate = enables.filter {
             it.identifier == factory.identifier
         }
         if (duplicate.count() > 1) {
@@ -66,5 +85,4 @@ internal class DependencyValidator {
                 "Only a singleton can be injected into singletons.",
         )
     }
-     */
 }

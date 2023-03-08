@@ -14,7 +14,7 @@ internal class ContainerGenerator(
 ) {
     fun generate(resolver: Resolver) {
         val allFactories = resolver.collectAllFactoryDeclarations()
-        //  dependencyValidator.validate(allFactories)
+        dependencyValidator.validate(allFactories)
 
         generateContainer(allFactories)
         generateStart()

@@ -45,21 +45,6 @@ annotation class Named(val name: String)
 annotation class Binds(val to: KClass<*> = Nothing::class)
 
 /**
- * Define component annotations
- */
-@ExperimentalKojectApi
-@Target(AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.BINARY)
-annotation class Component {
-    /**
-     * Arguments for creating the [Component]
-     */
-    @Target(AnnotationTarget.CLASS)
-    @Retention(AnnotationRetention.BINARY)
-    annotation class Arguments(val of: KClass<*>)
-}
-
-/**
  * Marks declarations that is still experimental in Koject API
  *
  * API will change in future releases.

@@ -21,10 +21,10 @@ class ComponentTest {
         Koject.start()
 
         val type1 = inject<CustomComponentClass>(
-            componentArguments = CustomComponent1Arguments(),
+            componentExtras = CustomComponent1Extras(),
         )
         val type2 = inject<CustomComponentClass>(
-            componentArguments = CustomComponent2Arguments(),
+            componentExtras = CustomComponent2Extras(),
         )
 
         assertEquals("custom-component-1", type1.value)
@@ -36,10 +36,10 @@ class ComponentTest {
         Koject.start()
 
         val holder1 = inject<CustomComponent1Holder>(
-            componentArguments = CustomComponent1Arguments(),
+            componentExtras = CustomComponent1Extras(),
         )
         val holder2 = inject<CustomComponent2Holder>(
-            componentArguments = CustomComponent2Arguments(),
+            componentExtras = CustomComponent2Extras(),
         )
 
         assertEquals("custom-component-1", holder1.value.value)

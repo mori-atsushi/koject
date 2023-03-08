@@ -6,8 +6,8 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
-import com.moriatsushi.koject.Component
 import com.moriatsushi.koject.ExperimentalKojectApi
+import com.moriatsushi.koject.component.ComponentExtras
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.moriatsushi.koject.processor.code.escapedForCode
@@ -15,7 +15,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 
 internal data class ComponentDeclaration(
     val name: ComponentName,
-    val arguments: ComponentArguments,
+    val extras: ComponentExtrasDeclaration,
     val containingFile: KSFile?,
 ) {
     companion object
@@ -29,7 +29,7 @@ internal fun ComponentDeclaration.asCodeName(): String {
 }
 
 internal fun Resolver.findComponentDeclarations(): Sequence<ComponentDeclaration> {
-    return getSymbolsWithAnnotation(Component.Arguments::class.qualifiedName!!)
+    return getSymbolsWithAnnotation(ComponentExtras::class.qualifiedName!!)
         .filterIsInstance<KSClassDeclaration>()
         .map { ComponentDeclaration.of(it) }
 }
@@ -37,12 +37,12 @@ internal fun Resolver.findComponentDeclarations(): Sequence<ComponentDeclaration
 private fun ComponentDeclaration.Companion.of(
     arguments: KSClassDeclaration,
 ): ComponentDeclaration {
-    val component = arguments.findAnnotation<Component.Arguments>()!!
+    val component = arguments.findAnnotation<ComponentExtras>()!!
         .findArgumentByName<KSType>("of")!!
         .declaration
     return ComponentDeclaration(
         name = ComponentName.of(component),
-        arguments = ComponentArguments(arguments.toClassName()),
+        extras = ComponentExtrasDeclaration(arguments.toClassName()),
         containingFile = arguments.containingFile,
     )
 }

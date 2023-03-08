@@ -2,6 +2,6 @@ package com.moriatsushi.koject.processor.symbol
 
 import com.squareup.kotlinpoet.ClassName
 
-data class ComponentArguments(
+data class ComponentExtrasDeclaration(
     val name: ClassName,
 )

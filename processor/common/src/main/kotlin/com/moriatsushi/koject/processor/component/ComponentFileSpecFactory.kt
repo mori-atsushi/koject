@@ -30,7 +30,7 @@ internal class ComponentFileSpecFactory {
         return TypeSpec.objectBuilder(name).apply {
             addAnnotation(AnnotationSpecFactory.createInternal())
             addAnnotation(declaration.name.asAnnotationSpec())
-            addProperty(createArgumentClassPropertySpec(declaration.arguments.name))
+            addProperty(createArgumentClassPropertySpec(declaration.extras.name))
 
             if (declaration.containingFile != null) {
                 addOriginatingKSFile(declaration.containingFile)

@@ -1,6 +1,6 @@
 package com.moriatsushi.koject.internal
 
-import com.moriatsushi.koject.Component
+import com.moriatsushi.koject.component.Component
 
 /**
  * String [Identifier]

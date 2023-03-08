@@ -1,5 +1,7 @@
 package com.moriatsushi.koject
 
+import com.moriatsushi.koject.component.Component
+import com.moriatsushi.koject.component.ComponentExtras
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.internal.Identifier
 
@@ -21,15 +23,15 @@ inline fun <reified T : Any> inject(
  *
  * @param qualifier Qualifier for identification.
  *   Specify the instantiation of the annotation with [Qualifier].
- * @param componentArguments Specify [Component.Arguments] to create [Component].
+ * @param componentExtras Specify [ComponentExtras] to create [Component].
  */
 @ExperimentalKojectApi
 inline fun <reified T : Any> inject(
     qualifier: Any? = null,
-    componentArguments: Any? = null,
+    componentExtras: Any? = null,
 ): T {
     val id = Identifier.of<T>(qualifier)
-    return injectOrNull(id, componentArguments) as? T
+    return injectOrNull(id, componentExtras) as? T
         ?: throw NotProvidedException("$id is not provided")
 }
 
@@ -46,20 +48,20 @@ inline fun <reified T : Any> inject(name: String): T {
  * Inject an [Named] instance with resolved dependencies (experimental)
  *
  * @param name name of [Named]
- * @param componentArguments Specify [Component.Arguments] to create [Component].
+ * @param componentExtras Specify [ComponentExtras] to create [Component].
  */
 @ExperimentalKojectApi
 inline fun <reified T : Any> inject(
     name: String,
-    componentArguments: Any? = null,
+    componentExtras: Any? = null,
 ): T {
-    return inject(Named(name), componentArguments)
+    return inject(Named(name), componentExtras)
 }
 
 @PublishedApi
 internal fun injectOrNull(
     id: Identifier,
-    componentArguments: Any?,
+    componentExtras: Any?,
 ): Any? {
-    return Koject.container.resolve(id, componentArguments)
+    return Koject.container.resolve(id, componentExtras)
 }

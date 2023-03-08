@@ -4,8 +4,8 @@ package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSDeclaration
-import com.moriatsushi.koject.Component
 import com.moriatsushi.koject.ExperimentalKojectApi
+import com.moriatsushi.koject.component.Component
 import com.moriatsushi.koject.internal.StringComponent
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName

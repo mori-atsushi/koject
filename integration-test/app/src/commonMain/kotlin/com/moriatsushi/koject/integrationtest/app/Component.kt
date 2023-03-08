@@ -2,23 +2,24 @@
 
 package com.moriatsushi.koject.integrationtest.app
 
-import com.moriatsushi.koject.Component
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Provides
+import com.moriatsushi.koject.component.Component
+import com.moriatsushi.koject.component.ComponentExtras
 
 @Component
 @Retention(AnnotationRetention.BINARY)
 annotation class CustomComponent1
 
-@Component.Arguments(CustomComponent1::class)
-class CustomComponent1Arguments
+@ComponentExtras(CustomComponent1::class)
+class CustomComponent1Extras
 
 @Component
 @Retention(AnnotationRetention.BINARY)
 annotation class CustomComponent2
 
-@Component.Arguments(CustomComponent2::class)
-class CustomComponent2Arguments
+@ComponentExtras(CustomComponent2::class)
+class CustomComponent2Extras
 
 class CustomComponentClass(
     val value: String,

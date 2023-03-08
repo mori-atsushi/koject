@@ -2,6 +2,7 @@ package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
+import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.tschuchort.compiletesting.SourceFile
 import kotlin.test.assertContains
@@ -33,6 +34,23 @@ class DIProcessorComponentFailedTest {
         assertContains(result.messages, expectedErrorMessage)
     }
 
+    @Test
+    fun singletonInComponent() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(singletonInComponentCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:18"
+        val expectedErrorMessage = "Component type cannot be Singleton"
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
     private val notProvidedInComponentCode = SourceFile.kotlin(
         "Test.kt",
         """
@@ -56,6 +74,30 @@ class DIProcessorComponentFailedTest {
                 class SampleClass(
                     private val notProvided: NotProvided
                 )
+            """,
+    )
+
+    private val singletonInComponentCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.Singleton
+                import com.moriatsushi.koject.component.Component
+                import com.moriatsushi.koject.component.ComponentExtras
+
+                @Component
+                @Retention(AnnotationRetention.BINARY)
+                annotation class CustomComponent
+                
+                @ComponentExtras(CustomComponent::class)
+                class CustomComponentExtras
+
+                @CustomComponent
+                @Singleton
+                @Provides
+                class SampleClass
             """,
     )
 }

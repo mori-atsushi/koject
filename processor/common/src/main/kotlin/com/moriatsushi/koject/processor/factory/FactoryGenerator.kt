@@ -8,6 +8,7 @@ import com.moriatsushi.koject.processor.symbol.of
 
 internal class FactoryGenerator(
     private val fileGenerator: FileGenerator,
+    private val providerValidator: ProviderValidator,
     private val factoryFileSpecFactory: FactoryFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
@@ -23,6 +24,7 @@ internal class FactoryGenerator(
     }
 
     private fun processNode(provider: ProviderDeclaration) {
+        providerValidator.validate(provider)
         val fileSpec = factoryFileSpecFactory.create(provider)
         fileGenerator.createNewFile(fileSpec, false)
     }

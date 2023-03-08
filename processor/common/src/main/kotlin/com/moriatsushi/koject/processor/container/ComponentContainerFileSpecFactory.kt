@@ -4,6 +4,7 @@ import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
+import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ComponentClassDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
@@ -12,6 +13,7 @@ import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -27,7 +29,7 @@ internal class ComponentContainerFileSpecFactory {
             factories.normals.forEach {
                 addProperty(createProviderPropertySpec(factories, it))
             }
-            addFunction(createGetFunSpec(factories))
+            addFunction(createGetFunSpec(factories, false))
             addAnnotation(AnnotationSpecFactory.createInternal())
 
             factories.all
@@ -48,11 +50,22 @@ internal class ComponentContainerFileSpecFactory {
         component: ComponentClassDeclaration,
         factories: ComponentFactoryDeclarations,
     ): FileSpec {
+        val constructor = FunSpec.constructorBuilder().apply {
+            addParameter(
+                "rootComponent",
+                Names.rootComponentContainerClassName,
+            )
+        }.build()
+
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
+            primaryConstructorWithParameters(
+                constructor,
+                setOf(KModifier.PRIVATE),
+            )
             factories.normals.forEach {
                 addProperty(createProviderPropertySpec(factories, it))
             }
-            addFunction(createGetFunSpec(factories))
+            addFunction(createGetFunSpec(factories, true))
             addAnnotation(AnnotationSpecFactory.createInternal())
 
             factories.all
@@ -123,9 +136,14 @@ internal class ComponentContainerFileSpecFactory {
                 add("\n")
                 indent()
                 factoryClass.parameters.forEach {
-                    val factory = factories.get(it.identifier)
-                    add(Names.providerNameOf(it.identifier))
-                    add(",\n")
+                    val factory = factories.getOrNull(it.identifier)
+                    val providerName = Names.providerNameOf(it.identifier)
+                    val code = if (factory != null) {
+                        providerName
+                    } else {
+                        "rootComponent.$providerName"
+                    }
+                    add("$code,\n")
                 }
                 unindent()
             }
@@ -135,6 +153,7 @@ internal class ComponentContainerFileSpecFactory {
 
     private fun createGetFunSpec(
         factories: ComponentFactoryDeclarations,
+        hasRootComponent: Boolean,
     ): FunSpec {
         return FunSpec.builder("resolve").apply {
             returns(ANY.copy(nullable = true))
@@ -144,7 +163,11 @@ internal class ComponentContainerFileSpecFactory {
                 val name = Names.providerNameOf(it.identifier)
                 addStatement("%T.identifier -> $name()", it.className)
             }
-            addStatement("else -> null")
+            if (hasRootComponent) {
+                addStatement("else -> rootComponent.resolve(id)")
+            } else {
+                addStatement("else -> null")
+            }
             endControlFlow()
         }.build()
     }

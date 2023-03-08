@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalKojectApi::class)
 
-package com.moriatsushi.koject.integrationtest.app
+package com.moriatsushi.koject.integrationtest.app.component
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
@@ -10,7 +10,7 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ComponentTest {
+class MultipleComponentTest {
     @AfterTest
     fun clear() {
         Koject.stop()
@@ -20,10 +20,10 @@ class ComponentTest {
     fun successInject_classes() {
         Koject.start()
 
-        val type1 = inject<CustomComponentClass>(
+        val type1 = inject<MultipleCustomComponentClass>(
             componentExtras = CustomComponent1Extras(),
         )
-        val type2 = inject<CustomComponentClass>(
+        val type2 = inject<MultipleCustomComponentClass>(
             componentExtras = CustomComponent2Extras(),
         )
 

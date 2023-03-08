@@ -53,16 +53,16 @@ internal class AppContainerFileSpecFactory {
         components: Set<ComponentClassDeclaration>,
     ): FunSpec {
         val code = buildCodeBlock {
-            add("if (componentArguments == null) {\n")
+            add("if (componentExtras == null) {\n")
             indent()
             add("return rootComponent.resolve(id)\n")
             unindent()
             add("}\n")
-            add("return when (componentArguments::class) {\n")
+            add("return when (componentExtras::class) {\n")
             indent()
             components.forEach {
                 add("%T.argumentClass -> ", it.className)
-                add("%T().resolve(id)\n", it.containerClassName)
+                add("%T(rootComponent).resolve(id)\n", it.containerClassName)
             }
             add("else -> rootComponent.resolve(id)\n")
             unindent()
@@ -72,7 +72,7 @@ internal class AppContainerFileSpecFactory {
             returns(ANY.copy(nullable = true))
             addModifiers(KModifier.OVERRIDE)
             addParameter("id", Identifier::class)
-            addParameter("componentArguments", ANY.copy(nullable = true))
+            addParameter("componentExtras", ANY.copy(nullable = true))
             addCode(code)
         }.build()
     }

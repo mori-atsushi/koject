@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalKojectApi::class)
 
-package com.moriatsushi.koject.integrationtest.app
+package com.moriatsushi.koject.integrationtest.app.component
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Provides
@@ -21,30 +21,30 @@ annotation class CustomComponent2
 @ComponentExtras(CustomComponent2::class)
 class CustomComponent2Extras
 
-class CustomComponentClass(
+class MultipleCustomComponentClass(
     val value: String,
 )
 
 @Provides
 @CustomComponent1
-fun provideCustomComponent1(): CustomComponentClass {
-    return CustomComponentClass("custom-component-1")
+fun provideCustomComponent1(): MultipleCustomComponentClass {
+    return MultipleCustomComponentClass("custom-component-1")
 }
 
 @Provides
 @CustomComponent2
-fun provideCustomComponent2(): CustomComponentClass {
-    return CustomComponentClass("custom-component-2")
+fun provideCustomComponent2(): MultipleCustomComponentClass {
+    return MultipleCustomComponentClass("custom-component-2")
 }
 
 @Provides
 @CustomComponent1
 class CustomComponent1Holder(
-    val value: CustomComponentClass,
+    val value: MultipleCustomComponentClass,
 )
 
 @Provides
 @CustomComponent2
 class CustomComponent2Holder(
-    val value: CustomComponentClass,
+    val value: MultipleCustomComponentClass,
 )

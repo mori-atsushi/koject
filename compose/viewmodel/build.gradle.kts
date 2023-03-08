@@ -36,7 +36,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":android:viewmodel"))
+    api(project(":core"))
+    api(project(":android:viewmodel"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 }

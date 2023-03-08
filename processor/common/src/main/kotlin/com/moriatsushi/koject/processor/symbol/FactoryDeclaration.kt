@@ -18,6 +18,13 @@ internal data class FactoryDeclaration(
     val location: Location,
     val containingFile: KSFile?,
 ) {
+    fun asDependency(): Dependency {
+        return Dependency(
+            identifier = identifier,
+            location = location,
+        )
+    }
+
     companion object
 }
 

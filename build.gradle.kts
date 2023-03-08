@@ -29,3 +29,8 @@ subprojects {
         }
     }
 }
+
+tasks.dokkaHtmlMultiModule {
+    moduleVersion.set("1.1.0-alpha03")
+    outputDirectory.set(rootDir.resolve("docs/static/api"))
+}

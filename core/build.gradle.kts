@@ -153,3 +153,7 @@ kotlin {
         }
     }
 }
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-core")
+}

@@ -41,3 +41,7 @@ dependencies {
     api(project(":android:viewmodel"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 }
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-compose-viewmodel")
+}

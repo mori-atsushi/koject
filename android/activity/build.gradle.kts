@@ -28,3 +28,7 @@ dependencies {
     api(project(":android:viewmodel"))
     implementation(libs.androidx.activity)
 }
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-android-activity")
+}

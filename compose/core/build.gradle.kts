@@ -53,3 +53,8 @@ android {
         buildConfig = false
     }
 }
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-compose-core")
+}
+

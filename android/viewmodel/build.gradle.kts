@@ -27,3 +27,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
 }
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-android-viewmodel")
+}

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.publish)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {
@@ -151,4 +152,8 @@ kotlin {
             languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
         }
     }
+}
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-core")
 }

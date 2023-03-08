@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     alias(libs.plugins.publish)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.dokka)
 }
 
 android {
@@ -25,4 +26,8 @@ dependencies {
     ksp(project(":processor:lib"))
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+}
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-android-viewmodel")
 }

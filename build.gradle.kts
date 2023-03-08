@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.publish)
+    alias(libs.plugins.dokka)
 }
 
 subprojects {
@@ -27,4 +28,9 @@ subprojects {
                 )
         }
     }
+}
+
+tasks.dokkaHtmlMultiModule {
+    moduleVersion.set("1.1.0-alpha03")
+    outputDirectory.set(rootDir.resolve("docs/static/api"))
 }

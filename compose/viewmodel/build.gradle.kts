@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     kotlin("android")
     alias(libs.plugins.publish)
+    alias(libs.plugins.dokka)
 }
 
 android {
@@ -39,4 +40,8 @@ dependencies {
     api(project(":core"))
     api(project(":android:viewmodel"))
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+}
+
+tasks.dokkaHtmlPartial {
+    moduleName.set("koject-compose-viewmodel")
 }

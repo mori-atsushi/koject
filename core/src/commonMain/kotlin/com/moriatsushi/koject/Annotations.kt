@@ -7,6 +7,7 @@ import kotlin.reflect.KClass
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@MustBeDocumented
 annotation class Provides
 
 /**
@@ -14,6 +15,7 @@ annotation class Provides
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@MustBeDocumented
 annotation class Singleton
 
 /**
@@ -21,6 +23,7 @@ annotation class Singleton
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.ANNOTATION_CLASS)
+@MustBeDocumented
 annotation class Qualifier
 
 /**
@@ -33,6 +36,7 @@ annotation class Qualifier
     AnnotationTarget.VALUE_PARAMETER,
 )
 @Qualifier
+@MustBeDocumented
 annotation class Named(val name: String)
 
 /**
@@ -42,6 +46,7 @@ annotation class Named(val name: String)
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
+@MustBeDocumented
 annotation class Binds(val to: KClass<*> = Nothing::class)
 
 /**
@@ -55,4 +60,5 @@ annotation class Binds(val to: KClass<*> = Nothing::class)
     message = "This is still experimental Koject API " +
         "API will change in future releases.",
 )
+@MustBeDocumented
 annotation class ExperimentalKojectApi

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     kotlin("android")
     alias(libs.plugins.publish)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -28,7 +29,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":core"))
+    api(project(":core"))
+    ksp(project(":processor:lib"))
     implementation(libs.androidx.activity)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.lifecycle.viewmodel)

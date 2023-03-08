@@ -8,10 +8,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.internal.InternalKojectApi
 
 @OptIn(ExperimentalKojectApi::class)
-@InternalKojectApi
 inline fun <reified VM : ViewModel> kojectViewModelFactory(
     qualifier: Any? = null,
 ): ViewModelProvider.Factory {

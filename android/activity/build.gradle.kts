@@ -1,12 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     kotlin("android")
-    alias(libs.plugins.publish)
-    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.moriatsushi.koject.android.viewmodel"
+    namespace = "com.moriatsushi.koject.android.activity"
     compileSdk = 33
     defaultConfig {
         minSdk = 14
@@ -18,11 +16,18 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        buildConfig = false
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion =
+            libs.versions.androidx.compose.compiler.get()
+    }
 }
 
 dependencies {
     api(project(":core"))
-    ksp(project(":processor:lib"))
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+    api(project(":android:viewmodel"))
+    implementation(libs.androidx.activity)
 }

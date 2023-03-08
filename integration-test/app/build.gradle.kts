@@ -47,6 +47,8 @@ kotlin {
         val androidMain by getting {
             dependsOn(jvmMain)
             dependencies {
+                implementation(project(":android:activity"))
+                implementation(project(":android:fragment"))
                 implementation(project(":android:viewmodel"))
                 implementation(project(":compose:core"))
                 implementation(project(":compose:viewmodel"))

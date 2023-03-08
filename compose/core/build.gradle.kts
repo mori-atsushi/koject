@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.publish)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {

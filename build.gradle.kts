@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.publish)
+    alias(libs.plugins.dokka)
 }
 
 subprojects {

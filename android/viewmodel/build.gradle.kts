@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     alias(libs.plugins.publish)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.dokka)
 }
 
 android {

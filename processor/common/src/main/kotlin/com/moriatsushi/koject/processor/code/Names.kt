@@ -12,14 +12,9 @@ internal object Names {
     const val componentPackageName = "$generatedPackageName.component"
 
     val appContainerClassName = ClassName(generatedPackageName, "_AppContainer")
-    val rootComponentContainerClassName = ClassName(generatedPackageName, "_RootComponentContainer")
 
     fun providerNameOf(identifier: StringIdentifier): String {
         return "provide_${identifier.asCodeName()}"
-    }
-
-    fun instanceNameOf(identifier: StringIdentifier): String {
-        return identifier.asCodeName()
     }
 
     fun factoryNameOf(provider: ProviderDeclaration): String {

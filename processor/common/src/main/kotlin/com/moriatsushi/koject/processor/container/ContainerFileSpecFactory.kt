@@ -1,15 +1,10 @@
-@file:OptIn(ExperimentalKojectApi::class)
-
 package com.moriatsushi.koject.processor.container
 
-import com.moriatsushi.koject.ExperimentalKojectApi
-import com.moriatsushi.koject.Extras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.squareup.kotlinpoet.ANY
@@ -18,11 +13,8 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
@@ -38,12 +30,11 @@ internal class ContainerFileSpecFactory {
     }
 
     private fun createContainerClass(allFactories: AllFactoryDeclarations): TypeSpec {
+        val internalAnnotationSpec =
+            AnnotationSpecFactory.createInternal()
+
         return TypeSpec.classBuilder(Names.containerClassName).apply {
             addSuperinterface(Container::class)
-            primaryConstructorWithParameters(
-                createConstructorSpec(),
-                setOf(KModifier.PRIVATE),
-            )
             allFactories.singletons.forEach {
                 addProperty(createSingletonInstancePropertySpec(allFactories, it))
             }
@@ -51,18 +42,11 @@ internal class ContainerFileSpecFactory {
                 addProperty(createProviderPropertySpec(allFactories, it))
             }
             addFunction(createGetFunSpec(allFactories))
-            addAnnotation(AnnotationSpecFactory.createOptInExperimental())
-            addAnnotation(AnnotationSpecFactory.createInternal())
+            addAnnotation(internalAnnotationSpec)
 
             allFactories.all
                 .mapNotNull { it.containingFile }
                 .forEach { addOriginatingKSFile(it) }
-        }.build()
-    }
-
-    private fun createConstructorSpec(): FunSpec {
-        return FunSpec.constructorBuilder().apply {
-            addParameter("appExtras", Extras::class.asTypeName())
         }.build()
     }
 
@@ -76,7 +60,7 @@ internal class ContainerFileSpecFactory {
             add("lazy·{\n")
             indent()
             add(factoryCode)
-            add(".create(appExtras)\n")
+            add(".create()\n")
             unindent()
             add("}")
         }
@@ -93,19 +77,14 @@ internal class ContainerFileSpecFactory {
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
         val factoryCode = createFactoryCodeBlock(allFactories, factoryClass)
-        val type = LambdaTypeName.get(
-            parameters = listOf(
-                ParameterSpec.unnamed(Extras::class.asTypeName()),
-            ),
-            returnType = ANY,
-        )
+        val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
-            add("lazy·{ {\n")
+            add("lazy·{\n")
             indent()
             add(factoryCode)
-            add(".create(it)\n")
+            add("::create\n")
             unindent()
-            add("} }")
+            add("}")
         }
 
         return PropertySpec.builder(providerName, type).apply {
@@ -128,7 +107,7 @@ internal class ContainerFileSpecFactory {
                     if (factory.isSingleton) {
                         add("{ ${Names.instanceNameOf(it.identifier)} }")
                     } else {
-                        add("{ ${Names.providerNameOf(it.identifier)}(it) }")
+                        add(Names.providerNameOf(it.identifier))
                     }
                     add(",\n")
                 }
@@ -145,11 +124,6 @@ internal class ContainerFileSpecFactory {
             returns(ANY.copy(nullable = true))
             addModifiers(KModifier.OVERRIDE)
             addParameter("id", Identifier::class)
-            addParameter("extras", Extras::class)
-            addStatement(
-                "val mergedExtras = appExtras %M extras",
-                MemberName("com.moriatsushi.koject", "merge"),
-            )
             beginControlFlow("return when (id) {")
             allFactories.all.forEach {
                 val factory = allFactories.get(it.identifier)
@@ -158,7 +132,7 @@ internal class ContainerFileSpecFactory {
                     addStatement("%T.identifier -> $name", it.className)
                 } else {
                     val name = Names.providerNameOf(it.identifier)
-                    addStatement("%T.identifier -> $name(mergedExtras)", it.className)
+                    addStatement("%T.identifier -> $name()", it.className)
                 }
             }
             addStatement("else -> null")

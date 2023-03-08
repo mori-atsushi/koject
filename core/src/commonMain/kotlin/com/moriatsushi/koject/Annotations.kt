@@ -45,16 +45,6 @@ annotation class Named(val name: String)
 annotation class Binds(val to: KClass<*> = Nothing::class)
 
 /**
- * Mark for dependency injection at runtime.
- *
- * Don't forget to provide using [ExtrasBuilder].
- * It is not checked to be provided at compile time.
- */
-@ExperimentalKojectApi
-@Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class Dynamic
-
-/**
  * Marks declarations that is still experimental in Koject API
  *
  * API will change in future releases.

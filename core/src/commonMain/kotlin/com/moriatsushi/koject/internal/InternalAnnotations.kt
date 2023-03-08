@@ -59,8 +59,8 @@ annotation class Location(val value: String)
 @RequiresOptIn(
     level = RequiresOptIn.Level.ERROR,
     message = "This is an internal Koject API " +
-            "that should not be used from outside of Koject. " +
-            "API will change without notice in future releases.",
+        "that should not be used from outside of Koject. " +
+        "API will change without notice in future releases.",
 )
 @MustBeDocumented
 annotation class InternalKojectApi

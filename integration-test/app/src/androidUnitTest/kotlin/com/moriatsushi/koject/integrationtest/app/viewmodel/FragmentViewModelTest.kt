@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
-import com.moriatsushi.koject.android.viewmodel.injectActivityViewModels
-import com.moriatsushi.koject.android.viewmodel.injectViewModels
+import com.moriatsushi.koject.android.fragment.injectActivityViewModels
+import com.moriatsushi.koject.android.fragment.injectViewModels
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.start
 import kotlin.test.assertFailsWith

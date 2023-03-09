@@ -26,6 +26,11 @@ dependencies {
     ksp(project(":processor:lib"))
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.robolectric)
 }
 
 tasks.dokkaHtmlPartial {

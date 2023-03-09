@@ -3,7 +3,7 @@ package com.moriatsushi.koject.processor
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.moriatsushi.koject.internal.InternalKojectApi
-import com.moriatsushi.koject.processor.component.ComponentFileSpecFactory
+import com.moriatsushi.koject.processor.component.ComponentExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.component.ComponentGenerator
 import com.moriatsushi.koject.processor.container.AppContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ComponentContainerFileSpecFactory
@@ -39,13 +39,13 @@ class DIProcessorFactory(
         )
     }
 
-    private fun createComponentFileSpecFactory(): ComponentFileSpecFactory {
-        return ComponentFileSpecFactory()
+    private fun createComponentExtrasHolderFileSpecFactory(): ComponentExtrasHolderFileSpecFactory {
+        return ComponentExtrasHolderFileSpecFactory()
     }
 
     private fun createComponentGenerator(): ComponentGenerator {
         return ComponentGenerator(
-            createComponentFileSpecFactory(),
+            createComponentExtrasHolderFileSpecFactory(),
             fileGenerator,
         )
     }

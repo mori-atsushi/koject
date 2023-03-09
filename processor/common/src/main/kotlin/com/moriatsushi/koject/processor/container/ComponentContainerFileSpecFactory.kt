@@ -21,26 +21,30 @@ import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ComponentContainerFileSpecFactory {
-    fun createRoot(component: ComponentDeclaration): FileSpec {
+    fun createRoot(component: ComponentDeclaration.Root): FileSpec {
         return internalCreateComponent(component, null)
     }
 
     fun createComponent(
-        component: ComponentDeclaration,
-        rootComponent: ComponentDeclaration,
+        component: ComponentDeclaration.Child,
+        rootComponent: ComponentDeclaration.Root,
     ): FileSpec {
         return internalCreateComponent(component, rootComponent)
     }
 
     private fun internalCreateComponent(
         component: ComponentDeclaration,
-        rootComponent: ComponentDeclaration?,
+        rootComponent: ComponentDeclaration.Root?,
     ): FileSpec {
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
-            if (rootComponent != null) {
+            if (component is ComponentDeclaration.Child && rootComponent != null) {
+                val extrasHolder = component.extrasHolder
                 primaryConstructor(createChildComponentConstructorSpec(rootComponent))
-                addProperty(createExtrasPropertySpec(component.className!!))
+                addProperty(createExtrasPropertySpec(extrasHolder.className))
                 addProperty(createRootComponentPropertySpec(rootComponent))
+                if (extrasHolder.containingFile != null) {
+                    addOriginatingKSFile(extrasHolder.containingFile)
+                }
             }
 
             component.singletonFactories.forEach {
@@ -69,7 +73,7 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createChildComponentConstructorSpec(
-        component: ComponentDeclaration,
+        component: ComponentDeclaration.Root,
     ): FunSpec {
         val name = component.containerClassName
         return FunSpec.constructorBuilder().apply {
@@ -86,7 +90,7 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createRootComponentPropertySpec(
-        component: ComponentDeclaration,
+        component: ComponentDeclaration.Root,
     ): PropertySpec {
         val name = component.containerClassName
         return PropertySpec.builder("rootComponent", name).apply {
@@ -163,9 +167,11 @@ internal class ComponentContainerFileSpecFactory {
         component: ComponentDeclaration,
     ): String {
         val providerName = Names.providerNameOf(target.identifier)
-        val extraDependency = component.findExtraDependency(target.identifier)
-        if (extraDependency != null) {
-            return "this.extras.$providerName"
+        if (component is ComponentDeclaration.Child) {
+            val extraDependency = component.findExtraDependency(target.identifier)
+            if (extraDependency != null) {
+                return "this.extras.$providerName"
+            }
         }
         val factory = component.findFactory(target.identifier)
         if (factory != null) {

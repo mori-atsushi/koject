@@ -6,9 +6,24 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.moriatsushi.koject.processor.code.Names
 
 internal data class AllFactoryDeclarations(
-    val rootComponent: ComponentDeclaration,
-    val childComponents: Sequence<ComponentDeclaration>,
-)
+    val factories: Sequence<FactoryDeclaration>,
+    val extrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
+) {
+    val rootComponent: ComponentDeclaration.Root =
+        ComponentDeclaration.Root(
+            factories.filter { it.component == null },
+        )
+
+    val childComponents: Sequence<ComponentDeclaration.Child> =
+        extrasHolders.map { extrasHolder ->
+            ComponentDeclaration.Child(
+                extrasHolder = extrasHolder,
+                factories = factories.filter {
+                    it.component == extrasHolder.componentName
+                },
+            )
+        }
+}
 
 internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
     @OptIn(KspExperimental::class)
@@ -16,17 +31,10 @@ internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
         .filterIsInstance<KSClassDeclaration>()
         .map { FactoryDeclaration.of(it) }
 
-    val rootComponent = ComponentDeclaration.createRoot(
-        factories.filter { it.component == null },
-    )
-
     @OptIn(KspExperimental::class)
-    val childComponents = getDeclarationsFromPackage(Names.componentPackageName)
+    val extrasHolders = getDeclarationsFromPackage(Names.componentPackageName)
         .filterIsInstance<KSClassDeclaration>()
-        .map { ComponentDeclaration.of(it, factories) }
+        .map { ComponentExtrasHolderDeclaration.of(it) }
 
-    return AllFactoryDeclarations(
-        rootComponent,
-        childComponents,
-    )
+    return AllFactoryDeclarations(factories, extrasHolders)
 }

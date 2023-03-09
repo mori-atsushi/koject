@@ -3,6 +3,7 @@ package com.moriatsushi.koject.processor
 import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.moriatsushi.koject.processor.error.CodeGenerationException
+import com.moriatsushi.koject.processor.error.DuplicateComponentExtrasException
 import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.tschuchort.compiletesting.SourceFile
@@ -59,7 +60,7 @@ class DIProcessorComponentFailedTest {
     fun duplicateProvidedInExtras() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(duplicateProvidedInExtras)
+        complication.sources = listOf(duplicateProvidedInExtrasCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
@@ -69,6 +70,26 @@ class DIProcessorComponentFailedTest {
         val location2 = "Test.kt:20"
         val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated " +
             "in Component(com.testpackage.CustomComponent)."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location1)
+        assertContains(result.messages, location2)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun duplicateExtras() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(duplicateExtrasCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = DuplicateComponentExtrasException::class
+        val location1 = "Test.kt:11"
+        val location2 = "Test.kt:14"
+        val expectedErrorMessage =
+            "com.testpackage.CustomComponent has a duplicate ComponentExtras definition."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location1)
         assertContains(result.messages, location2)
@@ -147,7 +168,7 @@ class DIProcessorComponentFailedTest {
             """,
     )
 
-    private val duplicateProvidedInExtras = SourceFile.kotlin(
+    private val duplicateProvidedInExtrasCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
@@ -170,6 +191,26 @@ class DIProcessorComponentFailedTest {
                 @CustomComponent
                 @Provides
                 class SampleClass
+            """,
+    )
+
+    private val duplicateExtrasCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.component.Component
+                import com.moriatsushi.koject.component.ComponentExtras
+
+                @Component
+                @Retention(AnnotationRetention.BINARY)
+                annotation class CustomComponent
+                
+                @ComponentExtras(CustomComponent::class)
+                class CustomComponentExtras1
+
+                @ComponentExtras(CustomComponent::class)
+                class CustomComponentExtras2
             """,
     )
 

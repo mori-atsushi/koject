@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
+import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class AppContainerFileSpecFactory {
     fun create(
@@ -40,6 +41,10 @@ internal class AppContainerFileSpecFactory {
             addProperty(createGlobalComponentPropertySpec(allFactoryDeclarations.rootComponent))
             addFunction(createGetFunSpec(allFactoryDeclarations.childComponents))
             addAnnotation(internalAnnotationSpec)
+
+            allFactoryDeclarations.childComponents
+                .mapNotNull { it.extrasHolder?.containingFile }
+                .forEach { addOriginatingKSFile(it) }
         }.build()
     }
 
@@ -53,7 +58,7 @@ internal class AppContainerFileSpecFactory {
     }
 
     private fun createGetFunSpec(
-        components: Sequence<ComponentDeclaration>,
+        components: Sequence<ComponentDeclaration.Child>,
     ): FunSpec {
         val code = buildCodeBlock {
             add("if (componentExtras == null) {\n")
@@ -64,7 +69,7 @@ internal class AppContainerFileSpecFactory {
             add("return when (componentExtras::class) {\n")
             indent()
             components.forEach {
-                add("%T.argumentClass -> \n", it.className)
+                add("%T.argumentClass -> \n", it.extrasHolder.className)
                 indent()
                 add("%T(\n", it.containerClassName)
                 indent()

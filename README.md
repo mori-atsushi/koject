@@ -43,10 +43,12 @@ class Controller(
 
 ## Documents
 * [Setup](https://mori-atsushi.github.io/koject/docs/setup)
-* [Usage](https://mori-atsushi.github.io/koject/docs/usage)
-  * [Start Koject](https://mori-atsushi.github.io/koject/docs/usage/basic)
-  * [Qualifier](https://mori-atsushi.github.io/koject/docs/usage/qualifier)
-  * [Binds](https://mori-atsushi.github.io/koject/docs/usage/binds)
+* [Core](https://mori-atsushi.github.io/koject/docs/core)
+  * [Start Koject](https://mori-atsushi.github.io/koject/docs/core/basic)
+  * [Qualifier](https://mori-atsushi.github.io/koject/docs/core/qualifier)
+  * [Binds](https://mori-atsushi.github.io/koject/docs/core/binds)
+* [Android](https://mori-atsushi.github.io/koject/docs/android)
+* [Compose](https://mori-atsushi.github.io/koject/docs/compose)
 
 ## Examples
 * [Koject TODO (KMM)](https://github.com/Mori-Atsushi/koject/tree/main/examples/kmm)

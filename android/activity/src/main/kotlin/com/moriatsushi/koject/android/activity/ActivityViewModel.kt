@@ -10,6 +10,10 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
 /**
  * Returns a [Lazy] delegate to access the Activity's [ViewModel]
  * provided by Koject
+ *
+ * @param qualifier Qualifier for identification.
+ * @param extrasProducer Create the default extras that will be
+ * used to create the [ViewModel].
  */
 @MainThread
 inline fun <reified VM : ViewModel> ComponentActivity.injectViewModels(

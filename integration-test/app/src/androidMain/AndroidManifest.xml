@@ -6,6 +6,9 @@
         <activity
                 android:name="androidx.activity.ComponentActivity"
                 android:exported="false" />
+        <activity
+                android:name="androidx.fragment.app.FragmentActivity"
+                android:exported="false" />
 
         <activity
                 android:name=".compose.viewmodel.RecreationTestActivity"

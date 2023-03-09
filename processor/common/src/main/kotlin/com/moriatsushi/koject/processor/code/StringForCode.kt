@@ -14,6 +14,7 @@ internal val String.escapedForCode: String
         .replace(">", "__")
         .replace(",", "__")
         .replace("?", "_nullable")
+        .replace("`", "")
 
 /**
  * Hash a String for use in method names and class names

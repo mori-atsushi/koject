@@ -17,16 +17,42 @@ const sidebars = {
     "setup",
     {
       type: 'category',
-      label: 'Usage',
+      label: 'Core',
       link: {
         type: "doc",
-        id: "usage/index"
+        id: "core/index"
       },
       collapsed: false,
       items: [
-        'usage/basic',
-        'usage/qualifier',
-        'usage/binds',
+        'core/basic',
+        'core/qualifier',
+        'core/binds',
+        'core/component',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Android',
+      link: {
+        type: "doc",
+        id: "android/index"
+      },
+      collapsed: true,
+      items: [
+        'android/viewmodel',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Compose',
+      link: {
+        type: "doc",
+        id: "compose/index"
+      },
+      collapsed: true,
+      items: [
+        'compose/core',
+        'compose/viewmodel',
       ],
     },
   ],

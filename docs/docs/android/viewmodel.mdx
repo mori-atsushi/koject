@@ -1,0 +1,91 @@
+# Inject ViewModels
+Koject supports providing [ViewModels](https://developer.android.com/reference/androidx/lifecycle/ViewModel).
+
+:::tip LINK
+
+Check the [documentation](/docs/compose/viewmodel) to inject ViewModels in Jetpack Compose.
+
+:::
+
+## Setup for ViewModels
+Add dependencies according to the target to inject.
+
+```kotlin
+dependencies {
+    // Inject ViewModel into Activity
+    implementation("com.moriatsushi.koject:koject-android-activity:1.1.0-beta01")
+    // Inject ViewModel into Fragment
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0-beta01")
+    // ViewModelFactory only
+    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0-beta01")
+}
+```
+
+Please also check the [Setup document](/docs/setup).
+
+## Using ViewModels
+Specify the <a href="/api/android/viewmodel/com.moriatsushi.koject.android.viewmodel/-view-model-component/index.html" target="_blank">`@ViewModelComponent`</a> and <a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a> annotations when defining a ViewModel.
+As with other providing types, constructor injection is available.
+
+```kotlin
+@Provides
+@ViewModelComponent
+class TopViewModel(
+    private val userRepository: UserRepository,
+    private val contentRepository: ContentRepository,
+): ViewModel() {
+    /* ... */
+}
+```
+
+When using ViewModels, use the <a href="/api/android/activity/com.moriatsushi.koject.android.activity/inject-view-models.html" target="_blank">`ComponentActivity.injectViewModels()`</a> method.
+
+```kotlin
+class TopActivity : ComponentActivity() {
+    private val viewModel: TopViewModel by injectViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /* ... */
+    }
+}
+```
+
+When injecting into Fragment, use <a href="/api/android/fragment/com.moriatsushi.koject.android.fragment/inject-view-models.html" target="_blank">`Fragment.injectViewModels()`</a> function.
+
+```kotlin
+class TopFragment : Fragment() {
+    private val viewModel: TopViewModel by injectViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        /* ... */
+    }
+}
+```
+
+## Working with SavedStateHandle
+[SavedStateHandle](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle) is used to save ViewModel state.
+Koject allows you to inject SavedStateHandle out of the box.
+```kotlin
+@Provides
+@ViewModelComponent
+class SavedStateViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    /* ... */
+}
+```
+```kotlin
+class TopActivity : ComponentActivity() {
+    private val viewModel: SavedStateViewModel by injectViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /* ... */
+    }
+}
+```

@@ -73,22 +73,28 @@ const config = {
           },
           {
             type: 'dropdown',
-            label: 'Usage',
+            label: 'Docs',
             position: 'left',
             items: [
               {
-                to: 'docs/usage/basic',
-                label: 'Start Koject',
+                to: 'docs/core/basic',
+                label: 'Core',
               },
               {
-                to: 'docs/usage/qualifier',
-                label: 'Qualifier',
+                to: 'docs/android',
+                label: 'Android',
               },
               {
-                to: 'docs/usage/binds',
-                label: 'Binds',
+                to: 'docs/compose',
+                label: 'Compose',
               },
             ],
+          },
+          {
+            href: '/api/index.html',
+            label: 'API',
+            position: 'left',
+            target: '_blank',
           },
           {
             type: 'dropdown',

@@ -57,12 +57,12 @@ class StringIdentifierTest {
         val target = StringIdentifier.of(typeName)
         assertEquals(
             expected = "kotlin.collections.Map<kotlin.Int, kotlin.collections.Map" +
-                    "<kotlin.Int, kotlin.collections.Map<kotlin.Int, kotlin.String>>>",
+                "<kotlin.Int, kotlin.collections.Map<kotlin.Int, kotlin.String>>>",
             actual = target.displayName,
         )
         assertEquals(
             expected = "kotlin_collections_Map__kotlin_Int__kotlin_collections_Map__" +
-                    "kotlin_Int__kotlin_collections_Map__kotlin_Int__kotlin_String______",
+                "kotlin_Int__kotlin_collections_Map__kotlin_Int__kotlin_String______",
             actual = target.asCodeName(),
         )
     }

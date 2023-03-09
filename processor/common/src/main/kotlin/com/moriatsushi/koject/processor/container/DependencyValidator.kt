@@ -16,12 +16,11 @@ internal class DependencyValidator {
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
-        validateComponent(allFactories.rootComponent, null)
+        validateRootComponent(allFactories.rootComponent)
         validateComponentExtras(allFactories.extrasHolders)
         allFactories.childComponents.forEach {
-            validateComponent(it, allFactories.rootComponent)
+            validateChildComponent(it, allFactories.rootComponent)
         }
-        validateScope(allFactories.rootComponent)
     }
 
     private fun validateComponentExtras(
@@ -44,12 +43,15 @@ internal class DependencyValidator {
         }
     }
 
-    private fun validateScope(
-        rootComponent: ComponentDeclaration,
+    private fun validateRootComponent(
+        component: ComponentDeclaration.Root,
     ) {
-        rootComponent.allFactories.forEach { factory ->
+        val dependencies = component.allFactories.map { it.asDependency() }
+        validateDependencies(component.allFactories, dependencies)
+
+        component.allFactories.forEach { factory ->
             factory.parameters.forEach {
-                val dependencyFactory = rootComponent.findFactory(it.identifier)!!
+                val dependencyFactory = component.findFactory(it.identifier)!!
                 if (factory.isSingleton && !dependencyFactory.isSingleton) {
                     throwWrongScopeException(it)
                 }
@@ -57,15 +59,22 @@ internal class DependencyValidator {
         }
     }
 
-    private fun validateComponent(
-        component: ComponentDeclaration,
-        rootComponent: ComponentDeclaration?,
+    private fun validateChildComponent(
+        component: ComponentDeclaration.Child,
+        rootComponent: ComponentDeclaration.Root,
     ) {
-        val dependencies = component.extrasHolder?.extras.orEmpty() +
+        val dependencies = component.extrasHolder.extras +
             component.allFactories.map { it.asDependency() } +
-            rootComponent?.allFactories.orEmpty().map { it.asDependency() }
+            rootComponent.allFactories.map { it.asDependency() }
 
-        component.allFactories.forEach { factory ->
+        validateDependencies(component.allFactories, dependencies)
+    }
+
+    private fun validateDependencies(
+        factories: Sequence<FactoryDeclaration>,
+        dependencies: Sequence<Dependency>,
+    ) {
+        factories.forEach { factory ->
             validateDuplicates(factory, dependencies)
             factory.parameters.forEach {
                 validateParameter(factory, it, dependencies)

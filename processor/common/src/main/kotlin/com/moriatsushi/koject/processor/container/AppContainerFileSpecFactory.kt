@@ -58,7 +58,7 @@ internal class AppContainerFileSpecFactory {
     }
 
     private fun createGetFunSpec(
-        components: Sequence<ComponentDeclaration>,
+        components: Sequence<ComponentDeclaration.Child>,
     ): FunSpec {
         val code = buildCodeBlock {
             add("if (componentExtras == null) {\n")
@@ -69,7 +69,7 @@ internal class AppContainerFileSpecFactory {
             add("return when (componentExtras::class) {\n")
             indent()
             components.forEach {
-                add("%T.argumentClass -> \n", it.extrasHolder!!.className)
+                add("%T.argumentClass -> \n", it.extrasHolder.className)
                 indent()
                 add("%T(\n", it.containerClassName)
                 indent()

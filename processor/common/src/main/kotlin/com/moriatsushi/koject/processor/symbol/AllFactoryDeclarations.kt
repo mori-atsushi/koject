@@ -9,14 +9,14 @@ internal data class AllFactoryDeclarations(
     val factories: Sequence<FactoryDeclaration>,
     val extrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
 ) {
-    val rootComponent: ComponentDeclaration =
-        ComponentDeclaration.createRoot(
+    val rootComponent: ComponentDeclaration.Root =
+        ComponentDeclaration.Root(
             factories.filter { it.component == null },
         )
 
-    val childComponents: Sequence<ComponentDeclaration> =
+    val childComponents: Sequence<ComponentDeclaration.Child> =
         extrasHolders.map { extrasHolder ->
-            ComponentDeclaration.create(
+            ComponentDeclaration.Child(
                 extrasHolder = extrasHolder,
                 factories = factories.filter {
                     it.component == extrasHolder.componentName

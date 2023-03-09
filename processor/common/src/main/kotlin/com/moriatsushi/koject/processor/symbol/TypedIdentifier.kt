@@ -16,18 +16,12 @@ internal data class TypedIdentifier(
     val qualifier: QualifierAnnotation?,
 ) {
     fun asStringIdentifier(): StringIdentifier {
-        return StringIdentifier(
-            typeName.toString(),
-            qualifier?.fullName ?: "",
-        )
+        return StringIdentifier.of(typeName, qualifier)
     }
 
     fun asAnnotationSpec(): AnnotationSpec {
         return asStringIdentifier().asAnnotationSpec()
     }
-
-    val displayName: String
-        get() = asStringIdentifier().displayName
 
     companion object
 }

@@ -12,6 +12,12 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
 
 /**
  * Returns an existing [ViewModel] or creates a new one by Koject
+ *
+ * @param qualifier Qualifier for identification.
+ * @param viewModelStoreOwner The owner of the [ViewModel] that controls the scope and lifetime
+ * of the returned [ViewModel]. Defaults to using [LocalViewModelStoreOwner].
+ * @param key The key to use to identify the [ViewModel].
+ * @param extras The default extras used to create the [ViewModel].
  */
 @Composable
 inline fun <reified VM : ViewModel> injectViewModel(

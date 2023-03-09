@@ -1,10 +1,12 @@
 package com.moriatsushi.koject.processor.container
 
+import com.moriatsushi.koject.processor.error.DuplicateComponentExtrasException
 import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
+import com.moriatsushi.koject.processor.symbol.ComponentExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentName
 import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
@@ -15,10 +17,31 @@ internal class DependencyValidator {
         allFactories: AllFactoryDeclarations,
     ) {
         validateComponent(allFactories.rootComponent, null)
+        validateComponentExtras(allFactories.extrasHolders)
         allFactories.childComponents.forEach {
             validateComponent(it, allFactories.rootComponent)
         }
         validateScope(allFactories.rootComponent)
+    }
+
+    private fun validateComponentExtras(
+        extrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
+    ) {
+        extrasHolders.forEach { extrasHolder ->
+            val duplicate = extrasHolders.filter {
+                it.componentName == extrasHolder.componentName
+            }
+            if (duplicate.count() > 1) {
+                val errorMessage = buildString {
+                    append(extrasHolder.componentName.value)
+                    append(" has a duplicate ComponentExtras definition.\n")
+                    duplicate.forEachIndexed { index, it ->
+                        appendLine("    ${index + 1}. ${it.location.value}")
+                    }
+                }
+                throw DuplicateComponentExtrasException(errorMessage)
+            }
+        }
     }
 
     private fun validateScope(
@@ -38,7 +61,7 @@ internal class DependencyValidator {
         component: ComponentDeclaration,
         rootComponent: ComponentDeclaration?,
     ) {
-        val dependencies = component.extras +
+        val dependencies = component.extrasHolder?.extras.orEmpty() +
             component.allFactories.map { it.asDependency() } +
             rootComponent?.allFactories.orEmpty().map { it.asDependency() }
 

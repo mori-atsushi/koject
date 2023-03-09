@@ -38,9 +38,13 @@ internal class ComponentContainerFileSpecFactory {
     ): FileSpec {
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
             if (rootComponent != null) {
+                val extrasHolder = component.extrasHolder!!
                 primaryConstructor(createChildComponentConstructorSpec(rootComponent))
-                addProperty(createExtrasPropertySpec(component.className!!))
+                addProperty(createExtrasPropertySpec(extrasHolder.className))
                 addProperty(createRootComponentPropertySpec(rootComponent))
+                if (extrasHolder.containingFile != null) {
+                    addOriginatingKSFile(extrasHolder.containingFile)
+                }
             }
 
             component.singletonFactories.forEach {

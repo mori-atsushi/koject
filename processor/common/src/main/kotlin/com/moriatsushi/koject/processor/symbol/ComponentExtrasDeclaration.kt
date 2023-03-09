@@ -9,6 +9,7 @@ import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.ComponentExtras
+import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.moriatsushi.koject.processor.code.escapedForCode
@@ -19,6 +20,7 @@ internal data class ComponentExtrasDeclaration(
     val className: ClassName,
     val parameters: Sequence<ExtrasParameter>,
     val componentName: ComponentName,
+    val location: Location,
     val containingFile: KSFile?,
 ) {
     companion object
@@ -28,7 +30,7 @@ internal data class ComponentExtrasDeclaration(
  * Name that can be used in code for functions, classes, etc.
  */
 internal fun ComponentExtrasDeclaration.asCodeName(): String {
-    return componentName.value.escapedForCode
+    return className.canonicalName.escapedForCode
 }
 
 internal fun Resolver.findComponentExtrasDeclarations(): Sequence<ComponentExtrasDeclaration> {
@@ -44,6 +46,7 @@ private fun ComponentExtrasDeclaration.Companion.of(
         className = declaration.toClassName(),
         parameters = declaration.extrasParameters,
         componentName = declaration.componentName,
+        location = declaration.createLocationAnnotation(),
         containingFile = declaration.containingFile,
     )
 }

@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 import kotlin.reflect.KClass
 
-internal class ComponentFileSpecFactory {
+internal class ComponentExtrasHolderFileSpecFactory {
     fun generate(extrasDeclaration: ComponentExtrasDeclaration): FileSpec {
         val classSpec = createComponentClassSpec(extrasDeclaration)
         return FileSpec.builder(Names.componentPackageName, classSpec.name!!).apply {
@@ -31,10 +31,11 @@ internal class ComponentFileSpecFactory {
     }
 
     private fun createComponentClassSpec(extrasDeclaration: ComponentExtrasDeclaration): TypeSpec {
-        val name = "_${extrasDeclaration.asCodeName()}"
+        val name = "_${extrasDeclaration.asCodeName()}_Holder"
         return TypeSpec.classBuilder(name).apply {
             addAnnotation(AnnotationSpecFactory.createInternal())
             addAnnotation(extrasDeclaration.componentName.asAnnotationSpec())
+            addAnnotation(extrasDeclaration.location.asAnnotationSpec())
 
             primaryConstructor(createConstructorSpec())
             addProperty(createExtrasPropertySpec(extrasDeclaration.className))

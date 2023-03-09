@@ -1,5 +1,9 @@
 # Koject
-DI Container library for Kotlin Multiplatform.
+[![](https://img.shields.io/badge/Kotlin-Multiplatform-%237f52ff?logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
+[![](https://img.shields.io/maven-central/v/com.moriatsushi.koject/koject-core)](https://mvnrepository.com/artifact/com.moriatsushi.koject/koject-core)
+[![](https://img.shields.io/github/license/mori-atsushi/koject)](https://github.com/Mori-Atsushi/koject/blob/main/LICENSE)
+
+Koject is a DI Container Library for Kolin Multiplatform using KSP.
 
 ```kotlin
 fun main() {

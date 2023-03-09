@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.1.0-alpha03")
++                implementation("com.moriatsushi.koject:koject-core:1.1.0-beta01")
             }
         }
     }
@@ -35,7 +35,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.1.0-alpha03"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.1.0-beta01"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -55,8 +55,8 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.1.0-alpha03")
-+    ksp("com.moriatsushi.koject:koject-processor-app1.1.0-alpha03")
++    implementation("com.moriatsushi.koject:koject-core:1.1.0-beta01")
++    ksp("com.moriatsushi.koject:koject-processor-app1.1.0-beta01")
 }
 ```
 
@@ -69,8 +69,8 @@ This prevents the container from being generated in the library module.
 ```diff title="build.gradle.kts"
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.1.0-alpha03"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.1.0-alpha03"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.1.0-beta01"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.1.0-beta01"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -83,9 +83,9 @@ dependencies {
 
 ```diff title="build.gradle.kts"
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.1.0-alpha03")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.1.0-alpha03")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.1.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-core:1.1.0-beta01")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.1.0-beta01")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.1.0-beta01")
 }
 ```
 
@@ -95,11 +95,11 @@ For Android applications, additional functionality is available by adding the fo
 ```kotlin
 dependencies {
     // Inject ViewModel into Activity
-    implementation("com.moriatsushi.koject:koject-android-activity:1.1.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-android-activity:1.1.0-beta01")
     // Inject ViewModel into Fragment
-    implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0-beta01")
     // ViewModelFactory only
-    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0-beta01")
 }
 ```
 
@@ -109,7 +109,7 @@ If you are using [Jetpack Compose](https://developer.android.com/jetpack/compose
 ```kotlin
 dependencies {
     // Inject types into Composable
-    implementation("com.moriatsushi.koject:koject-compose-core:1.1.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-compose-core:1.1.0-beta01")
 }
 ```
 
@@ -118,7 +118,7 @@ To inject Android ViewModel into Composable, use the following package.
 ```kotlin
 dependencies {
     // Inject ViewModel into Composable (Android only)
-    implementation("com.moriatsushi.koject:koject-compose-viewmodel:1.1.0-alpha03")
+    implementation("com.moriatsushi.koject:koject-compose-viewmodel:1.1.0-beta01")
 }
 ```
 
@@ -127,7 +127,7 @@ Copy the following snippets if you are using [gradle verion catalog](https://doc
 
 ```xml title="libs.versions.toml"
 [versions]
-koject = "1.1.0-alpha03"
+koject = "1.1.0-beta01"
 
 [libraries]
 koject-core = { group = "com.moriatsushi.koject", name = "koject-core", version.ref = "koject" }

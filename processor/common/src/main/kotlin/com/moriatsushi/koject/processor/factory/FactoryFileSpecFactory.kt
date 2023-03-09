@@ -8,6 +8,7 @@ import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ProviderDeclaration
 import com.moriatsushi.koject.processor.symbol.ProviderName
 import com.moriatsushi.koject.processor.symbol.asAnnotationSpec
+import com.moriatsushi.koject.processor.symbol.newInstanceCode
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -16,7 +17,6 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
@@ -116,18 +116,7 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createCompanionObjectSpec(provider: ProviderDeclaration): TypeSpec {
-        val initializerCode = buildCodeBlock {
-            add("%T.of<%T>(", Identifier::class.asTypeName(), provider.identifier.typeName)
-            val qualifier = provider.identifier.qualifier
-            if (qualifier != null) {
-                add("\n")
-                indent()
-                add(qualifier.newInstanceCode)
-                unindent()
-                add("\n")
-            }
-            add(")")
-        }
+        val initializerCode = provider.identifier.newInstanceCode
         val identifierProperty = PropertySpec.builder("identifier", Identifier::class).apply {
             initializer(initializerCode)
         }.build()

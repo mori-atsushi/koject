@@ -1,0 +1,165 @@
+---
+slug: android-support
+title: Koject v1.1.0 - Enhanced Android support
+authors: atsushi
+image: /blog/2023-03-11/ogp.png
+---
+
+# Koject v1.1.0 - Enhanced Android support
+
+![](/blog/2023-03-11/banner.png)
+
+I have released **Koject v1.1.0**, which includes enhanced support for Android application development.
+In this article, I will introduce the new features and the Component feature that enables the features.
+
+<!--truncate-->
+
+[**日本語で読む →**](/blog/jp/android-support)
+
+## Inject ViewModels
+In Android application development, it is common to add dependencies such as Repository to AndroidX's [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel) and use it from Activity or Fragment. With Koject v1.1.0, you can automatically inject ViewModel dependencies.
+
+First, add the <a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a> annotation to the class used in ViewModel and register it with the DI container. By adding <a href="/api/core/com.moriatsushi.koject/-singleton/index.html" target="_blank">`@Singleton`</a>, it can register as a singleton.
+
+```kotlin
+@Singleton
+@Provides
+class UserRepository {
+    /* ... */
+}
+
+@Singleton
+@Provides
+class ContentRepository {
+    /* ... */
+}
+```
+
+Next, define the ViewModel. You can inject the classes registered with the DI container in the constructor. Add `@Provides` annotation and <a href="/api/android/viewmodel/com.moriatsushi.koject.android.viewmodel/-view-model-component/index.html" target="_blank">`@ViewModelComponent`</a> annotation to ViewModel.
+
+```kotlin
+@Provides
+@ViewModelComponent
+class TopViewModel(
+    private val userRepository: UserRepository,
+    private val contentRepository: ContentRepository,
+): ViewModel() {
+    /* ... */
+}
+```
+
+Finally, use the <a href="/api/android/activity/com.moriatsushi.koject.android.activity/inject-view-models.html" target="_blank">`ComponentActivity.injectViewModels()`</a> function to obtain the ViewModel.
+
+```kotlin
+class TopActivity : ComponentActivity() {
+    private val viewModel: TopViewModel by injectViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /* ... */
+    }
+}
+```
+
+For Fragment, please use the <a href="/api/android/fragment/com.moriatsushi.koject.android.fragment/inject-view-models.html" target="_blank">`Fragment.injectViewModels()`</a> function instead.
+
+```kotlin
+class TopFragment : Fragment() {
+    private val viewModel: TopViewModel by injectViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        /* ... */
+    }
+}
+```
+
+Additional dependencies are required to use this feature. For more details, please refer to the [documentation](/docs/android/viewmodel).
+
+## Inject into Composable
+Koject 1.1.0 also added support for [Jetpack Compose](https://developer.android.com/jetpack/compose) and [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/).
+
+You can use the <a href="/api/compose/core/com.moriatsushi.koject.compose/remember-inject.html" target="_blank">`rememberInject()`</a> Composable function to use the provided class in a Composable function.
+
+```kotlin
+@Composable
+fun Sample(
+    controller: SampleController = rememberInject()
+) {
+    /* ... */
+}
+```
+
+`rememberInject()` can be called inside Composable functions, but it is recommended to **use it as a default argument**.
+This will make it easier to replace during testing.
+
+Please **do not to use the <a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">`inject()`</a> function inside Composable functions**. Creating an instance for each rendering or performing inject processing multiple times may cause performance degradation.
+
+```kotlin
+@Composable
+fun Sample(
+    controller: SampleController = inject() // DO NOT!!
+) {
+    /* ... */
+}
+```
+
+For the setup method, please refer to the [documentation](/docs/compose/core).
+
+## Component feature
+In ViewModel, you can inject a [`SavedStateHandle`](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle) to save the state:
+
+```kotlin
+@Provides
+@ViewModelComponent
+class SavedStateViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    /* ... */
+}
+```
+
+Koject has added the **Component feature** to provide instances created by the platform, such as `SavedStateHandle`.
+
+A Component is a grouping of types registered with the DI container.
+By default, the all types are registered in the root component.
+By annotating with a Component annotation, they can be registered in another component.
+
+```kotlin
+// Registered in RootComponent
+@Provides
+class NormalClass
+
+// Registered in SomeComponent
+@SomeComponent
+@Provides
+class ComponentClass
+```
+
+Types registered in a component can only reference types within the same component and types in the root component.
+
+![](/img/docs/component.png)
+
+You can also provide additional dependencies to a component.
+
+![](/img/docs/component-extras.png)
+
+Koject defines `@ViewModelComponent` by default and adds `SavedStateHandle` to `@ViewModelComponent`.
+Therefore, be aware that you cannot inject `SavedStateHandle` into a component other than `@ViewModelComponent`.
+
+You can learn how to create a custom component in the [documentation](/docs/core/component).
+
+:::caution Experimental
+
+The Component feature is an **experimental** API. It may change in the future.
+
+:::
+
+## Koject is evolving
+I believe that Koject v1.1.0 will provide even stronger support for Android application development.
+In order to make the library even easier to use, I plan to add even more features in the future.
+
+If you notice anything, please feel free to provide feedback on the [Issue](https://github.com/Mori-Atsushi/koject/issues) page.

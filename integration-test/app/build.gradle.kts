@@ -57,6 +57,7 @@ kotlin {
                 implementation(libs.androidx.fragment)
                 implementation(libs.androidx.fragment.testing)
                 implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.viewmodel.compose)
                 implementation(libs.androidx.compose.ui)
             }
         }

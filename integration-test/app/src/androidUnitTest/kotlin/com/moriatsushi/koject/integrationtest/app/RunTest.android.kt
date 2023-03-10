@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.integrationtest.app
 
+import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
@@ -9,9 +10,11 @@ import com.moriatsushi.koject.integrationtest.app.extras.GlobalExtraSingleton1
 import com.moriatsushi.koject.integrationtest.app.extras.GlobalExtras
 import org.mockito.kotlin.mock
 
+private val mockApplication: Application by lazy { mock() }
+
 @OptIn(ExperimentalKojectApi::class)
 actual fun Koject.setExtras() {
-    application(mock())
+    application(mockApplication)
     addExtras(GlobalExtras(GlobalExtraClass1(), GlobalExtraSingleton1()))
 }
 

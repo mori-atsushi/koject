@@ -1,15 +1,17 @@
 package com.moriatsushi.koject.integrationtest.app.viewmodel
 
+import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.activity.injectViewModels
 import com.moriatsushi.koject.error.NotProvidedException
-import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.integrationtest.app.runAndroidTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
@@ -21,7 +23,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ActivityViewModelTest {
     @Test
-    fun injectViewModel() = Koject.runTest {
+    fun injectViewModel() = Koject.runAndroidTest {
         val scenario = launchActivity<ComponentActivity>()
         scenario.onActivity {
             val viewModel: SampleViewModel by it.injectViewModels()
@@ -30,7 +32,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectSameViewModelAfterRecreate() = Koject.runTest {
+    fun injectSameViewModelAfterRecreate() = Koject.runAndroidTest {
         val scenario = launchActivity<ComponentActivity>()
         lateinit var viewModel1: SampleViewModel
         lateinit var viewModel2: SampleViewModel
@@ -51,7 +53,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun failedInjectViewModel_whenNotProvided() = Koject.runTest {
+    fun failedInjectViewModel_whenNotProvided() = Koject.runAndroidTest {
         val scenario = launchActivity<ComponentActivity>()
         scenario.onActivity {
             val viewModel: NotProvidedViewModel by it.injectViewModels()
@@ -62,7 +64,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectQualifierViewModel() = Koject.runTest {
+    fun injectQualifierViewModel() = Koject.runAndroidTest {
         val scenario = launchActivity<ComponentActivity>()
         var viewModel: QualifierViewModel? = null
         scenario.onActivity {
@@ -74,7 +76,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModel() = Koject.runTest {
+    fun injectSavedStateHandleViewModel() = Koject.runAndroidTest {
         val scenario = launchActivity<ComponentActivity>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onActivity {
@@ -85,7 +87,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runTest {
+    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runAndroidTest {
         val scenario = launchActivity<ComponentActivity>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onActivity {
@@ -98,5 +100,37 @@ class ActivityViewModelTest {
         }
         assertNotNull(viewModel)
         assertEquals("test-value", viewModel!!.savedStateHandle["test-key"])
+    }
+
+    @Test
+    fun injectApplicationViewModel() = Koject.runAndroidTest {
+        val scenario = launchActivity<ComponentActivity>()
+        var viewModel1: ApplicationViewModel? = null
+        var viewModel2: ApplicationWithSavedStateViewModel? = null
+        scenario.onActivity {
+            viewModel1 = it.injectViewModels<ApplicationViewModel>().value
+            viewModel2 = it.injectViewModels<ApplicationWithSavedStateViewModel>().value
+        }
+        val expectedApplication = ApplicationProvider.getApplicationContext<Application>()
+        assertNotNull(viewModel1)
+        assertNotNull(viewModel2)
+        assertEquals(expectedApplication, viewModel1!!.getApplication())
+        assertEquals(expectedApplication, viewModel2!!.getApplication())
+    }
+
+    @Test
+    fun injectContextViewModel() = Koject.runAndroidTest {
+        val scenario = launchActivity<ComponentActivity>()
+        var viewModel1: ContextViewModel? = null
+        var viewModel2: ContextWithSavedStateViewModel? = null
+        scenario.onActivity {
+            viewModel1 = it.injectViewModels<ContextViewModel>().value
+            viewModel2 = it.injectViewModels<ContextWithSavedStateViewModel>().value
+        }
+        val expectedContext = ApplicationProvider.getApplicationContext<Application>()
+        assertNotNull(viewModel1)
+        assertNotNull(viewModel2)
+        assertEquals(expectedContext, viewModel1!!.context)
+        assertEquals(expectedContext, viewModel2!!.context)
     }
 }

@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.integrationtest.app.compose.viewmodel
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,10 +11,15 @@ import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.compose.viewmodel.injectViewModel
-import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.integrationtest.app.runAndroidTest
+import com.moriatsushi.koject.integrationtest.app.viewmodel.ApplicationViewModel
+import com.moriatsushi.koject.integrationtest.app.viewmodel.ApplicationWithSavedStateViewModel
+import com.moriatsushi.koject.integrationtest.app.viewmodel.ContextViewModel
+import com.moriatsushi.koject.integrationtest.app.viewmodel.ContextWithSavedStateViewModel
 import com.moriatsushi.koject.integrationtest.app.viewmodel.QualifierViewModel
 import com.moriatsushi.koject.integrationtest.app.viewmodel.SampleViewModel
 import com.moriatsushi.koject.integrationtest.app.viewmodel.SavedStateHandleViewModel
@@ -32,7 +38,7 @@ class ComposeViewModelTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runAndroidTest {
         var viewModel: SampleViewModel? = null
 
         composeTestRule.setContent {
@@ -43,7 +49,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSameViewModel() = Koject.runTest {
+    fun injectSameViewModel() = Koject.runAndroidTest {
         var viewModel1: SampleViewModel? = null
         var viewModel2: SampleViewModel? = null
 
@@ -56,7 +62,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSameViewModelAfterHide() = Koject.runTest {
+    fun injectSameViewModelAfterHide() = Koject.runAndroidTest {
         var visible by mutableStateOf(true)
         val viewModels = mutableListOf<SampleViewModel>()
 
@@ -80,7 +86,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectDifferentViewModel_byKey() = Koject.runTest {
+    fun injectDifferentViewModel_byKey() = Koject.runAndroidTest {
         var viewModel1: SampleViewModel? = null
         var viewModel2: SampleViewModel? = null
 
@@ -93,7 +99,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectQualifierViewModel() = Koject.runTest {
+    fun injectQualifierViewModel() = Koject.runAndroidTest {
         var viewModel: QualifierViewModel? = null
         composeTestRule.setContent {
             viewModel = injectViewModel(ViewModelQualifier())
@@ -103,7 +109,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModel() = Koject.runTest {
+    fun injectSavedStateHandleViewModel() = Koject.runAndroidTest {
         var viewModel: SavedStateHandleViewModel? = null
         composeTestRule.setContent {
             viewModel = injectViewModel()
@@ -112,7 +118,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runTest {
+    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runAndroidTest {
         var viewModel: SavedStateHandleViewModel? = null
         composeTestRule.setContent {
             val viewModelStoreOwner = LocalViewModelStoreOwner.current!!
@@ -131,5 +137,35 @@ class ComposeViewModelTest {
         }
         assertNotNull(viewModel)
         assertEquals("test-value", viewModel!!.savedStateHandle["test-key"])
+    }
+
+    @Test
+    fun injectApplicationViewModel() = Koject.runAndroidTest {
+        var viewModel1: ApplicationViewModel? = null
+        var viewModel2: ApplicationWithSavedStateViewModel? = null
+        composeTestRule.setContent {
+            viewModel1 = injectViewModel()
+            viewModel2 = injectViewModel()
+        }
+        val expectedApplication = ApplicationProvider.getApplicationContext<Application>()
+        assertNotNull(viewModel1)
+        assertNotNull(viewModel2)
+        assertEquals(expectedApplication, viewModel1!!.getApplication())
+        assertEquals(expectedApplication, viewModel2!!.getApplication())
+    }
+
+    @Test
+    fun injectContextViewModel() = Koject.runAndroidTest {
+        var viewModel1: ContextViewModel? = null
+        var viewModel2: ContextWithSavedStateViewModel? = null
+        composeTestRule.setContent {
+            viewModel1 = injectViewModel()
+            viewModel2 = injectViewModel()
+        }
+        val expectedContext = ApplicationProvider.getApplicationContext<Application>()
+        assertNotNull(viewModel1)
+        assertNotNull(viewModel2)
+        assertEquals(expectedContext, viewModel1!!.context)
+        assertEquals(expectedContext, viewModel2!!.context)
     }
 }

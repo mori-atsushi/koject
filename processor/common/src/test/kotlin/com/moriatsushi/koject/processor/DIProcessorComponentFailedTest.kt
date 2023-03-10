@@ -113,6 +113,23 @@ class DIProcessorComponentFailedTest {
         assertContains(result.messages, expectedErrorMessage)
     }
 
+    @Test
+    fun singletonExtra() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(singletonExtraCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:15"
+        val expectedErrorMessage = "Component extras types cannot be a singleton."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
     private val notProvidedInComponentCode = SourceFile.kotlin(
         "Test.kt",
         """
@@ -235,6 +252,28 @@ class DIProcessorComponentFailedTest {
                 @Singleton
                 @Provides
                 class SampleClass
+            """,
+    )
+
+    private val singletonExtraCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.Singleton
+                import com.moriatsushi.koject.component.Component
+                import com.moriatsushi.koject.component.ComponentExtras
+
+                @Component
+                @Retention(AnnotationRetention.BINARY)
+                annotation class CustomComponent
+                
+                @ComponentExtras(CustomComponent::class)
+                class CustomComponentExtras(
+                    @Singleton
+                    val extra: String
+                )
             """,
     )
 }

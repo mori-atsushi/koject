@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderGenerator
+import com.moriatsushi.koject.processor.component.ComponentExtrasValidator
 import com.moriatsushi.koject.processor.container.AppContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ComponentContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ContainerGenerator
@@ -52,6 +53,10 @@ class DIProcessorFactory(
         )
     }
 
+    private fun createComponentExtrasValidator(): ComponentExtrasValidator {
+        return ComponentExtrasValidator()
+    }
+
     private fun createComponentExtrasHolderFileSpecFactory(): ComponentExtrasHolderFileSpecFactory {
         return ComponentExtrasHolderFileSpecFactory(
             extrasHolderFileSpecFactory,
@@ -62,6 +67,7 @@ class DIProcessorFactory(
         return ComponentExtrasHolderGenerator(
             createComponentExtrasHolderFileSpecFactory(),
             fileGenerator,
+            createComponentExtrasValidator(),
         )
     }
 

@@ -9,7 +9,6 @@ import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentName
 import com.moriatsushi.koject.processor.symbol.Dependency
-import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.Provided
 import com.moriatsushi.koject.processor.symbol.displayName
@@ -18,16 +17,12 @@ internal class DependencyValidator {
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
-        validateRootComponent(
-            allFactories.rootComponent,
-            allFactories.extrasHolders,
-        )
+        validateRootComponent(allFactories.rootComponent)
         validateComponentExtras(allFactories.componentExtrasHolders)
         allFactories.childComponents.forEach {
             validateChildComponent(
                 it,
                 allFactories.rootComponent,
-                allFactories.extrasHolders,
             )
         }
     }
@@ -54,10 +49,8 @@ internal class DependencyValidator {
 
     private fun validateRootComponent(
         component: ComponentDeclaration.Root,
-        rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
-        val provided = component.allFactories.map { it.provided } +
-            rootExtrasHolder.flatMap { it.extras }
+        val provided = component.allProvided
         validateDependencies(component.allFactories, provided)
 
         component.allFactories.forEach { factory ->
@@ -75,12 +68,8 @@ internal class DependencyValidator {
     private fun validateChildComponent(
         component: ComponentDeclaration.Child,
         rootComponent: ComponentDeclaration.Root,
-        rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
-        val provided = component.extrasHolder.extras +
-            component.allFactories.map { it.provided } +
-            rootComponent.allFactories.map { it.provided } +
-            rootExtrasHolder.flatMap { it.extras }
+        val provided = component.allProvided + rootComponent.allProvided
 
         validateDependencies(component.allFactories, provided)
     }

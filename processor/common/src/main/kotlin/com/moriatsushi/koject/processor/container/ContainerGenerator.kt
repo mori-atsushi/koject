@@ -23,7 +23,6 @@ internal class ContainerGenerator(
     private fun generateContainer(allFactories: AllFactoryDeclarations) {
         val rootComponent = componentContainerFileSpecFactory.createRoot(
             allFactories.rootComponent,
-            allFactories.extrasHolders,
         )
 
         fileGenerator.createNewFile(

@@ -53,7 +53,6 @@ internal class AppContainerFileSpecFactory {
             addInitializerBlock(
                 createInitializerBlock(
                     allFactoryDeclarations.rootComponent,
-                    allFactoryDeclarations.extrasHolders,
                 ),
             )
             addFunction(createGetFunSpec(allFactoryDeclarations.childComponents))
@@ -79,9 +78,9 @@ internal class AppContainerFileSpecFactory {
     }
 
     private fun createInitializerBlock(
-        rootComponent: ComponentDeclaration,
-        extrasHolders: Sequence<ExtrasHolderDeclaration>,
+        rootComponent: ComponentDeclaration.Root,
     ): CodeBlock {
+        val extrasHolders = rootComponent.extrasHolders
         return buildCodeBlock {
             extrasHolders.forEachIndexed { index, it ->
                 add(createExtrasPropertyCode("extras$index", it))

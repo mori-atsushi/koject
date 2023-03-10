@@ -10,7 +10,7 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ComponentExtrasWithQualifierTest {
+class ComponentExtrasWithNamedTest {
     @AfterTest
     fun clear() {
         Koject.stop()
@@ -20,12 +20,12 @@ class ComponentExtrasWithQualifierTest {
     fun successInject() {
         Koject.start()
 
-        val extras = WithQualifierComponentExtras()
-        val value = inject<WithQualifierComponentClass>(
+        val extras = WithNamedComponentExtras()
+        val value = inject<WithNamedComponentClass>(
             componentExtras = extras,
         )
-        assertEquals("constructor", value.constructorValue)
-        assertEquals("property", value.propertyValue)
-        assertEquals("getter", value.getterValue)
+        assertEquals("named-constructor", value.constructorValue)
+        assertEquals("named-property", value.propertyValue)
+        assertEquals("named-getter", value.getterValue)
     }
 }

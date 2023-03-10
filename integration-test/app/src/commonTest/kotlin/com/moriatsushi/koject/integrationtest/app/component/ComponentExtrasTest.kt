@@ -23,7 +23,7 @@ class ComponentExtrasTest {
         Koject.start()
 
         val extras = HasExtrasComponentExtras(
-            ExtraClass(),
+            ExtraClass1(),
         )
         val value = inject<HasExtrasComponentClass>(
             componentExtras = extras,

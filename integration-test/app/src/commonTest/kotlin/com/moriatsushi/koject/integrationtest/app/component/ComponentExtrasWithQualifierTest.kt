@@ -16,8 +16,8 @@ class ComponentExtrasWithQualifierTest {
         val value = inject<WithQualifierComponentClass>(
             componentExtras = extras,
         )
-        assertEquals("constructor", value.constructorValue)
-        assertEquals("property", value.propertyValue)
-        assertEquals("getter", value.getterValue)
+        assertEquals("component-constructor", value.constructorValue)
+        assertEquals("component-property", value.propertyValue)
+        assertEquals("component-getter", value.getterValue)
     }
 }

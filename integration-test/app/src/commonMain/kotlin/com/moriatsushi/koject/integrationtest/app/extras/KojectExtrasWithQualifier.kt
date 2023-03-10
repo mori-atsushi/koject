@@ -1,16 +1,11 @@
 @file:OptIn(ExperimentalKojectApi::class)
 
-package com.moriatsushi.koject.integrationtest.app.component
+package com.moriatsushi.koject.integrationtest.app.extras
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.Qualifier
-import com.moriatsushi.koject.component.Component
-import com.moriatsushi.koject.component.ComponentExtras
-
-@Component
-@Retention(AnnotationRetention.BINARY)
-annotation class WithQualifierComponent
+import com.moriatsushi.koject.extras.KojectExtras
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -24,22 +19,21 @@ annotation class PropertyQualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class GetterQualifier
 
-@ComponentExtras(WithQualifierComponent::class)
-class WithQualifierComponentExtras(
+@KojectExtras
+class WithQualifierExtras(
     @ConstructorQualifier
-    val constructorValue: String = "component-constructor",
+    val constructorValue: String = "constructor",
 ) {
     @PropertyQualifier
-    val propertyValue: String = "component-property"
+    val propertyValue: String = "property"
 
     @GetterQualifier
     val getterValue: String
-        get() = "component-getter"
+        get() = "getter"
 }
 
-@WithQualifierComponent
 @Provides
-class WithQualifierComponentClass(
+class WithQualifierExtrasHolder(
     @ConstructorQualifier
     val constructorValue: String,
     @PropertyQualifier

@@ -14,24 +14,24 @@ annotation class WithNamedComponent
 
 @ComponentExtras(WithNamedComponent::class)
 class WithNamedComponentExtras(
-    @Named("constructor")
-    val constructorValue: String = "named-constructor",
+    @Named("component-constructor")
+    val constructorValue: String = "component-named-constructor",
 ) {
-    @Named("property")
-    val propertyValue: String = "named-property"
+    @Named("component-property")
+    val propertyValue: String = "component-named-property"
 
-    @Named("getter")
+    @Named("component-getter")
     val getterValue: String
-        get() = "named-getter"
+        get() = "component-named-getter"
 }
 
 @WithNamedComponent
 @Provides
 class WithNamedComponentClass(
-    @Named("constructor")
+    @Named("component-constructor")
     val constructorValue: String,
-    @Named("property")
+    @Named("component-property")
     val propertyValue: String,
-    @Named("getter")
+    @Named("component-getter")
     val getterValue: String,
 )

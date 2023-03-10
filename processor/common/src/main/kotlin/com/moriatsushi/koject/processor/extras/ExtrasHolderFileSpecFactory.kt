@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STAR
+import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
@@ -90,12 +91,17 @@ internal class ExtrasHolderFileSpecFactory {
 
     private fun createCompanionObjectSpec(className: ClassName): TypeSpec {
         val type = KClass::class.asTypeName().parameterizedBy(STAR)
-        val property = PropertySpec.builder("argumentClass", type).apply {
+        val kClassProperty = PropertySpec.builder("kClass", type).apply {
             initializer("%T::class", className)
+        }.build()
+        val nameProperty = PropertySpec.builder("name", STRING).apply {
+            initializer("%S", className)
+            addModifiers(KModifier.CONST)
         }.build()
 
         return TypeSpec.companionObjectBuilder().apply {
-            addProperty(property)
+            addProperty(kClassProperty)
+            addProperty(nameProperty)
         }.build()
     }
 }

@@ -4,12 +4,13 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
-import com.moriatsushi.koject.integrationtest.app.extras.GlobalExtraClass
+import com.moriatsushi.koject.integrationtest.app.extras.GlobalExtraClass1
+import com.moriatsushi.koject.integrationtest.app.extras.GlobalExtraSingleton1
 import com.moriatsushi.koject.integrationtest.app.extras.GlobalExtras
 import com.moriatsushi.koject.start
 
 fun Koject.runTest(
-    extras: Set<Any> = setOf(GlobalExtras(GlobalExtraClass())),
+    extras: Set<Any> = defaultExtras,
     f: () -> Unit,
 ) {
     extras.forEach {
@@ -19,3 +20,7 @@ fun Koject.runTest(
     f()
     stop()
 }
+
+private val defaultExtras = setOf(
+    GlobalExtras(GlobalExtraClass1(), GlobalExtraSingleton1()),
+)

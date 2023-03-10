@@ -12,6 +12,15 @@ import com.moriatsushi.koject.inject
 /**
  * Inject an instance with resolved dependencies
  *
+ * ```
+ * @Composable
+ * fun Sample(
+ *     controller: SampleController = rememberInject()
+ * ) {
+ *      /* ... */
+ * }
+ * ```
+ *
  * @param qualifier Qualifier for identification.
  *   Specify the instantiation of the annotation with [Qualifier].
  */
@@ -25,7 +34,16 @@ inline fun <reified T : Any> rememberInject(
 }
 
 /**
- * Inject an instance with resolved dependencies
+ * Inject an instance with resolved dependencies (experimental)
+ *
+ * ```
+ * @Composable
+ * fun Sample(
+ *     controller: SampleController = rememberInject()
+ * ) {
+ *     /* ... */
+ * }
+ * ```
  *
  * @param qualifier Qualifier for identification.
  *   Specify the instantiation of the annotation with [Qualifier].
@@ -57,7 +75,7 @@ inline fun <reified T : Any> rememberInject(
 }
 
 /**
- * Inject an [Named] instance with resolved dependencies
+ * Inject an [Named] instance with resolved dependencies (experimental)
  *
  * @param name name of [Named]
  * @param componentExtras Specify [ComponentExtras] to create [Component].

@@ -11,6 +11,12 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
  * Returns a [Lazy] delegate to access the Activity's [ViewModel]
  * provided by Koject
  *
+ * ```
+ * class TopActivity : ComponentActivity() {
+ *     private val viewModel: TopViewModel by injectViewModels()
+ * }
+ * ```
+ *
  * @param qualifier Qualifier for identification.
  * @param extrasProducer Create the default extras that will be
  * used to create the [ViewModel].

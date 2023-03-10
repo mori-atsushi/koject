@@ -3,72 +3,51 @@ package com.moriatsushi.koject.integrationtest.app
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
 class BindsTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject_bindsInterface() {
-        Koject.start()
-
+    fun successInject_bindsInterface() = Koject.runTest {
         val value = inject<BindsInterface>()
         assertIs<BindsImplement>(value)
     }
 
     @Test
-    fun failInject_bindsImplement() {
-        Koject.start()
-
+    fun failInject_bindsImplement() = Koject.runTest {
         assertFailsWith<NotProvidedException> {
             inject<BindsImplement>()
         }
     }
 
     @Test
-    fun failedInject_bindsBindsInterface1() {
-        Koject.start()
-
+    fun failedInject_bindsBindsInterface1() = Koject.runTest {
         assertFailsWith<NotProvidedException> {
             inject<BindsInterface1>()
         }
     }
 
     @Test
-    fun successInject_bindsBindsInterface2() {
-        Koject.start()
-
+    fun successInject_bindsBindsInterface2() = Koject.runTest {
         val value = inject<BindsInterface2>()
         assertIs<BindsMultipleImplement>(value)
     }
 
     @Test
-    fun successInject_bindsNested() {
-        Koject.start()
-
+    fun successInject_bindsNested() = Koject.runTest {
         val value = inject<BindChild1>()
         assertIs<BindsNestedImplement>(value)
     }
 
     @Test
-    fun successInject_bindsAbstract() {
-        Koject.start()
-
+    fun successInject_bindsAbstract() = Koject.runTest {
         val value = inject<BindsAbstract>()
         assertIs<BindsAbstractImplement>(value)
     }
 
     @Test
-    fun successInject_bindsInterfaceHolder() {
-        Koject.start()
-
+    fun successInject_bindsInterfaceHolder() = Koject.runTest {
         val holder = inject<BindsInterfaceHolder>()
         assertIs<BindsImplement>(holder.single)
         assertIs<BindsMultipleImplement>(holder.multiple)

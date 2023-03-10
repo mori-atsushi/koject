@@ -7,7 +7,8 @@ import com.moriatsushi.koject.processor.code.Names
 
 internal data class AllFactoryDeclarations(
     val factories: Sequence<FactoryDeclaration>,
-    val extrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
+    val extrasHolders: Sequence<ExtrasHolderDeclaration>,
+    val componentExtrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
 ) {
     val rootComponent: ComponentDeclaration.Root =
         ComponentDeclaration.Root(
@@ -15,7 +16,7 @@ internal data class AllFactoryDeclarations(
         )
 
     val childComponents: Sequence<ComponentDeclaration.Child> =
-        extrasHolders.map { extrasHolder ->
+        componentExtrasHolders.map { extrasHolder ->
             ComponentDeclaration.Child(
                 extrasHolder = extrasHolder,
                 factories = factories.filter {
@@ -32,9 +33,18 @@ internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
         .map { FactoryDeclaration.of(it) }
 
     @OptIn(KspExperimental::class)
-    val extrasHolders = getDeclarationsFromPackage(Names.componentPackageName)
+    val extrasHolders = getDeclarationsFromPackage(Names.extrasPackageName)
+        .filterIsInstance<KSClassDeclaration>()
+        .map { ExtrasHolderDeclaration.of(it) }
+
+    @OptIn(KspExperimental::class)
+    val componentExtrasHolders = getDeclarationsFromPackage(Names.componentPackageName)
         .filterIsInstance<KSClassDeclaration>()
         .map { ComponentExtrasHolderDeclaration.of(it) }
 
-    return AllFactoryDeclarations(factories, extrasHolders)
+    return AllFactoryDeclarations(
+        factories = factories,
+        extrasHolders = extrasHolders,
+        componentExtrasHolders = componentExtrasHolders,
+    )
 }

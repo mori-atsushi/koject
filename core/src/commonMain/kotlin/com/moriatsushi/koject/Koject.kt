@@ -1,9 +1,10 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.CodeNotGeneratedException
-import com.moriatsushi.koject.error.KojectNotStartedException
+import com.moriatsushi.koject.extras.KojectExtras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.InternalKojectApi
+import com.moriatsushi.koject.internal.KojectImpl
 
 /**
  * Koject
@@ -11,29 +12,48 @@ import com.moriatsushi.koject.internal.InternalKojectApi
  * Hold a [Container] in application.
  */
 object Koject {
-    private var _container: Container? = null
+    private val impl = KojectImpl()
 
     /**
      * current [Container]
      */
     internal val container: Container
-        get() = _container ?: throw KojectNotStartedException(
-            "Koject has not been started.",
-        )
+        get() = impl.container
+
+    /**
+     * Add extra dependencies before starting Koject.
+     *
+     * @param extras [KojectExtras] class
+     */
+    @ExperimentalKojectApi
+    fun addExtras(extras: Any) {
+        impl.addExtras(extras)
+    }
 
     /**
      * Set [container] and start application
      */
+    @Suppress("FunctionName")
     @InternalKojectApi
+    @Deprecated(message = "deprecated")
     fun _start(container: Container) {
-        _container = container
+        impl.start { container }
+    }
+
+    /**
+     * Set [container] with extras and start application
+     */
+    @Suppress("FunctionName")
+    @InternalKojectApi
+    fun _start(builder: (extras: Set<Any>) -> Container) {
+        impl.start(builder)
     }
 
     /**
      * Release the current container
      */
     fun stop() {
-        _container = null
+        impl.stop()
     }
 }
 

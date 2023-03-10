@@ -2,40 +2,27 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
 class SingletonTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun sameInstance_class() {
-        Koject.start()
-
+    fun sameInstance_class() = Koject.runTest {
         val value1 = inject<SingletonClass>()
         val value2 = inject<SingletonClass>()
         assertSame(value1, value2)
     }
 
     @Test
-    fun sameInstance_interface() {
-        Koject.start()
-
+    fun sameInstance_interface() = Koject.runTest {
         val value1 = inject<SingletonInterface>()
         val value2 = inject<SingletonInterface>()
         assertSame(value1, value2)
     }
 
     @Test
-    fun sameInstance_singletonHolder() {
-        Koject.start()
-
+    fun sameInstance_singletonHolder() = Koject.runTest {
         val value1 = inject<SingletonHolderClass>()
         val value2 = inject<SingletonHolderClass>()
 
@@ -45,9 +32,7 @@ class SingletonTest {
     }
 
     @Test
-    fun notSameInstance_default() {
-        Koject.start()
-
+    fun notSameInstance_default() = Koject.runTest {
         val value1 = inject<NotSingletonClass>()
         val value2 = inject<NotSingletonClass>()
         assertNotSame(value1, value2)

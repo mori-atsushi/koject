@@ -13,16 +13,15 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.compose.viewmodel.injectViewModel
+import com.moriatsushi.koject.integrationtest.app.runTest
 import com.moriatsushi.koject.integrationtest.app.viewmodel.QualifierViewModel
 import com.moriatsushi.koject.integrationtest.app.viewmodel.SampleViewModel
 import com.moriatsushi.koject.integrationtest.app.viewmodel.SavedStateHandleViewModel
 import com.moriatsushi.koject.integrationtest.app.viewmodel.ViewModelQualifier
-import com.moriatsushi.koject.start
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,15 +31,8 @@ class ComposeViewModelTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @After
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject() {
-        Koject.start()
-
+    fun successInject() = Koject.runTest {
         var viewModel: SampleViewModel? = null
 
         composeTestRule.setContent {
@@ -51,9 +43,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSameViewModel() {
-        Koject.start()
-
+    fun injectSameViewModel() = Koject.runTest {
         var viewModel1: SampleViewModel? = null
         var viewModel2: SampleViewModel? = null
 
@@ -66,9 +56,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSameViewModelAfterHide() {
-        Koject.start()
-
+    fun injectSameViewModelAfterHide() = Koject.runTest {
         var visible by mutableStateOf(true)
         val viewModels = mutableListOf<SampleViewModel>()
 
@@ -92,9 +80,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectDifferentViewModel_byKey() {
-        Koject.start()
-
+    fun injectDifferentViewModel_byKey() = Koject.runTest {
         var viewModel1: SampleViewModel? = null
         var viewModel2: SampleViewModel? = null
 
@@ -107,9 +93,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectQualifierViewModel() {
-        Koject.start()
-
+    fun injectQualifierViewModel() = Koject.runTest {
         var viewModel: QualifierViewModel? = null
         composeTestRule.setContent {
             viewModel = injectViewModel(ViewModelQualifier())
@@ -119,9 +103,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModel() {
-        Koject.start()
-
+    fun injectSavedStateHandleViewModel() = Koject.runTest {
         var viewModel: SavedStateHandleViewModel? = null
         composeTestRule.setContent {
             viewModel = injectViewModel()
@@ -130,9 +112,7 @@ class ComposeViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModelWithDefaultArgs() {
-        Koject.start()
-
+    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runTest {
         var viewModel: SavedStateHandleViewModel? = null
         composeTestRule.setContent {
             val viewModelStoreOwner = LocalViewModelStoreOwner.current!!

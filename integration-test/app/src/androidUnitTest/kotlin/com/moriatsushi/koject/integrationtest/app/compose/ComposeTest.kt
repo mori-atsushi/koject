@@ -8,28 +8,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.compose.rememberInject
 import com.moriatsushi.koject.integrationtest.app.AppClass1
-import com.moriatsushi.koject.start
+import com.moriatsushi.koject.integrationtest.app.runTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ComposeTest {
-    @After
-    fun clear() {
-        Koject.stop()
-    }
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
-    fun successInject() {
-        Koject.start()
+    fun successInject() = Koject.runTest {
         var value: AppClass1? = null
 
         composeTestRule.setContent {
@@ -40,8 +33,7 @@ class ComposeTest {
     }
 
     @Test
-    fun rememberValue_whileRecompose() {
-        Koject.start()
+    fun rememberValue_whileRecompose() = Koject.runTest {
         var count by mutableStateOf(0)
         val values = mutableListOf<AppClass1>()
 

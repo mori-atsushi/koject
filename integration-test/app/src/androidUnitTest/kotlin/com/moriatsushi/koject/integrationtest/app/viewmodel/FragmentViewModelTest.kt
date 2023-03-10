@@ -11,27 +11,19 @@ import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.fragment.injectActivityViewModels
 import com.moriatsushi.koject.android.fragment.injectViewModels
 import com.moriatsushi.koject.error.NotProvidedException
-import com.moriatsushi.koject.start
+import com.moriatsushi.koject.integrationtest.app.runTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FragmentViewModelTest {
-    @After
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun injectViewModel() {
-        Koject.start()
-
+    fun injectViewModel() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
             val viewModel: SampleViewModel by it.injectViewModels()
@@ -40,9 +32,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun injectActivityViewModel() {
-        Koject.start()
-
+    fun injectActivityViewModel() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
             val viewModel: SampleViewModel by it.injectActivityViewModels()
@@ -51,9 +41,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun injectSameViewModelAfterRecreate() {
-        Koject.start()
-
+    fun injectSameViewModelAfterRecreate() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         lateinit var viewModel1: SampleViewModel
         lateinit var viewModel2: SampleViewModel
@@ -74,9 +62,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun failedInjectViewModel_whenNotProvided() {
-        Koject.start()
-
+    fun failedInjectViewModel_whenNotProvided() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
             val viewModel: NotProvidedViewModel by it.injectViewModels()
@@ -87,9 +73,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun injectQualifierViewModel() {
-        Koject.start()
-
+    fun injectQualifierViewModel() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         var viewModel: QualifierViewModel? = null
         scenario.onFragment {
@@ -101,9 +85,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModel() {
-        Koject.start()
-
+    fun injectSavedStateHandleViewModel() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onFragment {
@@ -114,9 +96,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModelWithDefaultArgs() {
-        Koject.start()
-
+    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onFragment {
@@ -132,9 +112,7 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun injectParentFragmentViewModel() {
-        Koject.start()
-
+    fun injectParentFragmentViewModel() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         var viewModelByParent: SavedStateHandleViewModel? = null
         var viewModelByChild: SavedStateHandleViewModel? = null

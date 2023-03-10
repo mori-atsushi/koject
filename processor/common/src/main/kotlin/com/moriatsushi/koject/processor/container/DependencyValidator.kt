@@ -9,6 +9,7 @@ import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentName
 import com.moriatsushi.koject.processor.symbol.Dependency
+import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.displayName
 
@@ -16,10 +17,17 @@ internal class DependencyValidator {
     fun validate(
         allFactories: AllFactoryDeclarations,
     ) {
-        validateRootComponent(allFactories.rootComponent)
-        validateComponentExtras(allFactories.extrasHolders)
+        validateRootComponent(
+            allFactories.rootComponent,
+            allFactories.extrasHolders,
+        )
+        validateComponentExtras(allFactories.componentExtrasHolders)
         allFactories.childComponents.forEach {
-            validateChildComponent(it, allFactories.rootComponent)
+            validateChildComponent(
+                it,
+                allFactories.rootComponent,
+                allFactories.extrasHolders,
+            )
         }
     }
 
@@ -45,14 +53,18 @@ internal class DependencyValidator {
 
     private fun validateRootComponent(
         component: ComponentDeclaration.Root,
+        rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
-        val dependencies = component.allFactories.map { it.asDependency() }
+        val dependencies = component.allFactories.map { it.asDependency() } +
+            rootExtrasHolder.flatMap { it.extras }
         validateDependencies(component.allFactories, dependencies)
 
         component.allFactories.forEach { factory ->
             factory.parameters.forEach {
-                val dependencyFactory = component.findFactory(it.identifier)!!
-                if (factory.isSingleton && !dependencyFactory.isSingleton) {
+                val dependencyFactory = component.findFactory(it.identifier)
+                if (factory.isSingleton &&
+                    (dependencyFactory == null || !dependencyFactory.isSingleton)
+                ) {
                     throwWrongScopeException(it)
                 }
             }
@@ -62,10 +74,12 @@ internal class DependencyValidator {
     private fun validateChildComponent(
         component: ComponentDeclaration.Child,
         rootComponent: ComponentDeclaration.Root,
+        rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
         val dependencies = component.extrasHolder.extras +
             component.allFactories.map { it.asDependency() } +
-            rootComponent.allFactories.map { it.asDependency() }
+            rootComponent.allFactories.map { it.asDependency() } +
+            rootExtrasHolder.flatMap { it.extras }
 
         validateDependencies(component.allFactories, dependencies)
     }

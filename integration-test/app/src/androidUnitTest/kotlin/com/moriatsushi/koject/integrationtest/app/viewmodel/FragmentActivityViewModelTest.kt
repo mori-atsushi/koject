@@ -8,24 +8,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.activity.injectViewModels
 import com.moriatsushi.koject.android.fragment.injectActivityViewModels
-import com.moriatsushi.koject.start
+import com.moriatsushi.koject.integrationtest.app.runTest
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FragmentActivityViewModelTest {
-    @After
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun injectActivityViewModel() {
-        Koject.start()
-
+    fun injectActivityViewModel() = Koject.runTest {
         val scenario = launchActivity<FragmentActivity>()
         val fragment = Fragment()
         var viewModelByActivity: SampleViewModel? = null

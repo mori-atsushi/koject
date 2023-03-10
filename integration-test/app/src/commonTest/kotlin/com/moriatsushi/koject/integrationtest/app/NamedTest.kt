@@ -3,22 +3,13 @@ package com.moriatsushi.koject.integrationtest.app
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class NamedTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject_namedClass() {
-        Koject.start()
-
+    fun successInject_namedClass() = Koject.runTest {
         val class1 = inject<NamedClass>("name1")
         assertEquals("name1", class1.name)
 
@@ -30,9 +21,7 @@ class NamedTest {
     }
 
     @Test
-    fun successInject_namedInterface() {
-        Koject.start()
-
+    fun successInject_namedInterface() = Koject.runTest {
         val interface1 = inject<NamedInterface>("name1")
         assertEquals("name1", interface1.name)
 
@@ -41,18 +30,14 @@ class NamedTest {
     }
 
     @Test
-    fun failedInject_notProvidedName() {
-        Koject.start()
-
+    fun failedInject_notProvidedName() = Koject.runTest {
         assertFailsWith<NotProvidedException> {
             inject<NamedInterface>()
         }
     }
 
     @Test
-    fun successInject_namedHolderClass() {
-        Koject.start()
-
+    fun successInject_namedHolderClass() = Koject.runTest {
         val holder = inject<NamedHolderClass>()
         assertEquals("name1", holder.class1.name)
         assertEquals("name2", holder.class2.name)

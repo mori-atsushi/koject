@@ -11,6 +11,7 @@ import com.moriatsushi.koject.processor.symbol.ComponentName
 import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
+import com.moriatsushi.koject.processor.symbol.Provided
 import com.moriatsushi.koject.processor.symbol.displayName
 
 internal class DependencyValidator {
@@ -55,17 +56,17 @@ internal class DependencyValidator {
         component: ComponentDeclaration.Root,
         rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
-        val dependencies = component.allFactories.map { it.asDependency() } +
+        val provided = component.allFactories.map { it.asProvided() } +
             rootExtrasHolder.flatMap { it.extras }
-        validateDependencies(component.allFactories, dependencies)
+        validateDependencies(component.allFactories, provided)
 
         component.allFactories.forEach { factory ->
-            factory.parameters.forEach {
-                val dependencyFactory = component.findFactory(it.identifier)
-                if (factory.isSingleton &&
-                    (dependencyFactory == null || !dependencyFactory.isSingleton)
-                ) {
-                    throwWrongScopeException(it)
+            factory.parameters.forEach { dependency ->
+                val resolved = provided.find {
+                    it.identifier == dependency.identifier
+                }!!
+                if (factory.isSingleton && !resolved.isSingleton) {
+                    throwWrongScopeException(dependency)
                 }
             }
         }
@@ -76,31 +77,31 @@ internal class DependencyValidator {
         rootComponent: ComponentDeclaration.Root,
         rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
-        val dependencies = component.extrasHolder.extras +
-            component.allFactories.map { it.asDependency() } +
-            rootComponent.allFactories.map { it.asDependency() } +
+        val provided = component.extrasHolder.extras +
+            component.allFactories.map { it.asProvided() } +
+            rootComponent.allFactories.map { it.asProvided() } +
             rootExtrasHolder.flatMap { it.extras }
 
-        validateDependencies(component.allFactories, dependencies)
+        validateDependencies(component.allFactories, provided)
     }
 
     private fun validateDependencies(
         factories: Sequence<FactoryDeclaration>,
-        dependencies: Sequence<Dependency>,
+        provided: Sequence<Provided>,
     ) {
         factories.forEach { factory ->
-            validateDuplicates(factory, dependencies)
+            validateDuplicates(factory, provided)
             factory.parameters.forEach {
-                validateParameter(factory, it, dependencies)
+                validateParameter(factory, it, provided)
             }
         }
     }
 
     private fun validateDuplicates(
         factory: FactoryDeclaration,
-        dependencies: Sequence<Dependency>,
+        provided: Sequence<Provided>,
     ) {
-        val duplicate = dependencies.filter {
+        val duplicate = provided.filter {
             it.identifier == factory.identifier
         }
         if (duplicate.count() > 1) {
@@ -121,9 +122,9 @@ internal class DependencyValidator {
     private fun validateParameter(
         factory: FactoryDeclaration,
         parameter: Dependency,
-        dependencies: Sequence<Dependency>,
+        provided: Sequence<Provided>,
     ) {
-        val dependencyFactory = dependencies.find {
+        val dependencyFactory = provided.find {
             it.identifier == parameter.identifier
         }
         if (dependencyFactory == null) {

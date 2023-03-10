@@ -22,7 +22,7 @@ internal sealed class ComponentDeclaration(
     ) : ComponentDeclaration(factories) {
         override val name = extrasHolder.componentName
 
-        fun findExtraDependency(identifier: StringIdentifier): Dependency? {
+        fun findExtra(identifier: StringIdentifier): Provided? {
             return extrasHolder.extras.find {
                 it.identifier == identifier
             }

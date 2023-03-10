@@ -18,10 +18,11 @@ internal data class FactoryDeclaration(
     val location: Location,
     val containingFile: KSFile?,
 ) {
-    fun asDependency(): Dependency {
-        return Dependency(
+    fun asProvided(): Provided {
+        return Provided(
             identifier = identifier,
             location = location,
+            isSingleton = isSingleton,
         )
     }
 

@@ -1,3 +1,8 @@
+import {
+    Inject,
+    RememberInject,
+} from '@site/src/components/CodeLink';
+
 # Inject into Composable
 Koject can inject into Composable.
 
@@ -13,7 +18,7 @@ dependencies {
 Please also check the [Setup document](/docs/setup).
 
 ## Use with Compose
-You can inject a provided type into a Composable using the <a href="/api/compose/core/com.moriatsushi.koject.compose/remember-inject.html" target="_blank">`rememberInject()`</a> Composable function.
+You can inject a provided type into a Composable using the <RememberInject/> Composable function.
 
 ```kotlin
 @Provides
@@ -28,9 +33,20 @@ fun Sample(
 }
 ```
 
+:::tip
+`rememberInject()` can be called inside Composable functions, but it is recommended to use it as a default argument. This will make it easier to replace during testing.
+
+```kotlin
+@Composable
+fun Sample() {
+    val controller: SampleController = rememberInject() // Not recommended
+}
+```
+:::
+
 :::caution
 
-Do not call the `inject()` function directly inside a Composable function.
+Do not call the <Inject/> function directly from Composable functions.
 Creating an instance for each render or running the injection process many times can cause performance degradation.
 
 ```kotlin

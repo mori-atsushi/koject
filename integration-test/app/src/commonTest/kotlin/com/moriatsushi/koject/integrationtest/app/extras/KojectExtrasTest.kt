@@ -4,9 +4,12 @@ package com.moriatsushi.koject.integrationtest.app.extras
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
+import com.moriatsushi.koject.error.MissingExtrasException
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.start
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
@@ -40,5 +43,12 @@ class KojectExtrasTest {
         assertSame(holder1.constructorSingleton, holder2.constructorSingleton)
         assertSame(holder1.propertySingleton, holder2.propertySingleton)
         assertSame(holder1.getterSingleton, holder2.getterSingleton)
+    }
+
+    @Test
+    fun failStart_noExtras() {
+        assertFailsWith<MissingExtrasException> {
+            Koject.start()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.processor.container
 
+import com.moriatsushi.koject.error.MissingExtrasException
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
@@ -18,6 +19,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.SET
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
@@ -82,15 +84,7 @@ internal class AppContainerFileSpecFactory {
     ): CodeBlock {
         return buildCodeBlock {
             extrasHolders.forEachIndexed { index, it ->
-                add("val extras$index = %T(\n", it.className)
-                indent()
-                add("extras.find {\n")
-                indent()
-                add("it::class == %T.argumentClass\n", it.className)
-                unindent()
-                add("}!!\n")
-                unindent()
-                add(")\n")
+                add(createExtrasPropertyCode("extras$index", it))
             }
             add("rootComponent = %T(", rootComponent.containerClassName)
             if (extrasHolders.any()) {
@@ -101,6 +95,26 @@ internal class AppContainerFileSpecFactory {
                 }
                 unindent()
             }
+            add(")\n")
+        }
+    }
+
+    private fun createExtrasPropertyCode(
+        name: String,
+        extrasHolder: ExtrasHolderDeclaration,
+    ): CodeBlock {
+        val exceptionTypeName = MissingExtrasException::class.asTypeName()
+        val exceptionMessage = CodeBlock.of("\${%T.name} is not set.", extrasHolder.className)
+
+        return buildCodeBlock {
+            add("val $name = %T(\n", extrasHolder.className)
+            indent()
+            add("extras.find {\n")
+            indent()
+            add("it::class == %T.kClass\n", extrasHolder.className)
+            unindent()
+            add("} ?: throw %T(%P)\n", exceptionTypeName, exceptionMessage)
+            unindent()
             add(")\n")
         }
     }
@@ -117,7 +131,7 @@ internal class AppContainerFileSpecFactory {
             add("return when (componentExtras::class) {\n")
             indent()
             components.forEach {
-                add("%T.argumentClass -> \n", it.extrasHolder.className)
+                add("%T.kClass -> \n", it.extrasHolder.className)
                 indent()
                 add("%T(\n", it.containerClassName)
                 indent()

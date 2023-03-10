@@ -5,6 +5,16 @@ authors: atsushi
 image: /blog/2023-03-11/ogp.png
 ---
 
+import {
+    Provides,
+    Singleton,
+    Inject,
+    ViewModelComponent,
+    ActivityInjectViewModels,
+    FragmentInjectViewModels,
+    RememberInject,
+} from '@site/src/components/CodeLink';
+
 # Koject v1.1.0 - Androidのサポート強化
 
 ![](/blog/2023-03-11/banner.png)
@@ -20,7 +30,8 @@ image: /blog/2023-03-11/ogp.png
 Androidアプリケーション開発では、AndroidXの[ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel)にRepository等の依存関係を追加し、ActivityやFragmentから利用することが一般的です。
 Koject v1.1.0を使うことで、ViewModelの依存関係を自動的に管理できます。
 
-まず最初に、ViewModelで利用するクラスに<a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a>アノテーションをつけ、DIコンテナに登録します。<a href="/api/core/com.moriatsushi.koject/-singleton/index.html" target="_blank">`@Singleton`</a>をつけることでシングルトンとして扱うことができます。
+まず最初に、ViewModelで利用するクラスに<Provides/>アノテーションをつけ、DIコンテナに登録します。<Singleton/>をつけることでシングルトンとして扱うことができます。
+
 
 ```kotlin
 @Singleton
@@ -38,7 +49,7 @@ class ContentRepository {
 
 次に、ViewModelを定義します。
 コンストラクタでDIコンテナに登録したクラスを受け取ることができます。
-ViewModelには`@Provides`アノテーションと<a href="/api/android/viewmodel/com.moriatsushi.koject.android.viewmodel/-view-model-component/index.html" target="_blank">`@ViewModelComponent`</a>アノテーションをつけてください。
+ViewModelには`@Provides`アノテーションと<ViewModelComponent/>アノテーションをつけてください。
 
 ```kotlin
 @Provides
@@ -51,7 +62,7 @@ class TopViewModel(
 }
 ```
 
-最後に、<a href="/api/android/activity/com.moriatsushi.koject.android.activity/inject-view-models.html" target="_blank">`ComponentActivity.injectViewModels()`</a>関数を使ってViewModelを取得します。
+最後に、<ActivityInjectViewModels/>関数を使ってViewModelを取得します。
 
 ```kotlin
 class TopActivity : ComponentActivity() {
@@ -64,7 +75,7 @@ class TopActivity : ComponentActivity() {
 }
 ```
 
-Fragmentでは<a href="/api/android/fragment/com.moriatsushi.koject.android.fragment/inject-view-models.html" target="_blank">`Fragment.injectViewModels()`</a>関数を使ってください。
+Fragmentでは<FragmentInjectViewModels/>関数を使ってください。
 
 ```kotlin
 class TopFragment : Fragment() {
@@ -86,7 +97,9 @@ class TopFragment : Fragment() {
 ## Composeで利用する
 Koject 1.1.0では[Jetpack Compose](https://developer.android.com/jetpack/compose)及び [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/)のサポートも追加しました。
 
-<a href="/api/compose/core/com.moriatsushi.koject.compose/remember-inject.html" target="_blank"><code>rememberInject()</code></a>関数を使うことで配布されたクラスをComposable関数で利用することができます。
+<p>
+<RememberInject/>関数を使うことで配布されたクラスをComposable関数で利用することができます。
+</p>
 
 ```kotlin
 @Composable
@@ -100,7 +113,7 @@ fun Sample(
 `rememberInject()`はComposable関数内でも呼び出すことができますが、**デフォルト引数として利用する**ことをおすすめします。
 そうすることで、テスト時等に差し替えやすくなります。
 
-**Compmosable関数内で<a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">`inject()`</a>関数を使わない**ように注意してください。
+**Compmosable関数内で<Inject/>関数を使わない**ように注意してください。
 レンダリングごとにインスタンスを作成したり、何度もinject処理が行われることで、パフォーマンスが低下する恐れがあります。
 
 ```kotlin

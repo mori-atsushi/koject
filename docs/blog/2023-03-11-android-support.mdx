@@ -5,6 +5,16 @@ authors: atsushi
 image: /blog/2023-03-11/ogp.png
 ---
 
+import {
+    Provides,
+    Singleton,
+    Inject,
+    ViewModelComponent,
+    ActivityInjectViewModels,
+    FragmentInjectViewModels,
+    RememberInject,
+} from '@site/src/components/CodeLink';
+
 # Koject v1.1.0 - Enhanced Android support
 
 ![](/blog/2023-03-11/banner.png)
@@ -19,7 +29,8 @@ In this article, I will introduce the new features and the Component feature tha
 ## Inject ViewModels
 In Android application development, it is common to add dependencies such as Repository to AndroidX's [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel) and use it from Activity or Fragment. With Koject v1.1.0, you can automatically inject ViewModel dependencies.
 
-First, add the <a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a> annotation to the class used in ViewModel and register it with the DI container. By adding <a href="/api/core/com.moriatsushi.koject/-singleton/index.html" target="_blank">`@Singleton`</a>, it can register as a singleton.
+First, add the <Provides/> annotation to the class used in ViewModel and register it with the DI container.
+By adding <Singleton/>, it can register as a singleton.
 
 ```kotlin
 @Singleton
@@ -35,7 +46,8 @@ class ContentRepository {
 }
 ```
 
-Next, define the ViewModel. You can inject the classes registered with the DI container in the constructor. Add `@Provides` annotation and <a href="/api/android/viewmodel/com.moriatsushi.koject.android.viewmodel/-view-model-component/index.html" target="_blank">`@ViewModelComponent`</a> annotation to ViewModel.
+Next, define the ViewModel.
+You can inject the classes registered with the DI container in the constructor. Add `@Provides` annotation and <ViewModelComponent/> annotation to ViewModel.
 
 ```kotlin
 @Provides
@@ -48,7 +60,7 @@ class TopViewModel(
 }
 ```
 
-Finally, use the <a href="/api/android/activity/com.moriatsushi.koject.android.activity/inject-view-models.html" target="_blank">`ComponentActivity.injectViewModels()`</a> function to obtain the ViewModel.
+Finally, use the <ActivityInjectViewModels/> function to obtain the ViewModel.
 
 ```kotlin
 class TopActivity : ComponentActivity() {
@@ -61,7 +73,7 @@ class TopActivity : ComponentActivity() {
 }
 ```
 
-For Fragment, please use the <a href="/api/android/fragment/com.moriatsushi.koject.android.fragment/inject-view-models.html" target="_blank">`Fragment.injectViewModels()`</a> function instead.
+For Fragment, please use the <FragmentInjectViewModels/> function instead.
 
 ```kotlin
 class TopFragment : Fragment() {
@@ -82,7 +94,7 @@ Additional dependencies are required to use this feature. For more details, plea
 ## Inject into Composable
 Koject 1.1.0 also added support for [Jetpack Compose](https://developer.android.com/jetpack/compose) and [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/).
 
-You can use the <a href="/api/compose/core/com.moriatsushi.koject.compose/remember-inject.html" target="_blank">`rememberInject()`</a> Composable function to use the provided class in a Composable function.
+You can use the <RememberInject/> Composable function to use the provided class in a Composable function.
 
 ```kotlin
 @Composable
@@ -96,7 +108,7 @@ fun Sample(
 `rememberInject()` can be called inside Composable functions, but it is recommended to **use it as a default argument**.
 This will make it easier to replace during testing.
 
-Please **do not to use the <a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">`inject()`</a> function inside Composable functions**. Creating an instance for each rendering or performing inject processing multiple times may cause performance degradation.
+Please **do not to use the <Inject/> function inside Composable functions**. Creating an instance for each rendering or performing inject processing multiple times may cause performance degradation.
 
 ```kotlin
 @Composable

@@ -4,8 +4,10 @@ import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
+import com.moriatsushi.koject.processor.code.primaryConstructorWithParameters
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.Dependency
+import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
@@ -21,38 +23,58 @@ import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ComponentContainerFileSpecFactory {
-    fun createRoot(component: ComponentDeclaration.Root): FileSpec {
-        return internalCreateComponent(component, null)
+    fun createRoot(
+        component: ComponentDeclaration.Root,
+        extras: Sequence<ExtrasHolderDeclaration>,
+    ): FileSpec {
+        return internalCreateComponent(component, null, extras)
     }
 
     fun createComponent(
         component: ComponentDeclaration.Child,
         rootComponent: ComponentDeclaration.Root,
     ): FileSpec {
-        return internalCreateComponent(component, rootComponent)
+        return internalCreateComponent(component, rootComponent, emptySequence())
     }
 
     private fun internalCreateComponent(
         component: ComponentDeclaration,
         rootComponent: ComponentDeclaration.Root?,
+        rootExtras: Sequence<ExtrasHolderDeclaration>,
     ): FileSpec {
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
-            if (component is ComponentDeclaration.Child && rootComponent != null) {
-                val extrasHolder = component.extrasHolder
-                primaryConstructor(createChildComponentConstructorSpec(rootComponent))
-                addProperty(createExtrasPropertySpec(extrasHolder.className))
-                addProperty(createRootComponentPropertySpec(rootComponent))
-                if (extrasHolder.containingFile != null) {
-                    addOriginatingKSFile(extrasHolder.containingFile)
+            when (component) {
+                is ComponentDeclaration.Child -> {
+                    requireNotNull(rootComponent)
+                    val extrasHolder = component.extrasHolder
+                    primaryConstructor(createChildComponentConstructorSpec(rootComponent))
+                    addProperty(createExtrasPropertySpec(extrasHolder.className))
+                    addProperty(createRootComponentPropertySpec(rootComponent))
+                    extrasHolder.containingFile?.let {
+                        addOriginatingKSFile(it)
+                    }
+                }
+                is ComponentDeclaration.Root -> {
+                    primaryConstructorWithParameters(
+                        createRootComponentConstructorSpec(rootExtras),
+                        setOf(KModifier.PRIVATE),
+                    )
+                    rootExtras
+                        .mapNotNull { it.containingFile }
+                        .forEach { addOriginatingKSFile(it) }
                 }
             }
 
             component.singletonFactories.forEach {
-                addProperty(createSingletonInstancePropertySpec(it, component))
+                addProperty(
+                    createSingletonInstancePropertySpec(it, component, rootExtras),
+                )
             }
 
             component.normalFactories.forEach {
-                addProperty(createProviderPropertySpec(it, component))
+                addProperty(
+                    createProviderPropertySpec(it, component, rootExtras),
+                )
             }
 
             addFunction(createGetFunSpec(component.allFactories, rootComponent != null))
@@ -69,6 +91,19 @@ internal class ComponentContainerFileSpecFactory {
         ).apply {
             applyCommon()
             addType(type)
+        }.build()
+    }
+
+    private fun createRootComponentConstructorSpec(
+        extras: Sequence<ExtrasHolderDeclaration>,
+    ): FunSpec {
+        return FunSpec.constructorBuilder().apply {
+            extras.forEach {
+                addParameter(
+                    it.className.simpleName,
+                    it.className,
+                )
+            }
         }.build()
     }
 
@@ -102,9 +137,10 @@ internal class ComponentContainerFileSpecFactory {
     private fun createSingletonInstancePropertySpec(
         factoryClass: FactoryDeclaration,
         component: ComponentDeclaration,
+        rootExtras: Sequence<ExtrasHolderDeclaration>,
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val factoryCode = createFactoryCodeBlock(factoryClass, component)
+        val factoryCode = createFactoryCodeBlock(factoryClass, component, rootExtras)
         val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
@@ -125,9 +161,10 @@ internal class ComponentContainerFileSpecFactory {
     private fun createProviderPropertySpec(
         factoryClass: FactoryDeclaration,
         component: ComponentDeclaration,
+        rootExtras: Sequence<ExtrasHolderDeclaration>,
     ): PropertySpec {
         val providerName = Names.providerNameOf(factoryClass.identifier)
-        val factoryCode = createFactoryCodeBlock(factoryClass, component)
+        val factoryCode = createFactoryCodeBlock(factoryClass, component, rootExtras)
         val type = LambdaTypeName.get(returnType = ANY)
         val code = buildCodeBlock {
             add("lazy·{\n")
@@ -146,6 +183,7 @@ internal class ComponentContainerFileSpecFactory {
     private fun createFactoryCodeBlock(
         factoryClass: FactoryDeclaration,
         component: ComponentDeclaration,
+        rootExtras: Sequence<ExtrasHolderDeclaration>,
     ): CodeBlock {
         return buildCodeBlock {
             add("%T(", factoryClass.className)
@@ -153,7 +191,7 @@ internal class ComponentContainerFileSpecFactory {
                 add("\n")
                 indent()
                 factoryClass.parameters.forEach {
-                    val code = findDependencyCode(it, component)
+                    val code = findDependencyCode(it, component, rootExtras)
                     add("$code,\n")
                 }
                 unindent()
@@ -165,6 +203,7 @@ internal class ComponentContainerFileSpecFactory {
     private fun findDependencyCode(
         target: Dependency,
         component: ComponentDeclaration,
+        rootExtras: Sequence<ExtrasHolderDeclaration>,
     ): String {
         val providerName = Names.providerNameOf(target.identifier)
         if (component is ComponentDeclaration.Child) {
@@ -176,6 +215,12 @@ internal class ComponentContainerFileSpecFactory {
         val factory = component.findFactory(target.identifier)
         if (factory != null) {
             return providerName
+        }
+        rootExtras.forEach {
+            val extraDependency = it.findExtraDependency(target.identifier)
+            if (extraDependency != null) {
+                return "this.${it.className.simpleName}.$providerName"
+            }
         }
         return "this.rootComponent.$providerName"
     }

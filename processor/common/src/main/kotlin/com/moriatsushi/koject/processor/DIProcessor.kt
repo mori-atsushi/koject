@@ -4,14 +4,16 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.moriatsushi.koject.processor.component.ComponentGenerator
+import com.moriatsushi.koject.processor.component.ComponentExtrasHolderGenerator
 import com.moriatsushi.koject.processor.container.ContainerGenerator
+import com.moriatsushi.koject.processor.extras.ExtrasHolderGenerator
 import com.moriatsushi.koject.processor.factory.FactoryGenerator
 
 internal class DIProcessor(
     private val shouldGenerateContainer: Boolean,
     private val factoryGenerator: FactoryGenerator,
-    private val componentGenerator: ComponentGenerator,
+    private val extrasHolderGenerator: ExtrasHolderGenerator,
+    private val componentExtrasHolderGenerator: ComponentExtrasHolderGenerator,
     private val containerGenerator: ContainerGenerator,
     private val codeGenerator: CodeGenerator,
 ) : SymbolProcessor {
@@ -35,7 +37,8 @@ internal class DIProcessor(
 
     private fun collectDependencies(resolver: Resolver) {
         factoryGenerator.generate(resolver)
-        componentGenerator.generate(resolver)
+        extrasHolderGenerator.generate(resolver)
+        componentExtrasHolderGenerator.generate(resolver)
         step = Step.GenerateContainer
 
         // container class will generate in the next cycle

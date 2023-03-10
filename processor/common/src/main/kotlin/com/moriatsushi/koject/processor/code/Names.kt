@@ -10,6 +10,7 @@ internal object Names {
     const val rootPackageName = "com.moriatsushi.koject"
     const val generatedPackageName = "$rootPackageName.generated"
     const val factoryPackageName = "$generatedPackageName.factory"
+    const val extrasPackageName = "$generatedPackageName.extras"
     const val componentPackageName = "$generatedPackageName.component"
 
     val appContainerClassName = ClassName(generatedPackageName, "_AppContainer")

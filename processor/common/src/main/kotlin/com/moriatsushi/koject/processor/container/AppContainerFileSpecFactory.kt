@@ -7,12 +7,16 @@ import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
+import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.SET
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
@@ -38,13 +42,30 @@ internal class AppContainerFileSpecFactory {
 
         return TypeSpec.classBuilder(Names.appContainerClassName).apply {
             addSuperinterface(Container::class)
-            addProperty(createGlobalComponentPropertySpec(allFactoryDeclarations.rootComponent))
+            primaryConstructor(createConstructorSpec())
+            addProperty(
+                createGlobalComponentPropertySpec(
+                    allFactoryDeclarations.rootComponent,
+                ),
+            )
+            addInitializerBlock(
+                createInitializerBlock(
+                    allFactoryDeclarations.rootComponent,
+                    allFactoryDeclarations.extrasHolders,
+                ),
+            )
             addFunction(createGetFunSpec(allFactoryDeclarations.childComponents))
             addAnnotation(internalAnnotationSpec)
 
             allFactoryDeclarations.childComponents
-                .mapNotNull { it.extrasHolder?.containingFile }
+                .mapNotNull { it.extrasHolder.containingFile }
                 .forEach { addOriginatingKSFile(it) }
+        }.build()
+    }
+
+    private fun createConstructorSpec(): FunSpec {
+        return FunSpec.constructorBuilder().apply {
+            addParameter("extras", SET.parameterizedBy(ANY))
         }.build()
     }
 
@@ -52,9 +73,36 @@ internal class AppContainerFileSpecFactory {
         rootComponent: ComponentDeclaration,
     ): PropertySpec {
         val className = rootComponent.containerClassName
-        return PropertySpec.builder("rootComponent", className).apply {
-            initializer("%T()", className)
-        }.build()
+        return PropertySpec.builder("rootComponent", className).build()
+    }
+
+    private fun createInitializerBlock(
+        rootComponent: ComponentDeclaration,
+        extrasHolders: Sequence<ExtrasHolderDeclaration>,
+    ): CodeBlock {
+        return buildCodeBlock {
+            extrasHolders.forEachIndexed { index, it ->
+                add("val extras$index = %T(\n", it.className)
+                indent()
+                add("extras.find {\n")
+                indent()
+                add("it::class == %T.argumentClass\n", it.className)
+                unindent()
+                add("}!!\n")
+                unindent()
+                add(")\n")
+            }
+            add("rootComponent = %T(", rootComponent.containerClassName)
+            if (extrasHolders.any()) {
+                add("\n")
+                indent()
+                extrasHolders.forEachIndexed { index, _ ->
+                    add("extras$index,\n")
+                }
+                unindent()
+            }
+            add(")\n")
+        }
     }
 
     private fun createGetFunSpec(

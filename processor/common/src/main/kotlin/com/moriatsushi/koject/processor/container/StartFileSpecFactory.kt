@@ -17,7 +17,7 @@ internal class StartFileSpecFactory {
             receiver(Koject::class)
             // workaround to avoid crash in Kotlin/Native
             // https://github.com/square/kotlinpoet/issues/1273
-            addStatement("%T._start(%T())", Koject::class.asTypeName(), containerName)
+            addStatement("%T._start { %T(it) }", Koject::class.asTypeName(), containerName)
             addAnnotation(AnnotationSpecFactory.createOptInInternal())
         }.build()
 

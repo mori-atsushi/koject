@@ -13,6 +13,7 @@ import com.moriatsushi.koject.internal.InternalKojectApi
  */
 object Koject {
     private var _container: Container? = null
+    private val extras = mutableSetOf<Any>()
 
     /**
      * current [Container]
@@ -29,7 +30,7 @@ object Koject {
      */
     @ExperimentalKojectApi
     fun addExtras(extras: Any) {
-        // TODO: implementation
+        this.extras.add(extras)
     }
 
     /**
@@ -41,10 +42,19 @@ object Koject {
     }
 
     /**
+     * Set [container] with extras and start application
+     */
+    @InternalKojectApi
+    fun _start(builder: (extras: Set<Any>) -> Container) {
+        _container = builder(extras)
+    }
+
+    /**
      * Release the current container
      */
     fun stop() {
         _container = null
+        extras.clear()
     }
 }
 

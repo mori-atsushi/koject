@@ -5,14 +5,15 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.moriatsushi.koject.processor.code.Names
 
-internal data class AllFactoryDeclarations(
+internal class AllFactoryDeclarations(
     val factories: Sequence<FactoryDeclaration>,
-    val extrasHolders: Sequence<ExtrasHolderDeclaration>,
+    extrasHolders: Sequence<ExtrasHolderDeclaration>,
     val componentExtrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
 ) {
     val rootComponent: ComponentDeclaration.Root =
         ComponentDeclaration.Root(
-            factories.filter { it.component == null },
+            factories = factories.filter { it.component == null },
+            extrasHolders = extrasHolders,
         )
 
     val childComponents: Sequence<ComponentDeclaration.Child> =
@@ -22,6 +23,7 @@ internal data class AllFactoryDeclarations(
                 factories = factories.filter {
                     it.component == extrasHolder.componentName
                 },
+                rootComponent = rootComponent,
             )
         }
 }

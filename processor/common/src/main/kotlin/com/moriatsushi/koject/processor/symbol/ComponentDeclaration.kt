@@ -12,15 +12,25 @@ internal sealed class ComponentDeclaration(
 
     class Root(
         factories: Sequence<FactoryDeclaration>,
+        val extrasHolders: Sequence<ExtrasHolderDeclaration>,
     ) : ComponentDeclaration(factories) {
         override val name = ComponentName("RootComponent")
+
+        val allProvided: Sequence<Provided>
+            get() = allFactories.map { it.provided } +
+                extrasHolders.flatMap { it.extras }
     }
 
     class Child(
         factories: Sequence<FactoryDeclaration>,
         val extrasHolder: ComponentExtrasHolderDeclaration,
+        val rootComponent: ComponentDeclaration.Root,
     ) : ComponentDeclaration(factories) {
         override val name = extrasHolder.componentName
+
+        val allProvided: Sequence<Provided>
+            get() = allFactories.map { it.provided } +
+                extrasHolder.extras
 
         fun findExtra(identifier: StringIdentifier): Provided? {
             return extrasHolder.extras.find {

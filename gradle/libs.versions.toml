@@ -14,6 +14,7 @@ kotlin-compile-testing = "1.5.0"
 kotlinpoet = "1.12.0"
 ksp = "1.8.10-1.0.9"
 ktlint = "0.48.1"
+mockito-kotlin = "4.1.0"
 publish = "0.24.0"
 robolectric = "4.9.2"
 spotless = "6.16.0"
@@ -33,6 +34,7 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit-ktx", ver
 kotlin-compile-testing-ksp = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing-ksp", version.ref = "kotlin-compile-testing" }
 kotlinpoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version.ref = "kotlinpoet" }
 ksp-processor-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 [plugins]

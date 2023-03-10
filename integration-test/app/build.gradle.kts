@@ -45,8 +45,9 @@ kotlin {
         }
 
         val androidMain by getting {
-            dependsOn(jvmMain)
+            dependsOn(commonMain)
             dependencies {
+                implementation(project(":android:core"))
                 implementation(project(":android:activity"))
                 implementation(project(":android:fragment"))
                 implementation(project(":android:viewmodel"))
@@ -59,11 +60,12 @@ kotlin {
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.androidx.lifecycle.viewmodel.compose)
                 implementation(libs.androidx.compose.ui)
+                implementation(libs.mockito.kotlin)
             }
         }
 
         val androidUnitTest by getting {
-            dependsOn(jvmTest)
+            dependsOn(commonTest)
             dependencies {
                 implementation(libs.androidx.test.core)
                 implementation(libs.androidx.test.ext.junit)
@@ -96,7 +98,7 @@ kotlin {
         }
 
         val iosSimulatorArm64Test by getting {
-            dependsOn(iosMain)
+            dependsOn(iosTest)
         }
 
         val macosX64Main by getting {

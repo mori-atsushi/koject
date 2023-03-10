@@ -20,10 +20,7 @@ internal class DependencyValidator {
         validateRootComponent(allFactories.rootComponent)
         validateComponentExtras(allFactories.componentExtrasHolders)
         allFactories.childComponents.forEach {
-            validateChildComponent(
-                it,
-                allFactories.rootComponent,
-            )
+            validateDependencies(it)
         }
     }
 
@@ -51,7 +48,7 @@ internal class DependencyValidator {
         component: ComponentDeclaration.Root,
     ) {
         val provided = component.allProvided
-        validateDependencies(component.allFactories, provided)
+        validateDependencies(component)
 
         component.allFactories.forEach { factory ->
             factory.parameters.forEach { dependency ->
@@ -65,39 +62,45 @@ internal class DependencyValidator {
         }
     }
 
-    private fun validateChildComponent(
-        component: ComponentDeclaration.Child,
-        rootComponent: ComponentDeclaration.Root,
-    ) {
-        val provided = component.allProvided + rootComponent.allProvided
-
-        validateDependencies(component.allFactories, provided)
-    }
-
     private fun validateDependencies(
-        factories: Sequence<FactoryDeclaration>,
-        provided: Sequence<Provided>,
+        component: ComponentDeclaration,
     ) {
-        factories.forEach { factory ->
-            validateDuplicates(factory, provided)
+        val allProvided = component.allProvided
+        val componentName = (component as? ComponentDeclaration.Child)?.name
+
+        component.allFactories.forEach { factory ->
             factory.parameters.forEach {
-                validateParameter(factory, it, provided)
+                validateParameter(factory, it, allProvided)
+            }
+            validateDuplicates(
+                target = factory.provided,
+                allProvided = allProvided,
+                component = componentName,
+            )
+        }
+
+        component.extrasHolders.forEach { extrasHolder ->
+            extrasHolder.extras.forEach {
+                validateDuplicates(
+                    target = it,
+                    allProvided = allProvided,
+                    component = componentName,
+                )
             }
         }
     }
 
     private fun validateDuplicates(
-        factory: FactoryDeclaration,
-        provided: Sequence<Provided>,
+        target: Provided,
+        allProvided: Sequence<Provided>,
+        component: ComponentName?,
     ) {
-        val duplicate = provided.filter {
-            it.identifier == factory.identifier
-        }
+        val duplicate = allProvided.filter { it.identifier == target.identifier }
         if (duplicate.count() > 1) {
             val errorMessage = buildString {
-                append("${factory.identifier.displayName} provide is duplicated")
-                if (factory.component != null) {
-                    append(" in Component(${factory.component.value})")
+                append("${target.identifier.displayName} provide is duplicated")
+                if (component != null) {
+                    append(" in Component(${component.value})")
                 }
                 append(".\n")
                 duplicate.forEachIndexed { index, it ->
@@ -111,9 +114,9 @@ internal class DependencyValidator {
     private fun validateParameter(
         factory: FactoryDeclaration,
         parameter: Dependency,
-        provided: Sequence<Provided>,
+        allProvided: Sequence<Provided>,
     ) {
-        val dependencyFactory = provided.find {
+        val dependencyFactory = allProvided.find {
             it.identifier == parameter.identifier
         }
         if (dependencyFactory == null) {

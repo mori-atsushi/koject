@@ -7,7 +7,7 @@ import com.squareup.kotlinpoet.ClassName
 
 internal class ComponentExtrasHolderDeclaration(
     val componentName: ComponentName,
-    private val extrasHolder: ExtrasHolderDeclaration,
+    val extrasHolder: ExtrasHolderDeclaration,
 ) {
     val className: ClassName
         get() = extrasHolder.className

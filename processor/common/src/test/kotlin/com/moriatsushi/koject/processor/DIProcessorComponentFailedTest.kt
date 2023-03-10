@@ -67,7 +67,7 @@ class DIProcessorComponentFailedTest {
 
         val expectedError = DuplicateProvidedException::class
         val location1 = "Test.kt:13"
-        val location2 = "Test.kt:20"
+        val location2 = "Test.kt:18"
         val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated " +
             "in Component(com.testpackage.CustomComponent)."
         assertContains(result.messages, expectedError.qualifiedName!!)
@@ -202,8 +202,6 @@ class DIProcessorComponentFailedTest {
                 class CustomComponentExtras(
                     val sampleClass: SampleClass
                 )
-
-                class NotProvided
 
                 @CustomComponent
                 @Provides

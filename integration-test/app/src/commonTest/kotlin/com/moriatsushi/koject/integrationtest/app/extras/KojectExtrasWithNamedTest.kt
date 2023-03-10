@@ -9,12 +9,12 @@ import com.moriatsushi.koject.integrationtest.app.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class KojectExtrasWithQualifierTest {
+class KojectExtrasWithNamedTest {
     @Test
     fun successInject() = Koject.runTest {
-        val holder = inject<WithQualifierExtrasHolder>()
-        assertEquals("constructor", holder.constructorValue)
-        assertEquals("property", holder.propertyValue)
-        assertEquals("getter", holder.getterValue)
+        val holder = inject<WithNamedComponentExtrasHolder>()
+        assertEquals("named-constructor", holder.constructorValue)
+        assertEquals("named-property", holder.propertyValue)
+        assertEquals("named-getter", holder.getterValue)
     }
 }

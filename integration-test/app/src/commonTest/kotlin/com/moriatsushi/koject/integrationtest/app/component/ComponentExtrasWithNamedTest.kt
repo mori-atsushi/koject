@@ -16,8 +16,8 @@ class ComponentExtrasWithNamedTest {
         val value = inject<WithNamedComponentClass>(
             componentExtras = extras,
         )
-        assertEquals("named-constructor", value.constructorValue)
-        assertEquals("named-property", value.propertyValue)
-        assertEquals("named-getter", value.getterValue)
+        assertEquals("component-named-constructor", value.constructorValue)
+        assertEquals("component-named-property", value.propertyValue)
+        assertEquals("component-named-getter", value.getterValue)
     }
 }

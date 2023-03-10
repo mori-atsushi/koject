@@ -9,7 +9,7 @@ import org.mockito.kotlin.mock
 private val mockApplication: Application by lazy { mock() }
 
 actual fun Koject.setExtras() {
-    application(mock())
+    application(mockApplication)
     addCommonExtras()
 }
 

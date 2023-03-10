@@ -27,14 +27,14 @@ annotation class GetterQualifier
 @ComponentExtras(WithQualifierComponent::class)
 class WithQualifierComponentExtras(
     @ConstructorQualifier
-    val constructorValue: String = "constructor",
+    val constructorValue: String = "component-constructor",
 ) {
     @PropertyQualifier
-    val propertyValue: String = "property"
+    val propertyValue: String = "component-property"
 
     @GetterQualifier
     val getterValue: String
-        get() = "getter"
+        get() = "component-getter"
 }
 
 @WithQualifierComponent

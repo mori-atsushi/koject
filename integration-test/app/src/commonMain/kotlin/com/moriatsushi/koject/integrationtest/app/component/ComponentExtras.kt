@@ -13,13 +13,21 @@ annotation class HasExtrasComponent
 
 @ComponentExtras(HasExtrasComponent::class)
 class HasExtrasComponentExtras(
-    val extra: ExtraClass,
-)
+    val constructorExtras: ExtraClass1,
+) {
+    val propertyExtra: ExtraClass2 = ExtraClass2()
+    val getterExtras: ExtraClass3
+        get() = ExtraClass3()
+}
 
-class ExtraClass
+class ExtraClass1
+class ExtraClass2
+class ExtraClass3
 
 @HasExtrasComponent
 @Provides
 class HasExtrasComponentClass(
-    val extra: ExtraClass,
+    val constructorExtras: ExtraClass1,
+    val propertyExtra: ExtraClass2,
+    val getterExtras: ExtraClass3,
 )

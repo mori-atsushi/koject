@@ -14,25 +14,36 @@ annotation class WithQualifierComponent
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class WithQualifierID1
+annotation class ConstructorQualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class WithQualifierID2
+annotation class PropertyQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class GetterQualifier
 
 @ComponentExtras(WithQualifierComponent::class)
 class WithQualifierComponentExtras(
-    @WithQualifierID1
-    val id1: String,
-    @WithQualifierID2
-    val id2: String,
-)
+    @ConstructorQualifier
+    val constructorValue: String = "constructor",
+) {
+    @PropertyQualifier
+    val propertyValue: String = "property"
+
+    @GetterQualifier
+    val getterValue: String
+        get() = "getter"
+}
 
 @WithQualifierComponent
 @Provides
 class WithQualifierComponentClass(
-    @WithQualifierID1
-    val id1: String,
-    @WithQualifierID2
-    val id2: String,
+    @ConstructorQualifier
+    val constructorValue: String,
+    @PropertyQualifier
+    val propertyValue: String,
+    @GetterQualifier
+    val getterValue: String,
 )

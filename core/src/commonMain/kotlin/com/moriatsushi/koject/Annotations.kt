@@ -30,11 +30,6 @@ annotation class Qualifier
  * String-based [Qualifier]
  */
 @Retention(AnnotationRetention.BINARY)
-@Target(
-    AnnotationTarget.CLASS,
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.VALUE_PARAMETER,
-)
 @Qualifier
 @MustBeDocumented
 annotation class Named(val name: String)

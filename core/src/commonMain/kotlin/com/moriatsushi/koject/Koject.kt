@@ -2,6 +2,7 @@ package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.CodeNotGeneratedException
 import com.moriatsushi.koject.error.KojectNotStartedException
+import com.moriatsushi.koject.extras.KojectExtras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.InternalKojectApi
 
@@ -20,6 +21,16 @@ object Koject {
         get() = _container ?: throw KojectNotStartedException(
             "Koject has not been started.",
         )
+
+    /**
+     * Add extra dependencies before starting Koject.
+     *
+     * @param extras [KojectExtras] class
+     */
+    @ExperimentalKojectApi
+    fun addExtras(extras: Any) {
+        // TODO: implementation
+    }
 
     /**
      * Set [container] and start application

@@ -1,23 +1,16 @@
 package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
+import com.moriatsushi.koject.error.KojectNotStartedException
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
 class InjectTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject() {
-        Koject.start()
-
+    fun successInject() = Koject.runTest {
         val appClass1 = inject<AppClass1>()
         assertIs<AppClass1>(appClass1)
 
@@ -29,9 +22,7 @@ class InjectTest {
     }
 
     @Test
-    fun failInject_notProvided() {
-        Koject.start()
-
+    fun failInject_notProvided() = Koject.runTest {
         assertFails {
             inject<NotProvided>()
         }
@@ -39,7 +30,7 @@ class InjectTest {
 
     @Test
     fun failInject_notStarted() {
-        assertFails {
+        assertFailsWith<KojectNotStartedException> {
             inject<AppClass1>()
         }
     }

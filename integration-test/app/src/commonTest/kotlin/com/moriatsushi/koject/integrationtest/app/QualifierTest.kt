@@ -2,21 +2,12 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class QualifierTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject_qualifier() {
-        Koject.start()
-
+    fun successInject_qualifier() = Koject.runTest {
         val class1 = inject<QualifierClass>(ID1())
         assertEquals("id1", class1.string)
 
@@ -28,9 +19,7 @@ class QualifierTest {
     }
 
     @Test
-    fun successInject_qualifierHolderClass() {
-        Koject.start()
-
+    fun successInject_qualifierHolderClass() = Koject.runTest {
         val holder = inject<QualifierHolderClass>()
         assertEquals("not set", holder.notSet.string)
         assertEquals("id1", holder.id1.string)
@@ -38,9 +27,7 @@ class QualifierTest {
     }
 
     @Test
-    fun successInject_qualifierHolderInterface() {
-        Koject.start()
-
+    fun successInject_qualifierHolderInterface() = Koject.runTest {
         val holder = inject<QualifierHolderInterface>()
         assertEquals("not set", holder.notSet.string)
         assertEquals("id1", holder.id1.string)

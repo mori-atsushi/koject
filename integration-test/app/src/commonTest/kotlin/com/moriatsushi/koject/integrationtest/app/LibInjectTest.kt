@@ -6,21 +6,12 @@ import com.moriatsushi.koject.integrationtest.lib.LibClass1
 import com.moriatsushi.koject.integrationtest.lib.LibClass2
 import com.moriatsushi.koject.integrationtest.lib.LibClass3
 import com.moriatsushi.koject.integrationtest.lib.checkInternalClassInject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertIs
 
 class LibInjectTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject() {
-        Koject.start()
-
+    fun successInject() = Koject.runTest {
         val libClass1 = inject<LibClass1>()
         assertIs<LibClass1>(libClass1)
 
@@ -32,9 +23,7 @@ class LibInjectTest {
     }
 
     @Test
-    fun successInject_internal() {
-        Koject.start()
-
+    fun successInject_internal() = Koject.runTest {
         checkInternalClassInject()
     }
 }

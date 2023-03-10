@@ -7,22 +7,14 @@ import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.integrationtest.app.AppClass1
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
+import com.moriatsushi.koject.integrationtest.app.runTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
 class ComponentTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject_withComponentExtras() {
-        Koject.start()
-
+    fun successInject_withComponentExtras() = Koject.runTest {
         val value = inject<CustomComponentClass>(
             componentExtras = CustomComponentExtras(),
         )
@@ -31,9 +23,7 @@ class ComponentTest {
     }
 
     @Test
-    fun successInject_inRootComponent() {
-        Koject.start()
-
+    fun successInject_inRootComponent() = Koject.runTest {
         val value = inject<AppClass1>(
             componentExtras = CustomComponentExtras(),
         )
@@ -42,9 +32,7 @@ class ComponentTest {
     }
 
     @Test
-    fun failsInject_withoutComponentExtras() {
-        Koject.start()
-
+    fun failsInject_withoutComponentExtras() = Koject.runTest {
         assertFailsWith<NotProvidedException> {
             inject<CustomComponentClass>()
         }

@@ -9,27 +9,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.activity.injectViewModels
 import com.moriatsushi.koject.error.NotProvidedException
-import com.moriatsushi.koject.start
+import com.moriatsushi.koject.integrationtest.app.runTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ActivityViewModelTest {
-    @After
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun injectViewModel() {
-        Koject.start()
-
+    fun injectViewModel() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
         scenario.onActivity {
             val viewModel: SampleViewModel by it.injectViewModels()
@@ -38,9 +30,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectSameViewModelAfterRecreate() {
-        Koject.start()
-
+    fun injectSameViewModelAfterRecreate() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
         lateinit var viewModel1: SampleViewModel
         lateinit var viewModel2: SampleViewModel
@@ -61,9 +51,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun failedInjectViewModel_whenNotProvided() {
-        Koject.start()
-
+    fun failedInjectViewModel_whenNotProvided() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
         scenario.onActivity {
             val viewModel: NotProvidedViewModel by it.injectViewModels()
@@ -74,9 +62,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectQualifierViewModel() {
-        Koject.start()
-
+    fun injectQualifierViewModel() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
         var viewModel: QualifierViewModel? = null
         scenario.onActivity {
@@ -88,9 +74,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModel() {
-        Koject.start()
-
+    fun injectSavedStateHandleViewModel() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onActivity {
@@ -101,9 +85,7 @@ class ActivityViewModelTest {
     }
 
     @Test
-    fun injectSavedStateHandleViewModelWithDefaultArgs() {
-        Koject.start()
-
+    fun injectSavedStateHandleViewModelWithDefaultArgs() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onActivity {

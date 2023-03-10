@@ -2,21 +2,12 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.start
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class QualifierWithMembersTest {
-    @AfterTest
-    fun clear() {
-        Koject.stop()
-    }
-
     @Test
-    fun successInject_stringQualifier() {
-        Koject.start()
-
+    fun successInject_stringQualifier() = Koject.runTest {
         val value1 = inject<String>(StringQualifier("id1"))
         assertEquals("StringQualifier-id1", value1)
 
@@ -28,9 +19,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_enumQualifier() {
-        Koject.start()
-
+    fun successInject_enumQualifier() = Koject.runTest {
         val value1 = inject<String>(EnumQualifier(QualifierEnum.ID1))
         assertEquals("EnumQualifier-id1", value1)
 
@@ -39,9 +28,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_classQualifier() {
-        Koject.start()
-
+    fun successInject_classQualifier() = Koject.runTest {
         val value1 = inject<String>(ClassQualifier(String::class))
         assertEquals("ClassQualifier-string", value1)
 
@@ -50,9 +37,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_multipleMemberQualifier() {
-        Koject.start()
-
+    fun successInject_multipleMemberQualifier() = Koject.runTest {
         val value1 = inject<String>(MultipleMemberQualifier("id1", String::class))
         assertEquals("MultipleMemberQualifier-id1-string", value1)
 
@@ -61,9 +46,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_qualifierWithMembersHolder() {
-        Koject.start()
-
+    fun successInject_qualifierWithMembersHolder() = Koject.runTest {
         val holder = inject<QualifierWithMembersHolder>()
 
         assertEquals("StringQualifier-id1", holder.stringQualifier1)

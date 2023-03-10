@@ -24,6 +24,7 @@ internal sealed class ComponentDeclaration(
     class Child(
         factories: Sequence<FactoryDeclaration>,
         val extrasHolder: ComponentExtrasHolderDeclaration,
+        val rootComponent: ComponentDeclaration.Root,
     ) : ComponentDeclaration(factories) {
         override val name = extrasHolder.componentName
 

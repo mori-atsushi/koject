@@ -21,9 +21,8 @@ internal class ContainerGenerator(
     }
 
     private fun generateContainer(allFactories: AllFactoryDeclarations) {
-        val rootComponent = componentContainerFileSpecFactory.createRoot(
-            allFactories.rootComponent,
-        )
+        val rootComponent = componentContainerFileSpecFactory
+            .createRoot(allFactories.rootComponent)
 
         fileGenerator.createNewFile(
             fileSpec = rootComponent,
@@ -31,10 +30,8 @@ internal class ContainerGenerator(
         )
 
         allFactories.childComponents.forEach {
-            val container = componentContainerFileSpecFactory.createComponent(
-                it,
-                allFactories.rootComponent,
-            )
+            val container = componentContainerFileSpecFactory
+                .createComponent(it)
 
             fileGenerator.createNewFile(
                 fileSpec = container,

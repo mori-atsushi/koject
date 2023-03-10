@@ -9,6 +9,7 @@ import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
+import com.moriatsushi.koject.processor.symbol.Provided
 import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
@@ -26,24 +27,22 @@ internal class ComponentContainerFileSpecFactory {
     fun createRoot(
         component: ComponentDeclaration.Root,
     ): FileSpec {
-        return internalCreateComponent(component, null)
+        return internalCreateComponent(component)
     }
 
     fun createComponent(
         component: ComponentDeclaration.Child,
-        rootComponent: ComponentDeclaration.Root,
     ): FileSpec {
-        return internalCreateComponent(component, rootComponent)
+        return internalCreateComponent(component)
     }
 
     private fun internalCreateComponent(
         component: ComponentDeclaration,
-        rootComponent: ComponentDeclaration.Root?,
     ): FileSpec {
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
             when (component) {
                 is ComponentDeclaration.Child -> {
-                    requireNotNull(rootComponent)
+                    val rootComponent = component.rootComponent
                     val extrasHolder = component.extrasHolder
                     primaryConstructor(createChildComponentConstructorSpec(rootComponent))
                     addProperty(createExtrasPropertySpec(extrasHolder.className))
@@ -58,9 +57,17 @@ internal class ComponentContainerFileSpecFactory {
                         createRootComponentConstructorSpec(rootExtras),
                         setOf(KModifier.PRIVATE),
                     )
-                    rootExtras
-                        .mapNotNull { it.containingFile }
-                        .forEach { addOriginatingKSFile(it) }
+
+                    rootExtras.forEach { extrasHolder ->
+                        extrasHolder.extras.forEach {
+                            addProperty(
+                                createProviderPropertySpec(it, extrasHolder),
+                            )
+                        }
+                        extrasHolder.containingFile?.let {
+                            addOriginatingKSFile(it)
+                        }
+                    }
                 }
             }
 
@@ -76,7 +83,12 @@ internal class ComponentContainerFileSpecFactory {
                 )
             }
 
-            addFunction(createGetFunSpec(component.allFactories, rootComponent != null))
+            addFunction(
+                createGetFunSpec(
+                    component.allFactories,
+                    component is ComponentDeclaration.Child,
+                ),
+            )
             addAnnotation(AnnotationSpecFactory.createInternal())
 
             component.allFactories
@@ -157,6 +169,21 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createProviderPropertySpec(
+        extra: Provided,
+        holder: ExtrasHolderDeclaration,
+    ): PropertySpec {
+        val providerName = Names.providerNameOf(extra.identifier)
+        val getter = FunSpec.getterBuilder().apply {
+            addCode("return this.${holder.className.simpleName}.$providerName")
+        }.build()
+        val type = LambdaTypeName.get(returnType = ANY)
+
+        return PropertySpec.builder(providerName, type).apply {
+            getter(getter)
+        }.build()
+    }
+
+    private fun createProviderPropertySpec(
         factoryClass: FactoryDeclaration,
         component: ComponentDeclaration,
     ): PropertySpec {
@@ -201,27 +228,22 @@ internal class ComponentContainerFileSpecFactory {
         component: ComponentDeclaration,
     ): String {
         val providerName = Names.providerNameOf(target.identifier)
-        when (component) {
+        return when (component) {
             is ComponentDeclaration.Child -> {
                 val extra = component.findExtra(target.identifier)
                 if (extra != null) {
                     return "this.extras.$providerName"
                 }
+                val factory = component.findFactory(target.identifier)
+                if (factory != null) {
+                    return providerName
+                }
+                "this.rootComponent.$providerName"
             }
             is ComponentDeclaration.Root -> {
-                component.extrasHolders.forEach {
-                    val extra = it.findExtra(target.identifier)
-                    if (extra != null) {
-                        return "this.${it.className.simpleName}.$providerName"
-                    }
-                }
+                providerName
             }
         }
-        val factory = component.findFactory(target.identifier)
-        if (factory != null) {
-            return providerName
-        }
-        return "this.rootComponent.$providerName"
     }
 
     private fun createGetFunSpec(

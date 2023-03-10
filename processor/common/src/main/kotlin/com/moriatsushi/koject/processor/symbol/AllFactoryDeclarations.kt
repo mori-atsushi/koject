@@ -23,6 +23,7 @@ internal class AllFactoryDeclarations(
                 factories = factories.filter {
                     it.component == extrasHolder.componentName
                 },
+                rootComponent = rootComponent,
             )
         }
 }

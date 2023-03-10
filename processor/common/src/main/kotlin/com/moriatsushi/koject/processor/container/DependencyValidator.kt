@@ -63,7 +63,7 @@ internal class DependencyValidator {
             factory.parameters.forEach {
                 val dependencyFactory = component.findFactory(it.identifier)
                 if (factory.isSingleton &&
-                    (dependencyFactory == null || dependencyFactory.isSingleton)
+                    (dependencyFactory == null || !dependencyFactory.isSingleton)
                 ) {
                     throwWrongScopeException(it)
                 }

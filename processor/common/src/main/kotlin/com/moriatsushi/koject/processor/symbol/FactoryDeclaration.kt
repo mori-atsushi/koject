@@ -2,28 +2,26 @@ package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.internal.StringIdentifier
-import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
 internal data class FactoryDeclaration(
-    val identifier: StringIdentifier,
+    val provided: Provided,
     val component: ComponentName?,
     val className: ClassName,
     val parameters: List<Dependency>,
-    val isSingleton: Boolean,
-    val location: Location,
     val containingFile: KSFile?,
 ) {
-    fun asDependency(): Dependency {
-        return Dependency(
-            identifier = identifier,
-            location = location,
-        )
-    }
+    val identifier: StringIdentifier
+        get() = provided.identifier
+
+    val isSingleton: Boolean
+        get() = provided.isSingleton
+
+    val location: Location
+        get() = provided.location
 
     companion object
 }
@@ -32,12 +30,10 @@ internal fun FactoryDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
 ): FactoryDeclaration {
     return FactoryDeclaration(
-        identifier = ksClass.findStringIdentifier()!!,
+        provided = Provided.of(ksClass),
         component = ksClass.findStringComponentName(),
         className = ksClass.toClassName(),
         parameters = ksClass.factoryParameters,
-        isSingleton = ksClass.hasAnnotation<Singleton>(),
-        location = ksClass.findLocationAnnotation()!!,
         containingFile = ksClass.containingFile,
     )
 }

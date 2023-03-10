@@ -15,7 +15,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 
 internal data class ExtrasDeclaration(
     val className: ClassName,
-    val parameters: Sequence<ExtrasParameter>,
+    val extras: Sequence<ExtraDeclaration>,
     val location: Location,
     val containingFile: KSFile?,
 ) {
@@ -37,7 +37,7 @@ internal fun ExtrasDeclaration.Companion.of(
 ): ExtrasDeclaration {
     return ExtrasDeclaration(
         className = declaration.toClassName(),
-        parameters = declaration.extrasParameters,
+        extras = declaration.extrasParameters,
         location = declaration.createLocationAnnotation(),
         containingFile = declaration.containingFile,
     )
@@ -46,4 +46,4 @@ internal fun ExtrasDeclaration.Companion.of(
 private val KSClassDeclaration.extrasParameters
     get() = getAllProperties()
         .filterNot { it.isPrivate() }
-        .map { ExtrasParameter.of(it) }
+        .map { ExtraDeclaration.of(it) }

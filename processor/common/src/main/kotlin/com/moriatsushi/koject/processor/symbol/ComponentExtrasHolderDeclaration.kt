@@ -11,7 +11,7 @@ internal class ComponentExtrasHolderDeclaration(
 ) {
     val className: ClassName
         get() = extrasHolder.className
-    val extras: Sequence<Dependency>
+    val extras: Sequence<Provided>
         get() = extrasHolder.extras
     val location: Location
         get() = extrasHolder.location

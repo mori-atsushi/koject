@@ -14,7 +14,11 @@ annotation class Provides
  * Mark as a type that Koject DI container instantiate only once
  */
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+)
 @MustBeDocumented
 annotation class Singleton
 

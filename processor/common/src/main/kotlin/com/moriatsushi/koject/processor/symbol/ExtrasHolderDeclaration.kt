@@ -10,11 +10,11 @@ import com.squareup.kotlinpoet.ksp.toClassName
 
 internal class ExtrasHolderDeclaration(
     val className: ClassName,
-    val extras: Sequence<Dependency>,
+    val extras: Sequence<Provided>,
     val location: Location,
     val containingFile: KSFile?,
 ) {
-    fun findExtraDependency(identifier: StringIdentifier): Dependency? {
+    fun findExtra(identifier: StringIdentifier): Provided? {
         return extras.find {
             it.identifier == identifier
         }
@@ -28,13 +28,13 @@ internal fun ExtrasHolderDeclaration.Companion.of(
 ): ExtrasHolderDeclaration {
     return ExtrasHolderDeclaration(
         className = ksClass.toClassName(),
-        extras = ksClass.extraParameters,
+        extras = ksClass.extras,
         location = ksClass.findLocationAnnotation()!!,
         containingFile = ksClass.containingFile,
     )
 }
 
-private val KSClassDeclaration.extraParameters: Sequence<Dependency>
+private val KSClassDeclaration.extras: Sequence<Provided>
     get() = getAllProperties()
         .filterNot { it.isPrivate() }
-        .map { Dependency.of(it) }
+        .map { Provided.of(it) }

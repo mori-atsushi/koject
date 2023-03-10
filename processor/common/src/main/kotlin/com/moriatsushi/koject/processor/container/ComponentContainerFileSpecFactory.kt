@@ -207,8 +207,8 @@ internal class ComponentContainerFileSpecFactory {
     ): String {
         val providerName = Names.providerNameOf(target.identifier)
         if (component is ComponentDeclaration.Child) {
-            val extraDependency = component.findExtraDependency(target.identifier)
-            if (extraDependency != null) {
+            val extra = component.findExtra(target.identifier)
+            if (extra != null) {
                 return "this.extras.$providerName"
             }
         }
@@ -217,8 +217,8 @@ internal class ComponentContainerFileSpecFactory {
             return providerName
         }
         rootExtras.forEach {
-            val extraDependency = it.findExtraDependency(target.identifier)
-            if (extraDependency != null) {
+            val extra = it.findExtra(target.identifier)
+            if (extra != null) {
                 return "this.${it.className.simpleName}.$providerName"
             }
         }

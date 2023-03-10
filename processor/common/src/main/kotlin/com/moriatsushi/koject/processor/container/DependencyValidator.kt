@@ -56,7 +56,7 @@ internal class DependencyValidator {
         component: ComponentDeclaration.Root,
         rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
-        val provided = component.allFactories.map { it.asProvided() } +
+        val provided = component.allFactories.map { it.provided } +
             rootExtrasHolder.flatMap { it.extras }
         validateDependencies(component.allFactories, provided)
 
@@ -78,8 +78,8 @@ internal class DependencyValidator {
         rootExtrasHolder: Sequence<ExtrasHolderDeclaration>,
     ) {
         val provided = component.extrasHolder.extras +
-            component.allFactories.map { it.asProvided() } +
-            rootComponent.allFactories.map { it.asProvided() } +
+            component.allFactories.map { it.provided } +
+            rootComponent.allFactories.map { it.provided } +
             rootExtrasHolder.flatMap { it.extras }
 
         validateDependencies(component.allFactories, provided)

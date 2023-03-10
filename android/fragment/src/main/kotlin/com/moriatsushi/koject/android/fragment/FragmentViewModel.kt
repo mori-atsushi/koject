@@ -13,6 +13,12 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
  * Returns a [Lazy] delegate to access the Fragment's [ViewModel]
  * provided by Koject
  *
+ * ```
+ * class TopFragment : Fragment() {
+ *     private val viewModel: TopViewModel by injectViewModels()
+ * }
+ * ```
+ *
  * @param qualifier Qualifier for identification.
  * @param ownerProducer Specify [ViewModelStoreOwner] that controls the scope
  * and lifetime of the returned [ViewModel]. The default is the current [Fragment],
@@ -37,6 +43,12 @@ inline fun <reified VM : ViewModel> Fragment.injectViewModels(
 /**
  * Returns a [Lazy] delegate to access parent activity's [ViewModel]
  * provided by Koject
+ *
+ * ```
+ * class TopFragment : Fragment() {
+ *     private val viewModel: TopViewModel by injectActivityViewModels()
+ * }
+ * ```
  *
  * @param qualifier Qualifier for identification.
  * @param extrasProducer Create the default extras that will be

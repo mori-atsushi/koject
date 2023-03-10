@@ -1,11 +1,13 @@
+import {
+    Provides,
+    ViewModelComponent,
+    ActivityInjectViewModels,
+    FragmentInjectViewModels,
+} from '@site/src/components/CodeLink';
+
+
 # Inject ViewModels
 Koject supports providing [ViewModels](https://developer.android.com/reference/androidx/lifecycle/ViewModel).
-
-:::tip LINK
-
-Check the [documentation](/docs/compose/viewmodel) to inject ViewModels in Jetpack Compose.
-
-:::
 
 ## Setup for ViewModels
 Add dependencies according to the target to inject.
@@ -13,18 +15,18 @@ Add dependencies according to the target to inject.
 ```kotlin
 dependencies {
     // Inject ViewModel into Activity
-    implementation("com.moriatsushi.koject:koject-android-activity:1.1.0-beta02")
+    implementation("com.moriatsushi.koject:koject-android-activity:1.1.0")
     // Inject ViewModel into Fragment
-    implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0-beta02")
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0")
     // ViewModelFactory only
-    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0-beta02")
+    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0")
 }
 ```
 
 Please also check the [Setup document](/docs/setup).
 
 ## Using ViewModels
-Specify the <a href="/api/android/viewmodel/com.moriatsushi.koject.android.viewmodel/-view-model-component/index.html" target="_blank">`@ViewModelComponent`</a> and <a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a> annotations when defining a ViewModel.
+Specify the <ViewModelComponent/> and <Provides/> annotations when defining a ViewModel.
 As with other providing types, constructor injection is available.
 
 ```kotlin
@@ -38,7 +40,7 @@ class TopViewModel(
 }
 ```
 
-When using ViewModels, use the <a href="/api/android/activity/com.moriatsushi.koject.android.activity/inject-view-models.html" target="_blank">`ComponentActivity.injectViewModels()`</a> method.
+When using ViewModels, use the <ActivityInjectViewModels/> function.
 
 ```kotlin
 class TopActivity : ComponentActivity() {
@@ -51,7 +53,7 @@ class TopActivity : ComponentActivity() {
 }
 ```
 
-When injecting into Fragment, use <a href="/api/android/fragment/com.moriatsushi.koject.android.fragment/inject-view-models.html" target="_blank">`Fragment.injectViewModels()`</a> function.
+For Fragment, please use the, please use the <FragmentInjectViewModels/> function instead.
 
 ```kotlin
 class TopFragment : Fragment() {
@@ -66,6 +68,12 @@ class TopFragment : Fragment() {
     }
 }
 ```
+
+:::tip LINK
+
+Check the [documentation](/docs/compose/viewmodel) to inject ViewModels in Jetpack Compose.
+
+:::
 
 ## Working with SavedStateHandle
 [SavedStateHandle](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle) is used to save ViewModel state.

@@ -1,0 +1,183 @@
+---
+slug: android-support
+title: Koject v1.1.0 - Androidのサポート強化
+authors: atsushi
+image: /blog/2023-03-11/ogp.png
+---
+
+import {
+    Provides,
+    Singleton,
+    Inject,
+    ViewModelComponent,
+    ActivityInjectViewModels,
+    FragmentInjectViewModels,
+    RememberInject,
+} from '@site/src/components/CodeLink';
+
+# Koject v1.1.0 - Androidのサポート強化
+
+![](/blog/2023-03-11/banner.png)
+
+今回、Androidのサポートを強化したKoject v1.1.0をリリースしました。
+この記事では、v1.1.0で追加された機能と、それを実現するためのComponent機能について紹介します。
+
+<!--truncate-->
+
+[**Read in English →**](/blog/android-support)
+
+## ViewModelをinjectする
+Androidアプリケーション開発では、AndroidXの[ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel)にRepository等の依存関係を追加し、ActivityやFragmentから利用することが一般的です。
+Koject v1.1.0を使うことで、ViewModelの依存関係を自動的に管理できます。
+
+まず最初に、ViewModelで利用するクラスに<Provides/>アノテーションをつけ、DIコンテナに登録します。<Singleton/>をつけることでシングルトンとして扱うことができます。
+
+
+```kotlin
+@Singleton
+@Provides
+class UserRepository {
+    /* ... */
+}
+
+@Singleton
+@Provides
+class ContentRepository {
+    /* ... */
+}
+```
+
+次に、ViewModelを定義します。
+コンストラクタでDIコンテナに登録したクラスを受け取ることができます。
+ViewModelには`@Provides`アノテーションと<ViewModelComponent/>アノテーションをつけてください。
+
+```kotlin
+@Provides
+@ViewModelComponent
+class TopViewModel(
+    private val userRepository: UserRepository,
+    private val contentRepository: ContentRepository,
+): ViewModel() {
+    /* ... */
+}
+```
+
+最後に、<ActivityInjectViewModels/>関数を使ってViewModelを取得します。
+
+```kotlin
+class TopActivity : ComponentActivity() {
+    private val viewModel: TopViewModel by injectViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /* ... */
+    }
+}
+```
+
+Fragmentでは<FragmentInjectViewModels/>関数を使ってください。
+
+```kotlin
+class TopFragment : Fragment() {
+    private val viewModel: TopViewModel by injectViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        /* ... */
+    }
+}
+```
+
+利用には追加の依存関係が必要です。
+詳細は[ドキュメント](/docs/android/viewmodel)を確認してください。
+
+## Composeで利用する
+Koject 1.1.0では[Jetpack Compose](https://developer.android.com/jetpack/compose)及び [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/)のサポートも追加しました。
+
+<p>
+<RememberInject/>関数を使うことで配布されたクラスをComposable関数で利用することができます。
+</p>
+
+```kotlin
+@Composable
+fun Sample(
+    controller: SampleController = rememberInject()
+) {
+    /* ... */
+}
+```
+
+`rememberInject()`はComposable関数内でも呼び出すことができますが、**デフォルト引数として利用する**ことをおすすめします。
+そうすることで、テスト時等に差し替えやすくなります。
+
+**Compmosable関数内で<Inject/>関数を使わない**ように注意してください。
+レンダリングごとにインスタンスを作成したり、何度もinject処理が行われることで、パフォーマンスが低下する恐れがあります。
+
+```kotlin
+@Composable
+fun Sample(
+    controller: SampleController = inject() // DO NOT!!
+) {
+    /* ... */
+}
+```
+
+こちらもセットアップ方法は[ドキュメント](/docs/compose/core)を確認してください。
+
+## Component機能
+ViewModelには、状態を保存する[`SavedStateHandle`](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle)をinjectすることができます。
+
+```kotlin
+@Provides
+@ViewModelComponent
+class SavedStateViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    /* ... */
+}
+```
+
+`SavedStateHandle`のようなプラットフォームで作成されるインスタンスを配布するため、Kojectは新たに**Component機能**を追加しました。
+
+ComponentはDIコンテナに登録する型をグルーピングしたものです。
+デフォルトでは、全ての型はルート コンポーネントに登録されます。
+コンポーネントのアノテーションを付けることで、別のコンポーネントに登録することができます。
+
+```kotlin
+// Registered in RootComponent
+@Provides
+class NormalClass
+
+// Registered in SomeComponent
+@SomeComponent
+@Provides
+class ComponentClass
+```
+
+Componentに登録された型は、同じコンポーネント内の型とルートコンポーネントの型のみを参照できます。
+
+![](/img/docs/component.png)
+
+また、コンポーネントに対して追加の依存関係を配布できます。
+
+![](/img/docs/component-extras.png)
+
+Kojectでは`@ViewModelComponent`がデフォルトで定義されており、`SavedStateHandle`を`@ViewModelComponent`に追加しています。
+そのため、`@ViewModelComponent` 以外に`SavedStateHandle`をinjectできないことに注意してください。
+
+カスタムコンポーネントの作り方は[ドキュメント](/docs/core/component)で紹介しています。
+
+:::caution Experimental
+
+コンポーネント機能は**実験的なAPI**です。将来的に変更される可能性があります。
+
+:::
+
+## Kojectは進化します
+Koject v1.1.0は、Androidアプリケーション開発を強力に支援してくれると信じています。
+より一層使いやすいライブラリにするため、今後もさらなる機能追加を予定しています。
+
+気づいたことがあれば、[Issue](https://github.com/Mori-Atsushi/koject/issues)からお気軽にフィードバックください。

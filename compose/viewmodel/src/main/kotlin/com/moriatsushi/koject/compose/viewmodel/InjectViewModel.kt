@@ -13,6 +13,15 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
 /**
  * Returns an existing [ViewModel] or creates a new one by Koject
  *
+ * ```
+ * @Composable
+ * fun TopPage(
+ *     viewModel: TopViewModel = injectViewModel()
+ * ) {
+ *     /* ... */
+ * }
+ * ```
+ *
  * @param qualifier Qualifier for identification.
  * @param viewModelStoreOwner The owner of the [ViewModel] that controls the scope and lifetime
  * of the returned [ViewModel]. Defaults to using [LocalViewModelStoreOwner].

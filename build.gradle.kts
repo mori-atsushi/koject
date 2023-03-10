@@ -31,6 +31,6 @@ subprojects {
 }
 
 tasks.dokkaHtmlMultiModule {
-    moduleVersion.set("1.1.0-beta02")
+    moduleVersion.set("1.1.0")
     outputDirectory.set(rootDir.resolve("docs/static/api"))
 }

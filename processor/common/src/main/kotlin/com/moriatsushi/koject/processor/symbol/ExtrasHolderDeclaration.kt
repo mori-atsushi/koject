@@ -4,7 +4,6 @@ import com.google.devtools.ksp.isPrivate
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.moriatsushi.koject.internal.Location
-import com.moriatsushi.koject.internal.StringIdentifier
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
@@ -14,12 +13,6 @@ internal class ExtrasHolderDeclaration(
     val location: Location,
     val containingFile: KSFile?,
 ) {
-    fun findExtra(identifier: StringIdentifier): Provided? {
-        return extras.find {
-            it.identifier == identifier
-        }
-    }
-
     companion object
 }
 

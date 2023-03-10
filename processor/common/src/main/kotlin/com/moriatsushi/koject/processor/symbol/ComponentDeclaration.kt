@@ -9,14 +9,16 @@ internal sealed class ComponentDeclaration(
     private val factories: Sequence<FactoryDeclaration>,
 ) {
     abstract val name: ComponentName
+    abstract val extrasHolders: Sequence<ExtrasHolderDeclaration>
+    abstract val allProvided: Sequence<Provided>
 
     class Root(
         factories: Sequence<FactoryDeclaration>,
-        val extrasHolders: Sequence<ExtrasHolderDeclaration>,
+        override val extrasHolders: Sequence<ExtrasHolderDeclaration>,
     ) : ComponentDeclaration(factories) {
         override val name = ComponentName("RootComponent")
 
-        val allProvided: Sequence<Provided>
+        override val allProvided: Sequence<Provided>
             get() = allFactories.map { it.provided } +
                 extrasHolders.flatMap { it.extras }
     }
@@ -24,13 +26,17 @@ internal sealed class ComponentDeclaration(
     class Child(
         factories: Sequence<FactoryDeclaration>,
         val extrasHolder: ComponentExtrasHolderDeclaration,
-        val rootComponent: ComponentDeclaration.Root,
+        val rootComponent: Root,
     ) : ComponentDeclaration(factories) {
         override val name = extrasHolder.componentName
 
-        val allProvided: Sequence<Provided>
+        override val allProvided: Sequence<Provided>
             get() = allFactories.map { it.provided } +
-                extrasHolder.extras
+                extrasHolder.extras +
+                rootComponent.allProvided
+
+        override val extrasHolders: Sequence<ExtrasHolderDeclaration>
+            get() = sequenceOf(extrasHolder.extrasHolder)
 
         fun findExtra(identifier: StringIdentifier): Provided? {
             return extrasHolder.extras.find {

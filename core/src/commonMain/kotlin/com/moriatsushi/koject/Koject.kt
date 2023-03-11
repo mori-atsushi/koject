@@ -42,16 +42,23 @@ object Koject {
  * Will be replaced by automatic code generation.
  * Not actually called.
  *
- * @param nothing Do not use.
- * @param builder Configurations to start
+ * @param doNotUse Do not use! It's a hack to overwrite with generated code.
+ * @param builder Configurations to start.
  */
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 fun Koject.start(
-    nothing: Nothing = codeNotGeneratedError(),
+    @Suppress("DEPRECATION_ERROR")
+    doNotUse: DoNotUse = DoNotUse,
     builder: KojectBuilder.() -> Unit = {},
 ) {
     codeNotGeneratedError()
 }
+
+/**
+ * Do not use!
+ */
+@Deprecated("Do not use!", level = DeprecationLevel.ERROR)
+object DoNotUse
 
 private fun codeNotGeneratedError(): Nothing {
     throw CodeNotGeneratedException(

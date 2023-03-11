@@ -23,7 +23,7 @@ class KojectViewModelFactoryTest {
 
     @Test
     fun createViewModelWithExtras() {
-        Koject._start { FakeContainer() }
+        Koject._start(FakeContainer())
 
         val component = TestComponent()
         component.enableSavedStateHandles()
@@ -37,7 +37,7 @@ class KojectViewModelFactoryTest {
 
     @Test
     fun createViewModelWithEmptyExtras() {
-        Koject._start { FakeContainer() }
+        Koject._start(FakeContainer())
 
         val component = TestComponent()
         val extras = MutableCreationExtras()
@@ -50,7 +50,7 @@ class KojectViewModelFactoryTest {
 
     @Test
     fun createSavedStateViewModelWithExtras() {
-        Koject._start { FakeContainer() }
+        Koject._start(FakeContainer())
 
         val component = TestComponent()
         component.enableSavedStateHandles()

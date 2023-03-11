@@ -9,15 +9,8 @@ internal class KojectImpl {
             "Koject has not been started.",
         )
 
-    private val extras = mutableSetOf<Any>()
-
-    fun addExtras(extras: Any) {
-        this.extras.add(extras)
-    }
-
-    fun start(builder: (extras: Set<Any>) -> Container) {
-        _container = builder(extras)
-        extras.clear()
+    fun start(container: Container) {
+        _container = container
     }
 
     fun stop() {

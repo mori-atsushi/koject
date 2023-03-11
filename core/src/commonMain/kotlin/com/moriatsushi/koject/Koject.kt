@@ -1,7 +1,6 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.CodeNotGeneratedException
-import com.moriatsushi.koject.extras.KojectExtras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.internal.KojectImpl
@@ -21,31 +20,12 @@ object Koject {
         get() = impl.container
 
     /**
-     * Add extra dependencies before starting Koject.
-     *
-     * @param extras [KojectExtras] class
-     */
-    @ExperimentalKojectApi
-    fun addExtras(extras: Any) {
-        impl.addExtras(extras)
-    }
-
-    /**
      * Set [container] and start application
      */
     @Suppress("FunctionName")
     @InternalKojectApi
     fun _start(container: Container) {
-        impl.start { container }
-    }
-
-    /**
-     * Set [container] with extras and start application
-     */
-    @Suppress("FunctionName")
-    @InternalKojectApi
-    fun _start(builder: (extras: Set<Any>) -> Container) {
-        impl.start(builder)
+        impl.start(container)
     }
 
     /**
@@ -68,7 +48,7 @@ object Koject {
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 fun Koject.start(
     nothing: Nothing = codeNotGeneratedError(),
-    builder: KojectBuilder.() -> Unit = {}
+    builder: KojectBuilder.() -> Unit = {},
 ) {
     codeNotGeneratedError()
 }

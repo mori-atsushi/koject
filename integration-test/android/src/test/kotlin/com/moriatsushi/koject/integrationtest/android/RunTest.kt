@@ -8,8 +8,9 @@ import com.moriatsushi.koject.start
 fun Koject.runTest(
     block: () -> Unit,
 ) {
-    application(ApplicationProvider.getApplicationContext())
-    start()
+    start {
+        application(ApplicationProvider.getApplicationContext())
+    }
     block()
     stop()
 }

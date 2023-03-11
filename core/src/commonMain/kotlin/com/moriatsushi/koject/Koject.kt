@@ -1,7 +1,6 @@
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.CodeNotGeneratedException
-import com.moriatsushi.koject.extras.KojectExtras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.internal.KojectImpl
@@ -21,32 +20,12 @@ object Koject {
         get() = impl.container
 
     /**
-     * Add extra dependencies before starting Koject.
-     *
-     * @param extras [KojectExtras] class
-     */
-    @ExperimentalKojectApi
-    fun addExtras(extras: Any) {
-        impl.addExtras(extras)
-    }
-
-    /**
      * Set [container] and start application
      */
     @Suppress("FunctionName")
     @InternalKojectApi
-    @Deprecated(message = "deprecated")
     fun _start(container: Container) {
-        impl.start { container }
-    }
-
-    /**
-     * Set [container] with extras and start application
-     */
-    @Suppress("FunctionName")
-    @InternalKojectApi
-    fun _start(builder: (extras: Set<Any>) -> Container) {
-        impl.start(builder)
+        impl.start(container)
     }
 
     /**
@@ -62,13 +41,24 @@ object Koject {
  *
  * Will be replaced by automatic code generation.
  * Not actually called.
+ *
+ * @param doNotUse Do not use! It's a hack to overwrite with generated code.
+ * @param builder Configurations to start.
  */
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 fun Koject.start(
-    nothing: Nothing = codeNotGeneratedError(),
+    @Suppress("DEPRECATION_ERROR")
+    doNotUse: DoNotUse = DoNotUse,
+    builder: KojectBuilder.() -> Unit = {},
 ) {
     codeNotGeneratedError()
 }
+
+/**
+ * Do not use!
+ */
+@Deprecated("Do not use!", level = DeprecationLevel.ERROR)
+object DoNotUse
 
 private fun codeNotGeneratedError(): Nothing {
     throw CodeNotGeneratedException(

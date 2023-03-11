@@ -16,7 +16,7 @@ class KojectTest {
     @Test
     fun successStart_withContainer() {
         val container = FakeContainer()
-        Koject._start { container }
+        Koject._start(container)
         assertEquals(container, Koject.container)
     }
 

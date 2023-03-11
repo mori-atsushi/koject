@@ -35,7 +35,6 @@ object Koject {
      */
     @Suppress("FunctionName")
     @InternalKojectApi
-    @Deprecated(message = "deprecated")
     fun _start(container: Container) {
         impl.start { container }
     }
@@ -62,10 +61,14 @@ object Koject {
  *
  * Will be replaced by automatic code generation.
  * Not actually called.
+ *
+ * @param nothing Do not use.
+ * @param builder Configurations to start
  */
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 fun Koject.start(
     nothing: Nothing = codeNotGeneratedError(),
+    builder: KojectBuilder.() -> Unit = {}
 ) {
     codeNotGeneratedError()
 }

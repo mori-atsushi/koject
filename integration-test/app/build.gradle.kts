@@ -1,11 +1,9 @@
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.ksp)
-    alias(libs.plugins.android.application)
 }
 
 kotlin {
-    android()
     jvm()
     js(IR) {
         moduleName = "koject-integration-test-app"
@@ -42,36 +40,6 @@ kotlin {
 
         val jvmTest by getting {
             dependsOn(commonTest)
-        }
-
-        val androidMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(project(":android:core"))
-                implementation(project(":android:activity"))
-                implementation(project(":android:fragment"))
-                implementation(project(":android:viewmodel"))
-                implementation(project(":compose:core"))
-                implementation(project(":compose:viewmodel"))
-                implementation(libs.androidx.activity)
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.androidx.fragment)
-                implementation(libs.androidx.fragment.testing)
-                implementation(libs.androidx.lifecycle.viewmodel)
-                implementation(libs.androidx.lifecycle.viewmodel.compose)
-                implementation(libs.androidx.compose.ui)
-                implementation(libs.mockito.kotlin)
-            }
-        }
-
-        val androidUnitTest by getting {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(libs.androidx.test.core)
-                implementation(libs.androidx.test.ext.junit)
-                implementation(libs.androidx.compose.ui.test)
-                implementation(libs.robolectric)
-            }
         }
 
         val nativeMain by creating {
@@ -159,41 +127,7 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.moriatsushi.koject.integrationtest.app"
-    compileSdk = 33
-
-    defaultConfig {
-        minSdk = 23
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_11)
-        targetCompatibility(JavaVersion.VERSION_11)
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion =
-            libs.versions.androidx.compose.compiler.get()
-    }
-
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-    }
-}
-
-
 dependencies {
-    add("kspAndroid", project(":processor:app"))
     add("kspJvm", project(":processor:app"))
     add("kspJs", project(":processor:app"))
     add("kspIosX64", project(":processor:app"))

@@ -10,20 +10,17 @@ import com.moriatsushi.koject.integrationtest.app.extras.WithQualifierExtras
 import com.moriatsushi.koject.start
 
 fun Koject.runTest(
-    preparation: Koject.() -> Unit = { setExtras() },
     block: () -> Unit,
 ) {
-    preparation()
+    addCommonExtras()
     start()
     block()
     stop()
 }
 
 @OptIn(ExperimentalKojectApi::class)
-fun Koject.addCommonExtras() {
+private fun Koject.addCommonExtras() {
     addExtras(GlobalExtras(GlobalExtraClass1(), GlobalExtraSingleton1()))
     addExtras(WithQualifierExtras())
     addExtras(WithNamedExtras())
 }
-
-expect fun Koject.setExtras()

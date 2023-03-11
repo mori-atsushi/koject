@@ -34,7 +34,7 @@
     <div class="library-name">
 <a href="../../../../index.html">
 <span>koject</span>            </a>    </div>
-    <div>1.1.0-beta02
+    <div>1.1.0
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -53,7 +53,7 @@
   <div class="breadcrumbs"><a href="../../index.html">koject-android-viewmodel</a><span class="delimiter">/</span><a href="../index.html">com.moriatsushi.koject.android.viewmodel</a><span class="delimiter">/</span><span class="current">ViewModelComponent</span></div>
   <div class="cover ">
     <h1 class="cover"><span>View</span><wbr><span>Model</span><wbr><span><span>Component</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":android:viewmodel:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">annotation class </span><a href="index.html">ViewModelComponent</a></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":android:viewmodel:dokkaHtmlPartial/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../../core/com.moriatsushi.koject.component/-component/index.html"><span class="token annotation builtin">Component</span></a></div></div><span class="token keyword">annotation class </span><a href="index.html">ViewModelComponent</a></div><p class="paragraph">Can be provided as <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a>s or types used by ViewModels when used with @<a href="../../../../core/com.moriatsushi.koject/-provides/index.html">Provides</a>.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">@Provides<br>@ViewModelComponent<br>class SampleViewModel(<br>    userRepository: UserRepository<br>): ViewModel()</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Can inject a <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/SavedStateHandle.html">SavedStateHandle</a> using ViewModelComponent.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">@Provides<br>@ViewModelComponent<br>class SavedStateViewModel(<br>    private val savedStateHandle: SavedStateHandle<br>) : ViewModel()</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"></div>

@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[135],{4756:e=>{e.exports=JSON.parse('{"title":"\u5168\u3066\u306e\u6295\u7a3f","items":[{"title":"Koject 1.0.0\u3092\u516c\u958b\u3057\u307e\u3057\u305f\uff01","permalink":"/koject/blog/jp/first-stable-release"}]}')}}]);

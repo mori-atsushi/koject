@@ -6,7 +6,7 @@ plugins {
 kotlin {
     jvm()
     js(IR) {
-        moduleName = "koject-integration-test-app"
+        moduleName = "integration-test-app"
         nodejs()
         browser()
     }

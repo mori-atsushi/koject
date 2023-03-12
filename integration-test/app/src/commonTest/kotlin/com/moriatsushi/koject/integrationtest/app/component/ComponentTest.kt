@@ -26,7 +26,9 @@ class ComponentTest {
     @Test
     fun successLazyInject_withComponentExtras() = Koject.runTest {
         val value by lazyInject<CustomComponentClass>(
-            componentExtras = CustomComponentExtras(),
+            componentExtrasProducer = {
+                CustomComponentExtras()
+            },
         )
 
         assertIs<CustomComponentClass>(value)

@@ -68,6 +68,13 @@ inline fun <reified T : Any> lazyInject(
  *
  * @param name name of [Named]
  */
+@Deprecated(
+    message = "The method of specifying qualifier has been unified.",
+    replaceWith = ReplaceWith(
+        "inject(Named(name))",
+        "com.moriatsushi.koject.Named",
+    ),
+)
 inline fun <reified T : Any> inject(name: String): T {
     return inject(Named(name))
 }
@@ -78,6 +85,13 @@ inline fun <reified T : Any> inject(name: String): T {
  * @param name name of [Named]
  * @param componentExtras Specify [ComponentExtras] to create [Component].
  */
+@Deprecated(
+    message = "The method of specifying qualifier has been unified.",
+    replaceWith = ReplaceWith(
+        "inject(Named(name, componentExtras))",
+        "com.moriatsushi.koject.Named",
+    ),
+)
 @ExperimentalKojectApi
 inline fun <reified T : Any> inject(
     name: String,

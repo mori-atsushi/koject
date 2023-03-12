@@ -38,6 +38,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(project(":android:core"))
                 implementation(project(":compose:viewmodel"))
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.androidx.compose.ui)

@@ -1,6 +1,8 @@
 package com.moriatsushi.koject.integrationtest.android.activity
 
+import android.app.Application
 import androidx.activity.ComponentActivity
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
@@ -16,6 +18,8 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ActivityComponentTest {
+    private val applicationContext = ApplicationProvider.getApplicationContext<Application>()
+
     @Test
     fun lazyInject_forActivity() = Koject.runTest {
         val scenario = launchActivity<ComponentActivity>()
@@ -25,8 +29,10 @@ class ActivityComponentTest {
 
             assertEquals(it, componentClass.componentActivity)
             assertEquals(it, componentClass.activity)
+            assertEquals(it, componentClass.activityContext)
+            assertEquals(applicationContext, componentClass.applicationContext)
+
             assertEquals(it, componentHolder.forActivity.componentActivity)
-            assertEquals(it, componentHolder.forActivity.activity)
         }
     }
 
@@ -39,8 +45,10 @@ class ActivityComponentTest {
 
             assertEquals(it, componentClass.componentActivity)
             assertEquals(it, componentClass.activity)
+            assertEquals(it, componentClass.activityContext)
+            assertEquals(applicationContext, componentClass.applicationContext)
+
             assertEquals(it, componentHolder.forActivity.componentActivity)
-            assertEquals(it, componentHolder.forActivity.activity)
         }
     }
 

@@ -1,7 +1,9 @@
 package com.moriatsushi.koject.integrationtest.android.fragment
 
+import android.app.Application
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.launchFragment
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
@@ -17,22 +19,27 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FragmentComponentTest {
+    private val applicationContext = ApplicationProvider.getApplicationContext<Application>()
+
     @Test
     fun lazyInject_forFragment() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
             val value1: ForFragment by it.lazyInject()
-            val value2: ForFragmentWithActivity by it.lazyInject()
-            val value3: ForFragmentHolder by it.lazyInject()
+            val value2: ForFragmentActivity by it.lazyInject()
+            val value3: ForFragmentContext by it.lazyInject()
+            val value4: ForFragmentHolder by it.lazyInject()
 
             assertEquals(it, value1.fragment)
-            assertEquals(it, value2.fragment)
+
             assertEquals(it.requireActivity(), value2.fragmentActivity)
             assertEquals(it.requireActivity(), value2.componentActivity)
             assertEquals(it.requireActivity(), value2.activity)
 
-            assertEquals(it, value3.forFragment.fragment)
-            assertEquals(it, value3.forFragmentWithActivity.fragment)
+            assertEquals(applicationContext, value3.applicationContext)
+            assertEquals(it.requireActivity(), value3.activityContext)
+
+            assertEquals(it, value4.forFragment.fragment)
         }
     }
 
@@ -41,17 +48,20 @@ class FragmentComponentTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
             val value1: ForFragment = it.inject()
-            val value2: ForFragmentWithActivity = it.inject()
-            val value3: ForFragmentHolder = it.inject()
+            val value2: ForFragmentActivity = it.inject()
+            val value3: ForFragmentContext = it.inject()
+            val value4: ForFragmentHolder = it.inject()
 
             assertEquals(it, value1.fragment)
-            assertEquals(it, value2.fragment)
+
             assertEquals(it.requireActivity(), value2.fragmentActivity)
             assertEquals(it.requireActivity(), value2.componentActivity)
             assertEquals(it.requireActivity(), value2.activity)
 
-            assertEquals(it, value3.forFragment.fragment)
-            assertEquals(it, value3.forFragmentWithActivity.fragment)
+            assertEquals(applicationContext, value3.applicationContext)
+            assertEquals(it.requireActivity(), value3.activityContext)
+
+            assertEquals(it, value4.forFragment.fragment)
         }
     }
 
@@ -62,7 +72,11 @@ class FragmentComponentTest {
         assertEquals(fragment, value.fragment)
 
         assertFailsWith<IllegalStateException> {
-            fragment.inject<ForFragmentWithActivity>()
+            fragment.inject<ForFragmentActivity>()
+        }
+
+        assertFailsWith<IllegalStateException> {
+            fragment.inject<ForFragmentContext>()
         }
     }
 

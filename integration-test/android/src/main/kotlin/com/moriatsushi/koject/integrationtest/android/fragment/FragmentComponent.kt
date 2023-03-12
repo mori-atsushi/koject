@@ -1,10 +1,12 @@
 package com.moriatsushi.koject.integrationtest.android.fragment
 
 import android.app.Activity
+import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.moriatsushi.koject.Provides
+import com.moriatsushi.koject.android.activity.ActivityContext
 import com.moriatsushi.koject.android.fragment.FragmentComponent
 
 @FragmentComponent
@@ -15,8 +17,7 @@ class ForFragment(
 
 @FragmentComponent
 @Provides
-class ForFragmentWithActivity(
-    val fragment: Fragment,
+class ForFragmentActivity(
     val fragmentActivity: FragmentActivity,
     val componentActivity: ComponentActivity,
     val activity: Activity,
@@ -24,7 +25,16 @@ class ForFragmentWithActivity(
 
 @FragmentComponent
 @Provides
+class ForFragmentContext(
+    @ActivityContext
+    val activityContext: Context,
+    val applicationContext: Context,
+)
+
+@FragmentComponent
+@Provides
 class ForFragmentHolder(
     val forFragment: ForFragment,
-    val forFragmentWithActivity: ForFragmentWithActivity,
+    val forFragmentActivity: ForFragmentActivity,
+    val forFragmentContext: ForFragmentContext,
 )

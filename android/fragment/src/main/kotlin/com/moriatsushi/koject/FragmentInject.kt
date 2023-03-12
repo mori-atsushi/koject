@@ -31,6 +31,8 @@ inline fun <reified T : Any> Fragment.lazyInject(
 ): Lazy<T> {
     return lazyInject(
         qualifier = qualifier,
-        componentExtras = FragmentComponentExtras(this),
+        componentExtrasProducer = {
+            FragmentComponentExtras(this)
+        },
     )
 }

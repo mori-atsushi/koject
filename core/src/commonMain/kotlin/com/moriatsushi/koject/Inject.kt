@@ -52,15 +52,15 @@ inline fun <reified T : Any> lazyInject(
  *
  * @param qualifier Qualifier for identification.
  * Specify the instantiation of the annotation with [Qualifier].
- * @param componentExtras Specify [ComponentExtras] to create [Component].
+ * @param componentExtrasProducer Specify [ComponentExtras] to create [Component].
  */
 @ExperimentalKojectApi
 inline fun <reified T : Any> lazyInject(
     qualifier: Any? = null,
-    componentExtras: Any? = null,
+    noinline componentExtrasProducer: (() -> Any)? = null,
 ): Lazy<T> {
     val id = Identifier.of<T>(qualifier)
-    return lazy { inject(id, componentExtras) }
+    return lazy { inject(id, componentExtrasProducer?.invoke()) }
 }
 
 /**

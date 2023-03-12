@@ -31,6 +31,8 @@ inline fun <reified T : Any> ComponentActivity.lazyInject(
 ): Lazy<T> {
     return lazyInject(
         qualifier = qualifier,
-        componentExtras = ActivityComponentExtras(this),
+        componentExtrasProducer = {
+            ActivityComponentExtras(this)
+        },
     )
 }

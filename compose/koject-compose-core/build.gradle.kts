@@ -36,6 +36,49 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+
+        val androidMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(compose.ui)
+            }
+        }
+
+        val nativeMain by creating {
+            dependsOn(commonMain)
+        }
+
+        val iosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
+        val macosX64Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val macosArm64Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val watchosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val tvosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val mingwX64Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val linuxX64Main by getting {
+            dependsOn(nativeMain)
+        }
     }
 }
 

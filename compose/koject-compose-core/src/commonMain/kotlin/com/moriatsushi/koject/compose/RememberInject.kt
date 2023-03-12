@@ -29,8 +29,12 @@ import com.moriatsushi.koject.inject
 inline fun <reified T : Any> rememberInject(
     qualifier: Any? = null,
 ): T {
+    val componentExtras = composeComponentExtras()
     return remember(qualifier) {
-        inject(qualifier, ComposeComponentExtras())
+        inject(
+            qualifier = qualifier,
+            componentExtras = componentExtras,
+        )
     }
 }
 

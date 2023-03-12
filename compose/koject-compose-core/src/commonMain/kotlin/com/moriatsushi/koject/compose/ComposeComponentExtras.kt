@@ -1,9 +1,9 @@
 package com.moriatsushi.koject.compose
 
-import com.moriatsushi.koject.ExperimentalKojectApi
-import com.moriatsushi.koject.component.ComponentExtras
+import androidx.compose.runtime.Composable
 
-@OptIn(ExperimentalKojectApi::class)
-@ComponentExtras(ComposeComponent::class)
+internal expect class ComposeComponentExtras
+
+@Composable
 @PublishedApi
-internal class ComposeComponentExtras
+internal expect fun composeComponentExtras(): ComposeComponentExtras

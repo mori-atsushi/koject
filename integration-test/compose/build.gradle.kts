@@ -42,6 +42,7 @@ kotlin {
         val androidMain by getting {
             dependsOn(commonMain)
             dependencies {
+                api(project(":android:koject-android-core"))
                 implementation(libs.androidx.activity)
             }
         }

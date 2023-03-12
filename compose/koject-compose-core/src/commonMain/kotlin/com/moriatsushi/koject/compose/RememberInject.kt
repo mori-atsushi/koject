@@ -24,12 +24,13 @@ import com.moriatsushi.koject.inject
  * @param qualifier Qualifier for identification.
  *   Specify the instantiation of the annotation with [Qualifier].
  */
+@OptIn(ExperimentalKojectApi::class)
 @Composable
 inline fun <reified T : Any> rememberInject(
     qualifier: Any? = null,
 ): T {
     return remember(qualifier) {
-        inject(qualifier)
+        inject(qualifier, ComposeComponentExtras())
     }
 }
 
@@ -53,7 +54,7 @@ inline fun <reified T : Any> rememberInject(
 @Composable
 inline fun <reified T : Any> rememberInject(
     qualifier: Any? = null,
-    componentExtras: Any? = null,
+    componentExtras: Any?,
 ): T {
     return remember(qualifier) {
         inject(qualifier, componentExtras)

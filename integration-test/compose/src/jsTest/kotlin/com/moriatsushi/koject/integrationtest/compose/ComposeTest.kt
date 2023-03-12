@@ -43,6 +43,22 @@ class ComposeTest {
     }
 
     @Test
+    fun successInject_component() = Koject.runTest {
+        runTest {
+            var value: ForComposeClass? = null
+            var holder: ForComposeHolder? = null
+
+            composition {
+                value = rememberInject()
+                holder = rememberInject()
+            }
+
+            assertNotNull(value)
+            assertNotNull(holder)
+        }
+    }
+
+    @Test
     fun rememberValue_whileRecompose() = Koject.runTest {
         runTest {
             var count by mutableStateOf(0)

@@ -22,6 +22,14 @@ class InjectTest {
     }
 
     @Test
+    fun successLazyInject() {
+        Koject._start(FakeContainer())
+        val actual by lazyInject<String>()
+        val expected = "test"
+        assertEquals(actual, expected)
+    }
+
+    @Test
     fun failInject_notProvided() {
         Koject._start(FakeContainer())
         assertFailsWith<NotProvidedException> {

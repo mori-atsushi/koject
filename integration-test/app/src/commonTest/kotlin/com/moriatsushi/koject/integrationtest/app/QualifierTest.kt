@@ -2,6 +2,7 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
+import com.moriatsushi.koject.lazyInject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,6 +16,18 @@ class QualifierTest {
         assertEquals("id2", class2.string)
 
         val noName = inject<QualifierClass>()
+        assertEquals("not set", noName.string)
+    }
+
+    @Test
+    fun successLazyInject_qualifier() = Koject.runTest {
+        val class1 by lazyInject<QualifierClass>(ID1())
+        assertEquals("id1", class1.string)
+
+        val class2 by lazyInject<QualifierClass>(ID2())
+        assertEquals("id2", class2.string)
+
+        val noName by lazyInject<QualifierClass>()
         assertEquals("not set", noName.string)
     }
 

@@ -8,6 +8,7 @@ import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.integrationtest.app.AppClass1
 import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.lazyInject
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
@@ -16,6 +17,15 @@ class ComponentTest {
     @Test
     fun successInject_withComponentExtras() = Koject.runTest {
         val value = inject<CustomComponentClass>(
+            componentExtras = CustomComponentExtras(),
+        )
+
+        assertIs<CustomComponentClass>(value)
+    }
+
+    @Test
+    fun successLazyInject_withComponentExtras() = Koject.runTest {
+        val value by lazyInject<CustomComponentClass>(
             componentExtras = CustomComponentExtras(),
         )
 

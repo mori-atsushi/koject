@@ -65,6 +65,13 @@ inline fun <reified T : Any> rememberInject(
  *
  * @param name name of [Named]
  */
+@Deprecated(
+    message = "The method of specifying qualifier has been unified.",
+    replaceWith = ReplaceWith(
+        "rememberInject(Named(name))",
+        "com.moriatsushi.koject.Named",
+    ),
+)
 @Composable
 inline fun <reified T : Any> rememberInject(
     name: String,
@@ -80,6 +87,13 @@ inline fun <reified T : Any> rememberInject(
  * @param name name of [Named]
  * @param componentExtras Specify [ComponentExtras] to create [Component].
  */
+@Deprecated(
+    message = "The method of specifying qualifier has been unified.",
+    replaceWith = ReplaceWith(
+        "rememberInject(Named(name), componentExtras)",
+        "com.moriatsushi.koject.Named",
+    ),
+)
 @ExperimentalKojectApi
 @Composable
 inline fun <reified T : Any> rememberInject(

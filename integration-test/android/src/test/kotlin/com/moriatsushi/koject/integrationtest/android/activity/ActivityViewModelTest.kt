@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.integrationtest.android.viewmodel
+package com.moriatsushi.koject.integrationtest.android.activity
 
 import android.app.Application
 import androidx.activity.ComponentActivity
@@ -12,6 +12,15 @@ import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.activity.lazyViewModels
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.integrationtest.android.runTest
+import com.moriatsushi.koject.integrationtest.android.viewmodel.ApplicationViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.ApplicationWithSavedStateViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.ContextViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.ContextWithSavedStateViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.NotProvidedViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.QualifierViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.SampleViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.SavedStateHandleViewModel
+import com.moriatsushi.koject.integrationtest.android.viewmodel.ViewModelQualifier
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs

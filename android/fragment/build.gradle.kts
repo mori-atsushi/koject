@@ -27,6 +27,7 @@ android {
 dependencies {
     api(project(":core"))
     ksp(project(":processor:lib"))
+    api(project(":android:activity"))
     api(project(":android:viewmodel"))
     implementation(libs.androidx.fragment)
 }

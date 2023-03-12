@@ -15,6 +15,63 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
  *
  * ```
  * class TopFragment : Fragment() {
+ *     private val viewModel: TopViewModel by lazyViewModels()
+ * }
+ * ```
+ *
+ * @param qualifier Qualifier for identification.
+ * @param ownerProducer Specify [ViewModelStoreOwner] that controls the scope
+ * and lifetime of the returned [ViewModel]. The default is the current [Fragment],
+ * which can be changed to [ComponentActivity] or parent [Fragment].
+ * @param extrasProducer Create the default extras that will be
+ * used to create the [ViewModel].
+ */
+@MainThread
+inline fun <reified VM : ViewModel> Fragment.lazyViewModels(
+    qualifier: Any? = null,
+    noinline ownerProducer: () -> ViewModelStoreOwner = { this },
+    noinline extrasProducer: (() -> CreationExtras)? = null,
+): Lazy<VM> {
+    val factoryProducer = { kojectViewModelFactory<VM>(qualifier) }
+    return viewModels(
+        factoryProducer = factoryProducer,
+        ownerProducer = ownerProducer,
+        extrasProducer = extrasProducer,
+    )
+}
+
+/**
+ * Returns a [Lazy] delegate to access parent activity's [ViewModel]
+ * provided by Koject
+ *
+ * ```
+ * class TopFragment : Fragment() {
+ *     private val viewModel: TopViewModel by lazyActivityViewModels()
+ * }
+ * ```
+ *
+ * @param qualifier Qualifier for identification.
+ * @param extrasProducer Create the default extras that will be
+ * used to create the [ViewModel].
+ */
+@MainThread
+inline fun <reified VM : ViewModel> Fragment.lazyActivityViewModels(
+    qualifier: Any? = null,
+    noinline extrasProducer: (() -> CreationExtras)? = null,
+): Lazy<VM> {
+    return injectViewModels(
+        qualifier = qualifier,
+        ownerProducer = { requireActivity() },
+        extrasProducer = extrasProducer,
+    )
+}
+
+/**
+ * Returns a [Lazy] delegate to access the Fragment's [ViewModel]
+ * provided by Koject
+ *
+ * ```
+ * class TopFragment : Fragment() {
  *     private val viewModel: TopViewModel by injectViewModels()
  * }
  * ```
@@ -27,14 +84,17 @@ import com.moriatsushi.koject.android.viewmodel.kojectViewModelFactory
  * used to create the [ViewModel].
  */
 @MainThread
+@Deprecated(
+    "Renamed to lazyActivityViewModels.",
+    ReplaceWith("this.lazyViewModels(qualifier, ownerProducer, extrasProducer)"),
+)
 inline fun <reified VM : ViewModel> Fragment.injectViewModels(
     qualifier: Any? = null,
     noinline ownerProducer: () -> ViewModelStoreOwner = { this },
     noinline extrasProducer: (() -> CreationExtras)? = null,
 ): Lazy<VM> {
-    val factoryProducer = { kojectViewModelFactory<VM>(qualifier) }
-    return viewModels(
-        factoryProducer = factoryProducer,
+    return lazyViewModels(
+        qualifier = qualifier,
         ownerProducer = ownerProducer,
         extrasProducer = extrasProducer,
     )
@@ -55,13 +115,16 @@ inline fun <reified VM : ViewModel> Fragment.injectViewModels(
  * used to create the [ViewModel].
  */
 @MainThread
+@Deprecated(
+    "Renamed to lazyActivityViewModels.",
+    ReplaceWith("this.lazyActivityViewModels(qualifier, extrasProducer)"),
+)
 inline fun <reified VM : ViewModel> Fragment.injectActivityViewModels(
     qualifier: Any? = null,
     noinline extrasProducer: (() -> CreationExtras)? = null,
 ): Lazy<VM> {
-    return injectViewModels(
+    return lazyActivityViewModels(
         qualifier = qualifier,
-        ownerProducer = { requireActivity() },
         extrasProducer = extrasProducer,
     )
 }

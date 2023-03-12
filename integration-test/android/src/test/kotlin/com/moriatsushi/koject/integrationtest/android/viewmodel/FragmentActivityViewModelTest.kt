@@ -6,7 +6,7 @@ import androidx.fragment.app.commitNow
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
-import com.moriatsushi.koject.android.activity.injectViewModels
+import com.moriatsushi.koject.android.activity.lazyViewModels
 import com.moriatsushi.koject.android.fragment.injectActivityViewModels
 import com.moriatsushi.koject.integrationtest.android.runTest
 import kotlin.test.assertNotNull
@@ -24,7 +24,7 @@ class FragmentActivityViewModelTest {
         var viewModelByFragment: SampleViewModel? = null
 
         scenario.onActivity {
-            viewModelByActivity = it.injectViewModels<SampleViewModel>().value
+            viewModelByActivity = it.lazyViewModels<SampleViewModel>().value
             it.supportFragmentManager.commitNow {
                 add(fragment, "tag")
             }

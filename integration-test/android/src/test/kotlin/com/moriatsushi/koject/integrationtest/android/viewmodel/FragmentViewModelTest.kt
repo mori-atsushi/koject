@@ -11,7 +11,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.fragment.injectActivityViewModels
-import com.moriatsushi.koject.android.fragment.injectViewModels
+import com.moriatsushi.koject.android.fragment.lazyViewModels
 import com.moriatsushi.koject.error.NotProvidedException
 import com.moriatsushi.koject.integrationtest.android.runTest
 import kotlin.test.assertEquals
@@ -25,10 +25,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FragmentViewModelTest {
     @Test
-    fun injectViewModel() = Koject.runTest {
+    fun lazyViewModel() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
-            val viewModel: SampleViewModel by it.injectViewModels()
+            val viewModel: SampleViewModel by it.lazyViewModels()
             assertIs<SampleViewModel>(viewModel)
         }
     }
@@ -49,14 +49,14 @@ class FragmentViewModelTest {
         lateinit var viewModel2: SampleViewModel
 
         scenario.onFragment {
-            val viewModel: SampleViewModel by it.injectViewModels()
+            val viewModel: SampleViewModel by it.lazyViewModels()
             viewModel1 = viewModel
         }
 
         scenario.recreate()
 
         scenario.onFragment {
-            val viewModel: SampleViewModel by it.injectViewModels()
+            val viewModel: SampleViewModel by it.lazyViewModels()
             viewModel2 = viewModel
         }
 
@@ -64,10 +64,10 @@ class FragmentViewModelTest {
     }
 
     @Test
-    fun failedInjectViewModel_whenNotProvided() = Koject.runTest {
+    fun failedlazyViewModel_whenNotProvided() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
-            val viewModel: NotProvidedViewModel by it.injectViewModels()
+            val viewModel: NotProvidedViewModel by it.lazyViewModels()
             assertFailsWith<NotProvidedException> {
                 print(viewModel)
             }
@@ -79,7 +79,7 @@ class FragmentViewModelTest {
         val scenario = launchFragment<Fragment>()
         var viewModel: QualifierViewModel? = null
         scenario.onFragment {
-            val value by it.injectViewModels<QualifierViewModel>(
+            val value by it.lazyViewModels<QualifierViewModel>(
                 ViewModelQualifier(),
             )
             viewModel = value
@@ -93,7 +93,7 @@ class FragmentViewModelTest {
         val scenario = launchFragment<Fragment>()
         var viewModel: SavedStateHandleViewModel? = null
         scenario.onFragment {
-            val value by it.injectViewModels<SavedStateHandleViewModel>()
+            val value by it.lazyViewModels<SavedStateHandleViewModel>()
             viewModel = value
         }
         assertNotNull(viewModel)
@@ -106,7 +106,7 @@ class FragmentViewModelTest {
         scenario.onFragment {
             val extras = MutableCreationExtras(it.defaultViewModelCreationExtras)
             extras[DEFAULT_ARGS_KEY] = bundleOf("test-key" to "test-value")
-            val value by it.injectViewModels<SavedStateHandleViewModel>(
+            val value by it.lazyViewModels<SavedStateHandleViewModel>(
                 extrasProducer = { extras },
             )
             viewModel = value
@@ -125,8 +125,8 @@ class FragmentViewModelTest {
             it.childFragmentManager.commitNow {
                 add(childFragment, "tag")
             }
-            viewModelByParent = it.injectViewModels<SavedStateHandleViewModel>().value
-            viewModelByChild = childFragment.injectViewModels<SavedStateHandleViewModel>(
+            viewModelByParent = it.lazyViewModels<SavedStateHandleViewModel>().value
+            viewModelByChild = childFragment.lazyViewModels<SavedStateHandleViewModel>(
                 ownerProducer = { childFragment.requireParentFragment() },
             ).value
         }
@@ -142,8 +142,8 @@ class FragmentViewModelTest {
         var viewModel1: ApplicationViewModel? = null
         var viewModel2: ApplicationWithSavedStateViewModel? = null
         scenario.onFragment {
-            viewModel1 = it.injectViewModels<ApplicationViewModel>().value
-            viewModel2 = it.injectViewModels<ApplicationWithSavedStateViewModel>().value
+            viewModel1 = it.lazyViewModels<ApplicationViewModel>().value
+            viewModel2 = it.lazyViewModels<ApplicationWithSavedStateViewModel>().value
         }
         val expectedApplication = ApplicationProvider.getApplicationContext<Application>()
         assertNotNull(viewModel1)
@@ -158,8 +158,8 @@ class FragmentViewModelTest {
         var viewModel1: ContextViewModel? = null
         var viewModel2: ContextWithSavedStateViewModel? = null
         scenario.onFragment {
-            viewModel1 = it.injectViewModels<ContextViewModel>().value
-            viewModel2 = it.injectViewModels<ContextWithSavedStateViewModel>().value
+            viewModel1 = it.lazyViewModels<ContextViewModel>().value
+            viewModel2 = it.lazyViewModels<ContextWithSavedStateViewModel>().value
         }
         val expectedContext = ApplicationProvider.getApplicationContext<Application>()
         assertNotNull(viewModel1)

@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":core"))
+                implementation(project(":koject-core"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
@@ -38,8 +38,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(project(":android:core"))
-                implementation(project(":compose:viewmodel"))
+                implementation(project(":android:koject-android-core"))
+                implementation(project(":compose:koject-compose-viewmodel"))
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.androidx.compose.ui)
                 implementation("androidx.compose.ui:ui-tooling:1.3.3")

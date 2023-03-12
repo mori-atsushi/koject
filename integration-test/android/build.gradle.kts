@@ -48,11 +48,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":android:core"))
-    implementation(project(":android:activity"))
-    implementation(project(":android:fragment"))
-    implementation(project(":compose:core"))
-    implementation(project(":compose:viewmodel"))
+    implementation(project(":android:koject-android-core"))
+    implementation(project(":android:koject-android-activity"))
+    implementation(project(":android:koject-android-fragment"))
+    implementation(project(":compose:koject-compose-core"))
+    implementation(project(":compose:koject-compose-viewmodel"))
     ksp(project(":processor:app"))
 
     implementation(libs.androidx.activity)

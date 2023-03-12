@@ -15,16 +15,16 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "koject"
-include(":core")
+include(":koject-core")
 include(":processor:common")
 include(":processor:app")
 include(":processor:lib")
-include(":android:core")
-include(":android:activity")
-include(":android:fragment")
-include(":android:viewmodel")
-include(":compose:core")
-include(":compose:viewmodel")
+include(":android:koject-android-core")
+include(":android:koject-android-activity")
+include(":android:koject-android-fragment")
+include(":android:koject-android-viewmodel")
+include(":compose:koject-compose-core")
+include(":compose:koject-compose-viewmodel")
 include(":integration-test:app")
 include(":integration-test:lib")
 include(":integration-test:android")

@@ -20,7 +20,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":compose:core"))
+                api(project(":compose:koject-compose-core"))
                 implementation(compose.runtime)
             }
         }

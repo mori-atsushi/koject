@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.moriatsushi.koject.android"
+    namespace = "com.moriatsushi.koject.android.activity"
     compileSdk = 33
     defaultConfig {
         minSdk = 14
@@ -25,10 +25,8 @@ android {
 }
 
 dependencies {
-    api(project(":core"))
+    api(project(":koject-core"))
     ksp(project(":processor:lib"))
-}
-
-tasks.dokkaHtmlPartial {
-    moduleName.set("koject-android-core")
+    api(project(":android:koject-android-viewmodel"))
+    implementation(libs.androidx.activity)
 }

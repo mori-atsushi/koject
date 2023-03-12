@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     kotlin("android")
     alias(libs.plugins.publish)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.dokka)
 }
 
@@ -20,28 +21,17 @@ android {
     }
     buildFeatures {
         buildConfig = false
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion =
-            libs.versions.androidx.compose.compiler.get()
-    }
-}
-
-kotlin {
-    sourceSets {
-        all {
-            languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
-        }
     }
 }
 
 dependencies {
-    api(project(":core"))
-    api(project(":android:viewmodel"))
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-}
+    api(project(":koject-core"))
+    ksp(project(":processor:lib"))
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
 
-tasks.dokkaHtmlPartial {
-    moduleName.set("koject-compose-viewmodel")
+    testImplementation(kotlin("test"))
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.robolectric)
 }

@@ -24,7 +24,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":core"))
+                implementation(project(":koject-core"))
                 implementation(kotlin("test"))
                 implementation(project(":integration-test:lib"))
             }

@@ -7,7 +7,6 @@ plugins {
 kotlin {
     jvm()
     js(IR) {
-        moduleName = "koject-core"
         nodejs()
         browser()
     }
@@ -152,8 +151,4 @@ kotlin {
             languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
         }
     }
-}
-
-tasks.dokkaHtmlPartial {
-    moduleName.set("koject-core")
 }

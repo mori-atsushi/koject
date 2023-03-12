@@ -2,6 +2,7 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
+import com.moriatsushi.koject.lazyInject
 import kotlin.test.Test
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
@@ -29,6 +30,13 @@ class SingletonTest {
         assertNotSame(value1, value2)
         assertSame(value1.singletonClass, value2.singletonClass)
         assertSame(value1.singletonInterface, value2.singletonInterface)
+    }
+
+    @Test
+    fun sameInstance_lazyInject() = Koject.runTest {
+        val value1 by lazyInject<SingletonClass>()
+        val value2 by lazyInject<SingletonClass>()
+        assertSame(value1, value2)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.integrationtest.android.viewmodel
+package com.moriatsushi.koject.integrationtest.android.fragment
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -9,6 +9,7 @@ import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.activity.lazyViewModels
 import com.moriatsushi.koject.android.fragment.injectActivityViewModels
 import com.moriatsushi.koject.integrationtest.android.runTest
+import com.moriatsushi.koject.integrationtest.android.viewmodel.SampleViewModel
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import org.junit.Test

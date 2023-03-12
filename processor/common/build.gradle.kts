@@ -9,7 +9,7 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                implementation(project(":core"))
+                implementation(project(":koject-core"))
                 implementation(libs.ksp.processor.api)
                 implementation(libs.kotlinpoet.ksp)
             }

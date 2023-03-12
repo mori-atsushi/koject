@@ -10,7 +10,6 @@ kotlin {
     android()
     jvm("desktop")
     js(IR) {
-        moduleName = "compose-core"
         browser()
     }
     ios()
@@ -26,7 +25,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":core"))
+                api(project(":koject-core"))
                 implementation(compose.runtime)
             }
         }
@@ -53,8 +52,3 @@ android {
         buildConfig = false
     }
 }
-
-tasks.dokkaHtmlPartial {
-    moduleName.set("koject-compose-core")
-}
-

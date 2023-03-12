@@ -20,4 +20,6 @@ import com.moriatsushi.koject.Qualifier
  * ```
  */
 @Qualifier
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
 annotation class ActivityContext

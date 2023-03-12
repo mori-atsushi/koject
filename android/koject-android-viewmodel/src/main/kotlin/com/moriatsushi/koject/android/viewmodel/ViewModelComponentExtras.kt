@@ -6,8 +6,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.ComponentExtras
 
+@OptIn(ExperimentalKojectApi::class)
 @PublishedApi
-@ExperimentalKojectApi
 @ComponentExtras(ViewModelComponent::class)
 internal class ViewModelComponentExtras(
     private val extras: CreationExtras,

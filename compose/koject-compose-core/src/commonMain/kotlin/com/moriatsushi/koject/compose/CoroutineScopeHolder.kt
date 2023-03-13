@@ -14,11 +14,11 @@ internal interface CoroutineScopeHolder {
 }
 
 private class CoroutineScopeHolderImpl(
-    private val coroutineContext: CoroutineContext,
+    private val contextProducer: () -> CoroutineContext,
 ) : CoroutineScopeHolder, RememberObserver {
     private var _coroutineScope: CoroutineScope? = null
     override val coroutineScope: CoroutineScope
-        get() = _coroutineScope ?: CoroutineScope(coroutineContext).also {
+        get() = _coroutineScope ?: CoroutineScope(contextProducer()).also {
             _coroutineScope = it
         }
 
@@ -38,8 +38,8 @@ private class CoroutineScopeHolderImpl(
 @Composable
 internal fun rememberCoroutineScopeHolder(): CoroutineScopeHolder {
     return remember {
-        CoroutineScopeHolderImpl(
-            Job() + Dispatchers.Main.immediate,
-        )
+        CoroutineScopeHolderImpl {
+            Job() + Dispatchers.Main.immediate
+        }
     }
 }

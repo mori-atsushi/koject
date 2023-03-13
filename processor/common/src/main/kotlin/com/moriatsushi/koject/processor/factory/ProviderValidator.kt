@@ -11,7 +11,7 @@ internal class ProviderValidator {
                 "${provider.location.value}: Cannot provide a nullable type",
             )
         }
-        provider.parameters.forEach {
+        provider.parameters?.forEach {
             if (it.identifier.typeName.isNullable) {
                 throw CodeGenerationException(
                     "${it.location.value}: Cannot inject a nullable type",

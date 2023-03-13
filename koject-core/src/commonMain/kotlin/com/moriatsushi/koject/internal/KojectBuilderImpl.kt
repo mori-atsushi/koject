@@ -2,13 +2,14 @@ package com.moriatsushi.koject.internal
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.KojectBuilder
+import com.moriatsushi.koject.extras.KojectExtras
 
+@OptIn(ExperimentalKojectApi::class)
 @InternalKojectApi
 class KojectBuilderImpl : KojectBuilder {
-    val extras = mutableSetOf<Any>()
+    val extras = mutableSetOf<KojectExtras>()
 
-    @OptIn(ExperimentalKojectApi::class)
-    override fun addExtras(extras: Any) {
+    override fun addExtras(extras: KojectExtras) {
         this.extras.add(extras)
     }
 }

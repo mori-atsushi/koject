@@ -8,11 +8,10 @@ import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.ComponentExtras
 
 @OptIn(ExperimentalKojectApi::class)
-@ComponentExtras(ComposeComponent::class)
 internal actual class ComposeComponentExtras(
     @ComposeContext
     val context: Context,
-)
+) : ComponentExtras<ComposeComponent>
 
 @PublishedApi
 @Composable

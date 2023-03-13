@@ -7,11 +7,10 @@ import com.moriatsushi.koject.Named
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.extras.KojectExtras
 
-@KojectExtras
 class WithNamedExtras(
     @Named("constructor")
     val constructorValue: String = "named-constructor",
-) {
+) : KojectExtras {
     @Named("property")
     val propertyValue: String = "named-property"
 

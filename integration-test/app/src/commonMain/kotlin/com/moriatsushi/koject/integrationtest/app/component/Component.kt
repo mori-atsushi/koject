@@ -13,8 +13,7 @@ import com.moriatsushi.koject.integrationtest.app.SingletonClass
 @Retention(AnnotationRetention.BINARY)
 annotation class CustomComponent
 
-@ComponentExtras(CustomComponent::class)
-class CustomComponentExtras
+class CustomComponentExtras : ComponentExtras<CustomComponent>
 
 @CustomComponent
 @Provides

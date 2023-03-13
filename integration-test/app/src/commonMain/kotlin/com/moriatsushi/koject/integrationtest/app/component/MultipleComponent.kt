@@ -11,15 +11,13 @@ import com.moriatsushi.koject.component.ComponentExtras
 @Retention(AnnotationRetention.BINARY)
 annotation class CustomComponent1
 
-@ComponentExtras(CustomComponent1::class)
-class CustomComponent1Extras
+class CustomComponent1Extras : ComponentExtras<CustomComponent1>
 
 @Component
 @Retention(AnnotationRetention.BINARY)
 annotation class CustomComponent2
 
-@ComponentExtras(CustomComponent2::class)
-class CustomComponent2Extras
+class CustomComponent2Extras : ComponentExtras<CustomComponent2>
 
 class MultipleCustomComponentClass(
     val value: String,

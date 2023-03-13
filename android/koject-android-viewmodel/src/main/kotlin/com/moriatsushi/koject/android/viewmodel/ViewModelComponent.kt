@@ -30,4 +30,6 @@ import com.moriatsushi.koject.component.Component
  */
 @OptIn(ExperimentalKojectApi::class)
 @Component
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
 annotation class ViewModelComponent

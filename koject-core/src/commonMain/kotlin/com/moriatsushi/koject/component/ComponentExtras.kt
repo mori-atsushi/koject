@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.extras
+package com.moriatsushi.koject.component
 
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Named
@@ -6,14 +6,15 @@ import com.moriatsushi.koject.Qualifier
 import com.moriatsushi.koject.Singleton
 
 /**
- * Implement this interface to provide additional dependencies.
+ * By implementing this, you can provide additional dependencies
+ * for the [Component].
  *
  * All non-private properties are treated as providing.
  * ```
- * class GlobalExtras(
+ * class SomeComponentExtras(
  *     // provide SomeClass1
  *     val someClass1: SomeClass1
- * ): KojectExtras {
+ * ): ComponentExtras<SomeComponent> {
  *     // provide SomeClass2
  *     val someClass2: SomeClass2 = SomeClass2()
  *
@@ -23,13 +24,9 @@ import com.moriatsushi.koject.Singleton
  * }
  * ```
  *
- * @[Singleton], @[Qualifier] and @[Named] annotations can be used.
+ * @[Qualifier] and @[Named] annotations can be used.
  * ```
- * class GlobalExtras(
- *     // provide as singleton
- *     @Singleton
- *     val someClass1: SomeClass1
- * ): KojectExtras {
+ * class SomeComponentExtras: ComponentExtras<SomeComponent> {
  *     // provide with a qualifier
  *     @SomeQualifier
  *     val someClass2: SomeClass2 = SomeClass2()
@@ -40,6 +37,10 @@ import com.moriatsushi.koject.Singleton
  *         get() = SomeClass3()
  * }
  * ```
+ *
+ * @[Singleton] is not available.
+ *
+ * @param T The class of the [Component] to create.
  */
 @ExperimentalKojectApi
-interface KojectExtras
+interface ComponentExtras<T : Any>

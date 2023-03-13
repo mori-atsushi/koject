@@ -19,11 +19,10 @@ annotation class PropertyQualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class GetterQualifier
 
-@KojectExtras
 class WithQualifierExtras(
     @ConstructorQualifier
     val constructorValue: String = "constructor",
-) {
+) : KojectExtras {
     @PropertyQualifier
     val propertyValue: String = "property"
 

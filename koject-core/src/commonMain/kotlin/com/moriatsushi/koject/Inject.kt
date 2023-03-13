@@ -28,7 +28,7 @@ inline fun <reified T : Any> inject(
 @ExperimentalKojectApi
 inline fun <reified T : Any> inject(
     qualifier: Any? = null,
-    componentExtras: Any? = null,
+    componentExtras: ComponentExtras<*>? = null,
 ): T {
     val id = Identifier.of<T>(qualifier)
     return inject(id, componentExtras)
@@ -57,7 +57,7 @@ inline fun <reified T : Any> lazyInject(
 @ExperimentalKojectApi
 inline fun <reified T : Any> lazyInject(
     qualifier: Any? = null,
-    noinline componentExtrasProducer: (() -> Any)? = null,
+    noinline componentExtrasProducer: (() -> ComponentExtras<*>)? = null,
 ): Lazy<T> {
     val id = Identifier.of<T>(qualifier)
     return lazy { inject(id, componentExtrasProducer?.invoke()) }
@@ -79,31 +79,11 @@ inline fun <reified T : Any> inject(name: String): T {
     return inject(Named(name))
 }
 
-/**
- * Inject an [Named] instance with resolved dependencies (experimental).
- *
- * @param name name of [Named]
- * @param componentExtras Specify [ComponentExtras] to create [Component].
- */
-@Deprecated(
-    message = "The method of specifying qualifier has been unified.",
-    replaceWith = ReplaceWith(
-        "inject(Named(name, componentExtras))",
-        "com.moriatsushi.koject.Named",
-    ),
-)
 @ExperimentalKojectApi
-inline fun <reified T : Any> inject(
-    name: String,
-    componentExtras: Any? = null,
-): T {
-    return inject(Named(name), componentExtras)
-}
-
 @PublishedApi
 internal fun <T : Any> inject(
     id: Identifier,
-    componentExtras: Any?,
+    componentExtras: ComponentExtras<*>? = null,
 ): T {
     val resolved = Koject.container.resolve(id, componentExtras)
         ?: throw NotProvidedException("$id is not provided")

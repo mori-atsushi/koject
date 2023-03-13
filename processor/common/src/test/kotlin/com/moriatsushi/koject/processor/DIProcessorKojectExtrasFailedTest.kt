@@ -27,7 +27,7 @@ class DIProcessorKojectExtrasFailedTest {
         assertCompileFailed(result)
 
         val expectedError = NotProvidedException::class
-        val location = "Test.kt:13"
+        val location = "Test.kt:12"
         val expectedErrorMessage = "com.testpackage.NotProvided is not provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
@@ -44,8 +44,8 @@ class DIProcessorKojectExtrasFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
-        val location1 = "Test.kt:12"
-        val location2 = "Test.kt:8"
+        val location1 = "Test.kt:11"
+        val location2 = "Test.kt:7"
         val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location1)
@@ -63,8 +63,8 @@ class DIProcessorKojectExtrasFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
-        val location1 = "Test.kt:13"
-        val location2 = "Test.kt:8"
+        val location1 = "Test.kt:11"
+        val location2 = "Test.kt:7"
         val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location1)
@@ -82,7 +82,7 @@ class DIProcessorKojectExtrasFailedTest {
         assertCompileFailed(result)
 
         val expectedError = WrongScopeException::class
-        val location = "Test.kt:17"
+        val location = "Test.kt:16"
         val expectedErrorMessage =
             "com.testpackage.SampleClass cannot be injected because it is not a singleton. " +
                 "Only a singleton can be injected into singletons."
@@ -99,8 +99,7 @@ class DIProcessorKojectExtrasFailedTest {
                 import com.moriatsushi.koject.Provides
                 import com.moriatsushi.koject.extras.KojectExtras
                 
-                @KojectExtras
-                class GlobalExtras
+                class GlobalExtras: KojectExtras
 
                 class NotProvided
 
@@ -118,11 +117,10 @@ class DIProcessorKojectExtrasFailedTest {
 
                 import com.moriatsushi.koject.Provides
                 import com.moriatsushi.koject.extras.KojectExtras
-                
-                @KojectExtras
+
                 class GlobalExtras(
                     val sampleClass: SampleClass
-                )
+                ): KojectExtras
 
                 @Provides
                 class SampleClass
@@ -136,16 +134,14 @@ class DIProcessorKojectExtrasFailedTest {
 
                 import com.moriatsushi.koject.Provides
                 import com.moriatsushi.koject.extras.KojectExtras
-                
-                @KojectExtras
+
                 class GlobalExtras1(
                     val sampleClass: SampleClass
-                )
+                ): KojectExtras
 
-                @KojectExtras
                 class GlobalExtras2(
                     val sampleClass: SampleClass
-                )
+                ): KojectExtras
 
                 class SampleClass
             """,
@@ -161,11 +157,10 @@ class DIProcessorKojectExtrasFailedTest {
                 import com.moriatsushi.koject.extras.KojectExtras
 
                 class SampleClass
-                
-                @KojectExtras
+
                 class GlobalExtras(
                     val sampleClass: SampleClass
-                )
+                ): KojectExtras
 
                 @Singleton
                 @Provides

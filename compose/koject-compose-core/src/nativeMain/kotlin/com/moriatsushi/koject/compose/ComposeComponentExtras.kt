@@ -5,8 +5,7 @@ import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.ComponentExtras
 
 @OptIn(ExperimentalKojectApi::class)
-@ComponentExtras(ComposeComponent::class)
-internal actual class ComposeComponentExtras
+internal actual class ComposeComponentExtras : ComponentExtras<ComposeComponent>
 
 private val instance = ComposeComponentExtras()
 

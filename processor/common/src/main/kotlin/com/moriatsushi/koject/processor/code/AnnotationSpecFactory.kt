@@ -27,11 +27,6 @@ internal object AnnotationSpecFactory {
         }.build()
     }
 
-    fun createExperimental(): AnnotationSpec {
-        return AnnotationSpec.builder(experimentalAnnotationName)
-            .build()
-    }
-
     fun createOptInExperimental(): AnnotationSpec {
         return AnnotationSpec.builder(optInAnnotationName).apply {
             addMember("%T::class", experimentalAnnotationName)

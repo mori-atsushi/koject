@@ -11,10 +11,9 @@ import com.moriatsushi.koject.component.ComponentExtras
 
 @OptIn(ExperimentalKojectApi::class)
 @PublishedApi
-@ComponentExtras(FragmentComponent::class)
 internal class FragmentComponentExtras(
     val fragment: Fragment,
-) {
+) : ComponentExtras<FragmentComponent> {
     val fragmentActivity: FragmentActivity
         get() = fragment.requireActivity()
 

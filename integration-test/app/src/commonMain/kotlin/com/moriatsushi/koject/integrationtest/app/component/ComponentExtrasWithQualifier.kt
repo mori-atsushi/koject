@@ -24,11 +24,10 @@ annotation class PropertyQualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class GetterQualifier
 
-@ComponentExtras(WithQualifierComponent::class)
 class WithQualifierComponentExtras(
     @ConstructorQualifier
     val constructorValue: String = "component-constructor",
-) {
+) : ComponentExtras<WithQualifierComponent> {
     @PropertyQualifier
     val propertyValue: String = "component-property"
 

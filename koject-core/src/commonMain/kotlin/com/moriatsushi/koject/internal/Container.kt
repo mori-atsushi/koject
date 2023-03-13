@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.internal
 
+import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.Component
 import com.moriatsushi.koject.component.ComponentExtras
 
@@ -16,5 +17,6 @@ interface Container {
      * @param id Target type Identifier
      * @param componentExtras Specify [ComponentExtras] to create [Component].
      */
-    fun resolve(id: Identifier, componentExtras: Any?): Any?
+    @OptIn(ExperimentalKojectApi::class)
+    fun resolve(id: Identifier, componentExtras: ComponentExtras<*>?): Any?
 }

@@ -11,10 +11,9 @@ import com.moriatsushi.koject.component.ComponentExtras
 @Retention(AnnotationRetention.BINARY)
 annotation class HasExtrasComponent
 
-@ComponentExtras(HasExtrasComponent::class)
 class HasExtrasComponentExtras(
     val constructorExtras: ExtraClass1,
-) {
+) : ComponentExtras<HasExtrasComponent> {
     val propertyExtra: ExtraClass2 = ExtraClass2()
     val getterExtras: ExtraClass3
         get() = ExtraClass3()

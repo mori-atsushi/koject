@@ -7,11 +7,10 @@ import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.extras.KojectExtras
 
 @OptIn(ExperimentalKojectApi::class)
-@KojectExtras
 internal class AndroidExtras(
     @Singleton
     val application: Application,
-) {
+) : KojectExtras {
     @Singleton
     val context: Context = application
 }

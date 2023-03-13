@@ -91,6 +91,19 @@ class TopFragment : Fragment() {
 
 Additional dependencies are required to use this feature. For more details, please refer to the [documentation](/docs/android/viewmodel).
 
+:::note Updated (2023/03/14)
+
+`injectViewModels` has been renamed to `lazyViewModels` in v1.2.0.
+
+```kotlin
+// Until v1.1.0
+private val viewModel: TopViewModel by injectViewModels()
+
+// Since v1.2.0
+private val viewModel: TopViewModel by lazyViewModels()
+```
+:::
+
 ## Inject into Composable
 Koject 1.1.0 also added support for [Jetpack Compose](https://developer.android.com/jetpack/compose) and [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/).
 

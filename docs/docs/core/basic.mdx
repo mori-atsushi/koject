@@ -1,5 +1,13 @@
+import {
+    Provides,
+    Singleton,
+    Inject,
+    KojectStart,
+    LazyInject,
+} from '@site/src/components/CodeLink';
+
 # Start Koject
-To start using Koject, simply add the <a href="/api/core/com.moriatsushi.koject/-provides/index.html" target="_blank">`@Provides`</a> annotation to the classes you want to make available for injection.
+To start using Koject, simply add the <Provides/> annotation to the classes you want to make available for injection.
 
 Koject uses the [primary constructor](https://kotlinlang.org/docs/classes.html#constructors) to instantiate objects, so it's important to make sure that all parameter types in the primary constructor are annotated with `@Provides`.
 
@@ -13,7 +21,7 @@ class Controller(
 )
 ```
 
-Once you have called <a href="/api/core/com.moriatsushi.koject/start.html" target="_blank">`Koject.start()`</a>, you can obtain an instance of a class by using the <a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">inject()</a> method.
+Once you have called <KojectStart/>, you can obtain an instance of a class by using the <Inject/> method.
 
 ```kotlin
 fun main() {
@@ -63,7 +71,7 @@ class DB {
 ```
 
 ## Singleton Scope
-You can use the <a href="/api/core/com.moriatsushi.koject/-singleton/index.html" target="_blank">`@Singleton`</a> annotation to indicate that an instance should be created only once and reused throughout the application.
+You can use the <Singleton/> annotation to indicate that an instance should be created only once and reused throughout the application.
 This can be particularly useful for dependencies that are expensive to create or that need to be shared across multiple classes.
 
 ```kotlin
@@ -99,4 +107,17 @@ class SingletonScope(
     // Cannot inject NormalScope into SingletonScope!
     private val normal: NormalScope
 )
+```
+
+## Lazy Injection
+By using <LazyInject/> instead of `inject()`, you can get `Lazy` instance and enable lazy injection.
+
+```kotlin
+class UIController {
+    val service: SomeController by lazyInject()
+
+    override fun onCreate() {
+        service.doSomething() // lazy injection
+    }
+}
 ```

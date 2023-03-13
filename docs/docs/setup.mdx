@@ -94,21 +94,22 @@ For Android applications, additional functionality is available by adding the fo
 
 ```kotlin
 dependencies {
-    // Inject ViewModel into Activity
+    // Inject Application / Context (Recommended)
+    implementation("com.moriatsushi.koject:koject-android-core:1.1.0")
+    // Activity support
     implementation("com.moriatsushi.koject:koject-android-activity:1.1.0")
-    // Inject ViewModel into Fragment
+    // Fragment support
     implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0")
     // ViewModelFactory only
     implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0")
 }
 ```
 
-## Compomse
+## Compose
 If you are using [Jetpack Compose](https://developer.android.com/jetpack/compose) or [Compose Multiplatform](https://www.jetbrains.com/lp/compose-mpp/), the following package is available.
 
 ```kotlin
 dependencies {
-    // Inject types into Composable
     implementation("com.moriatsushi.koject:koject-compose-core:1.1.0")
 }
 ```
@@ -133,6 +134,7 @@ koject = "1.1.0"
 koject-core = { group = "com.moriatsushi.koject", name = "koject-core", version.ref = "koject" }
 koject-processor-app = { group = "com.moriatsushi.koject", name = "koject-processor-app", version.ref = "koject" }
 koject-processor-lib = { group = "com.moriatsushi.koject", name = "koject-processor-lib", version.ref = "koject" }
+koject-android-core = { group = "com.moriatsushi.koject", name = "koject-android-core", version.ref = "koject" }
 koject-android-activity = { group = "com.moriatsushi.koject", name = "koject-android-activity", version.ref = "koject" }
 koject-android-fragment = { group = "com.moriatsushi.koject", name = "koject-android-fragment", version.ref = "koject" }
 koject-android-viewmodel = { group = "com.moriatsushi.koject", name = "koject-android-viewmodel", version.ref = "koject" }

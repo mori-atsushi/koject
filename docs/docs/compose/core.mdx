@@ -1,13 +1,16 @@
 import {
     Inject,
     RememberInject,
+    ComposeComponent,
+    ComposeCoroutineScope,
+    ComposeContext,
 } from '@site/src/components/CodeLink';
 
 # Inject into Composable
-Koject can inject into Composable.
+Koject allows injection into Composable functions.
 
 ## Setup for Compose
-To inject into Composable, add the following dependencies:
+To use Koject for injection into Composable functions, you need to add the following dependencies to your project:
 
 ```kotlin
 dependencies {
@@ -15,10 +18,10 @@ dependencies {
 }
 ```
 
-Please also check the [Setup document](/docs/setup).
+Please also refer to the [Setup document](/docs/setup).
 
-## Use with Compose
-You can inject a provided type into a Composable using the <RememberInject/> Composable function.
+## Using Koject with Compose
+To inject a provided type into a Composable function, you can use the <RememberInject/> Composable function.
 
 ```kotlin
 @Provides
@@ -34,7 +37,8 @@ fun Sample(
 ```
 
 :::tip
-`rememberInject()` can be called inside Composable functions, but it is recommended to use it as a default argument. This will make it easier to replace during testing.
+While you can call `rememberInject()` inside Composable functions, it is recommended to use it as a default argument instead.
+This makes it easier to replace the injected dependency during testing.
 
 ```kotlin
 @Composable
@@ -47,7 +51,7 @@ fun Sample() {
 :::caution
 
 Do not call the <Inject/> function directly from Composable functions.
-Creating an instance for each render or running the injection process many times can cause performance degradation.
+Creating a new instance for each render or running the injection process many times can cause performance degradation.
 
 ```kotlin
 @Composable
@@ -57,4 +61,53 @@ fun Sample(
     /* ... */
 }
 ```
+:::
+
+## Inject Compsable CoroutineScope
+Koject defines the <ComposeComponent/>, which restricts a type to be injectable only into Composable functions or `ComposeComponent` types.
+
+```kotlin
+@ComposeComponent
+class ComposeHelper
+```
+```kotlin
+@ComposeComponent
+class ComposeHelperHolder(
+    val helper: ComposeHelper // can be injected
+)
+```
+```kotlin
+val MyActivity: ComponentActivity {
+    val helper: ComposeHelper by lazyInject() // can be injected
+}
+```
+
+The `ComposeComponent` type can also inject an comopsition-scoped `CoroutineScope`.
+The `CoroutineScope` requires an <ComposeCoroutineScope/> qualifier.
+
+```kotlin
+@ComposeComponent
+class ComposeHelper(
+    @ComposeCoroutineScope
+    val coroutineScope: CoroutineScope // same as rememberCoroutineScope()
+)
+```
+
+This `CoroutineScope` will be canceled when hidden, just like `rememberCoroutineScope()`.
+
+## Inject Context (Android)
+Similarly, `android.content.Context` can be injected by adding a <ComposeContext/> qualifier in Android.
+
+```kotlin
+@ComposeContext
+class ComposeHelper(
+    @ComposeContext
+    val context: Context // same as LocalContext.current
+)
+```
+
+:::info LINK
+
+Check the [Android components documentation](/docs/android/components) for all available components for Android.
+
 :::

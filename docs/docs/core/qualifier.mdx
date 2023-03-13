@@ -1,8 +1,14 @@
+import {
+  Qualifier,
+  Inject,
+  Named,
+} from '@site/src/components/CodeLink';
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Qualifier
-You can use the <a href="/api/core/com.moriatsushi.koject/-qualifier/index.html" target="_blank">`@Qualifier`</a> annotation to distinguish between different instances of the same type.
+You can use the <Qualifier /> annotation to distinguish between different instances of the same type.
 
 First, define the qualifier annotations with `@Qualifier`.
 
@@ -43,7 +49,7 @@ class Repository(
 )
 ```
 
-You can also use qualifier annotations when calling the <a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">inject()</a> function.
+You can also use qualifier annotations when calling the <Inject/> function.
 
 ```kotlin
 val db1 = inject<DB>(ID1())
@@ -201,7 +207,7 @@ annotation class CustomQualifier(
 
 ## Named annotation
 
-You can also use the <a href="/api/core/com.moriatsushi.koject/-named/index.html" target="_blank">`@Named`</a> qualifier to distinguish between different instances of the same type based on a string value.
+You can also use the <Named/> qualifier to distinguish between different instances of the same type based on a string value.
 
 ```kotlin
 @Named("db1")
@@ -225,6 +231,22 @@ class Repository(
 )
 ```
 ```kotlin
+val db1 = inject<DB>(Named("db1"))
+val db2 = inject<DB>(Named("db2"))
+```
+
+:::note Migration (VERSION 1.2.0)
+
+The `inject()` API for `Named` has changed since v1.2.0.
+
+```kotlin
+// Until v1.1.0
 val db1 = inject<DB>("db1")
 val db2 = inject<DB>("db2")
+
+// Since v1.2.0
+val db1 = inject<DB>(Named("db1"))
+val db2 = inject<DB>(Named("db2"))
 ```
+
+:::

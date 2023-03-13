@@ -1,5 +1,10 @@
+import {
+    Binds,
+    Provides,
+} from '@site/src/components/CodeLink';
+
 # Binds
-Using the <a href="/api/core/com.moriatsushi.koject/-binds/index.html" target="_blank">@Binds</a> annotation, it's easy to provide a type as supertypes.
+Using the <Binds/> annotation, it's easy to provide a type as supertypes.
 
 ```kotlin
 @Binds
@@ -53,7 +58,7 @@ val repository = inject<Repository>()
 val repositoryImpl = inject<RepositoryImpl>() // NotProvidedException!
 ```
 
-To provide one type as multiple types, you can use the [@Provides](/docs/core/basic#provide-from-functions) annotation.
+To provide one type as multiple types, you can use the <Provides/> annotation.
 
 Here is an example that provides both `RepositoryImpl` and `Repository`:
 

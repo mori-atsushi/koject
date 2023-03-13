@@ -31,11 +31,11 @@ internal data class ProviderDeclaration(
 
 internal fun ProviderDeclaration.Companion.of(
     node: KSAnnotated,
-): ProviderDeclaration? {
+): ProviderDeclaration {
     return when (node) {
         is KSClassDeclaration -> of(node)
         is KSFunctionDeclaration -> of(node)
-        else -> null
+        else -> error("Not supported type: $node")
     }
 }
 
@@ -81,8 +81,8 @@ private fun check(ksClass: KSClassDeclaration) {
 
 private fun ProviderDeclaration.Companion.of(
     ksFunction: KSFunctionDeclaration,
-): ProviderDeclaration? {
-    return when (ksFunction.functionKind) {
+): ProviderDeclaration {
+    val declaration = when (ksFunction.functionKind) {
         FunctionKind.TOP_LEVEL -> createTopLevelFunction(ksFunction)
         FunctionKind.MEMBER -> {
             val parent = ksFunction.parentDeclaration as KSClassDeclaration
@@ -94,6 +94,10 @@ private fun ProviderDeclaration.Companion.of(
         }
         else -> null
     }
+    return declaration ?: throw CodeGenerationException(
+        "${ksFunction.location.name}: " +
+            "Provide by function is only allowed for top-level functions or object functions.",
+    )
 }
 
 private fun ProviderDeclaration.Companion.createTopLevelFunction(

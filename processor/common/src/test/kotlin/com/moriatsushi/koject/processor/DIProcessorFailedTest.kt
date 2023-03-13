@@ -33,6 +33,24 @@ class DIProcessorFailedTest {
     }
 
     @Test
+    fun provideClassMethod() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(provideClassMethod)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:7"
+        val expectedErrorMessage =
+            "Provide by function is only allowed for top-level functions or object functions."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
     fun notSupportedAnnotationMemberType() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
@@ -57,6 +75,22 @@ class DIProcessorFailedTest {
 
                 @Provides
                 interface SampleClass
+            """,
+    )
+
+    private val provideClassMethod = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                class SomeClass {
+                    @Provides
+                    fun provideString(): String {
+                        return "not allowed"
+                    }
+                }
             """,
     )
 

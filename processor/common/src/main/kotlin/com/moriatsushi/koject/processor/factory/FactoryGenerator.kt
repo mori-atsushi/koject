@@ -20,7 +20,7 @@ internal class FactoryGenerator(
 
     private fun searchProviders(resolver: Resolver): Sequence<ProviderDeclaration> {
         return resolver.getSymbolsWithAnnotation(Provides::class.qualifiedName!!)
-            .mapNotNull { ProviderDeclaration.of(it) }
+            .map { ProviderDeclaration.of(it) }
     }
 
     private fun processNode(provider: ProviderDeclaration) {

@@ -51,6 +51,40 @@ class DIProcessorFailedTest {
     }
 
     @Test
+    fun provideNullable() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(provideNullableCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:6"
+        val expectedErrorMessage = "Cannot provide a nullable type"
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun injectNullable() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(injectNullable)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:7"
+        val expectedErrorMessage = "Cannot inject a nullable type"
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
     fun notSupportedAnnotationMemberType() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
@@ -91,6 +125,34 @@ class DIProcessorFailedTest {
                         return "not allowed"
                     }
                 }
+            """,
+    )
+
+    private val provideNullableCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                fun provideNullable(): String? {
+                    return null
+                }
+            """,
+    )
+
+    private val injectNullable = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                class SampleClass(
+                    val value: String?
+                )
             """,
     )
 

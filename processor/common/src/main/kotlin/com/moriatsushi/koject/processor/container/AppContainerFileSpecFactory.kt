@@ -110,7 +110,6 @@ internal class AppContainerFileSpecFactory {
         extrasHolder: ExtrasHolderDeclaration,
     ): CodeBlock {
         val exceptionTypeName = MissingExtrasException::class.asTypeName()
-        val exceptionMessage = CodeBlock.of("\${%T.name} is not set.", extrasHolder.className)
 
         return buildCodeBlock {
             add("val $name = %T(\n", extrasHolder.className)
@@ -119,7 +118,12 @@ internal class AppContainerFileSpecFactory {
             indent()
             add("it::class == %T.kClass\n", extrasHolder.className)
             unindent()
-            add("} ?: throw %T(%P)\n", exceptionTypeName, exceptionMessage)
+            add(
+                "} ?: throw %T(%T.name, %T.message)\n",
+                exceptionTypeName,
+                extrasHolder.className,
+                extrasHolder.className,
+            )
             unindent()
             add(")\n")
         }

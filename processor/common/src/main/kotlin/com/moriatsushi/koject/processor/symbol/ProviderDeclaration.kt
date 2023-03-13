@@ -21,7 +21,7 @@ internal data class ProviderDeclaration(
     val name: ProviderName,
     val identifier: TypedIdentifier,
     val component: ComponentName?,
-    val parameters: List<ProviderParameter>,
+    val parameters: List<ProviderParameter>?,
     val isSingleton: Boolean,
     val location: Location,
     val containingFile: KSFile?,
@@ -51,14 +51,13 @@ private fun ProviderDeclaration.Companion.of(
     val name = ProviderName.Class(
         className = ksClass.toClassName(),
     )
-    val primaryConstructor = ksClass.primaryConstructor
-        ?: error("Not found primaryConstructor")
+    val parameters = ksClass.primaryConstructor?.providerParameters
 
     return ProviderDeclaration(
         name = name,
         identifier = TypedIdentifier(typeName, qualifier),
         component = ksClass.findComponentName(),
-        parameters = primaryConstructor.providerParameters,
+        parameters = parameters,
         isSingleton = ksClass.isSingleton,
         location = ksClass.createLocationAnnotation(),
         containingFile = ksClass.containingFile,

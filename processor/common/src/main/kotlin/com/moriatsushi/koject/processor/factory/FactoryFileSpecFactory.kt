@@ -65,7 +65,7 @@ internal class FactoryFileSpecFactory {
 
     private fun createConstructorSpec(provider: ProviderDeclaration): FunSpec {
         return FunSpec.constructorBuilder().apply {
-            provider.parameters.forEach {
+            provider.parameters?.forEach {
                 val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
                 val parameter = ParameterSpec.builder(
                     providerName,
@@ -94,22 +94,24 @@ internal class FactoryFileSpecFactory {
                     }
                 }
             }
-            add("(")
-            if (provider.parameters.isNotEmpty()) {
-                add("\n")
-                indent()
-                provider.parameters.forEach {
-                    val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
-                    add("$providerName() as %T,\n", it.identifier.typeName)
+            if (provider.parameters != null) {
+                add("(")
+                if (provider.parameters.isNotEmpty()) {
+                    add("\n")
+                    indent()
+                    provider.parameters.forEach {
+                        val providerName = Names.providerNameOf(it.identifier.asStringIdentifier())
+                        add("$providerName() as %T,\n", it.identifier.typeName)
+                    }
+                    unindent()
                 }
-                unindent()
+                add(")")
             }
-            add(")")
         }
         return FunSpec.builder("create").apply {
             returns(ANY)
             addCode(code)
-            if (provider.parameters.isNotEmpty()) {
+            if (!provider.parameters.isNullOrEmpty()) {
                 addAnnotation(AnnotationSpecFactory.createSuppress("UNCHECKED_CAST"))
             }
         }.build()

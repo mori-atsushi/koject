@@ -28,7 +28,7 @@ class DIProcessorComponentFailedTest {
         assertCompileFailed(result)
 
         val expectedError = NotProvidedException::class
-        val location = "Test.kt:19"
+        val location = "Test.kt:18"
         val expectedErrorMessage = "com.testpackage.NotProvided is not provided " +
             "in Component(com.testpackage.CustomComponent)."
         assertContains(result.messages, expectedError.qualifiedName!!)
@@ -46,8 +46,8 @@ class DIProcessorComponentFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
-        val location1 = "Test.kt:17"
-        val location2 = "Test.kt:21"
+        val location1 = "Test.kt:16"
+        val location2 = "Test.kt:20"
         val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated " +
             "in Component(com.testpackage.CustomComponent)."
         assertContains(result.messages, expectedError.qualifiedName!!)
@@ -66,8 +66,8 @@ class DIProcessorComponentFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
-        val location1 = "Test.kt:13"
-        val location2 = "Test.kt:18"
+        val location1 = "Test.kt:12"
+        val location2 = "Test.kt:17"
         val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated " +
             "in Component(com.testpackage.CustomComponent)."
         assertContains(result.messages, expectedError.qualifiedName!!)
@@ -86,8 +86,8 @@ class DIProcessorComponentFailedTest {
         assertCompileFailed(result)
 
         val expectedError = DuplicateComponentExtrasException::class
-        val location1 = "Test.kt:11"
-        val location2 = "Test.kt:14"
+        val location1 = "Test.kt:10"
+        val location2 = "Test.kt:12"
         val expectedErrorMessage =
             "com.testpackage.CustomComponent has a duplicate ComponentExtras definition."
         assertContains(result.messages, expectedError.qualifiedName!!)
@@ -106,7 +106,7 @@ class DIProcessorComponentFailedTest {
         assertCompileFailed(result)
 
         val expectedError = CodeGenerationException::class
-        val location = "Test.kt:18"
+        val location = "Test.kt:17"
         val expectedErrorMessage = "Component type cannot be Singleton"
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
@@ -123,7 +123,7 @@ class DIProcessorComponentFailedTest {
         assertCompileFailed(result)
 
         val expectedError = CodeGenerationException::class
-        val location = "Test.kt:15"
+        val location = "Test.kt:14"
         val expectedErrorMessage = "Component extras types cannot be a singleton."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
@@ -143,8 +143,7 @@ class DIProcessorComponentFailedTest {
                 @Retention(AnnotationRetention.BINARY)
                 annotation class CustomComponent
                 
-                @ComponentExtras(CustomComponent::class)
-                class CustomComponentExtras
+                class CustomComponentExtras: ComponentExtras<CustomComponent>
 
                 class NotProvided
 
@@ -169,8 +168,7 @@ class DIProcessorComponentFailedTest {
                 @Retention(AnnotationRetention.BINARY)
                 annotation class CustomComponent
                 
-                @ComponentExtras(CustomComponent::class)
-                class CustomComponentExtras
+                class CustomComponentExtras: ComponentExtras<CustomComponent>
 
                 class NotProvided
 
@@ -198,10 +196,9 @@ class DIProcessorComponentFailedTest {
                 @Retention(AnnotationRetention.BINARY)
                 annotation class CustomComponent
                 
-                @ComponentExtras(CustomComponent::class)
                 class CustomComponentExtras(
                     val sampleClass: SampleClass
-                )
+                ): ComponentExtras<CustomComponent>
 
                 @CustomComponent
                 @Provides
@@ -221,11 +218,9 @@ class DIProcessorComponentFailedTest {
                 @Retention(AnnotationRetention.BINARY)
                 annotation class CustomComponent
                 
-                @ComponentExtras(CustomComponent::class)
-                class CustomComponentExtras1
+                class CustomComponentExtras1: ComponentExtras<CustomComponent>
 
-                @ComponentExtras(CustomComponent::class)
-                class CustomComponentExtras2
+                class CustomComponentExtras2: ComponentExtras<CustomComponent>
             """,
     )
 
@@ -243,8 +238,7 @@ class DIProcessorComponentFailedTest {
                 @Retention(AnnotationRetention.BINARY)
                 annotation class CustomComponent
                 
-                @ComponentExtras(CustomComponent::class)
-                class CustomComponentExtras
+                class CustomComponentExtras: ComponentExtras<CustomComponent>
 
                 @CustomComponent
                 @Singleton
@@ -267,11 +261,10 @@ class DIProcessorComponentFailedTest {
                 @Retention(AnnotationRetention.BINARY)
                 annotation class CustomComponent
                 
-                @ComponentExtras(CustomComponent::class)
                 class CustomComponentExtras(
                     @Singleton
                     val extra: String
-                )
+                ): ComponentExtras<CustomComponent>
             """,
     )
 }

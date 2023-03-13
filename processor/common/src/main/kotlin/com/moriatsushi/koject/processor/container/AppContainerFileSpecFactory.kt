@@ -1,5 +1,9 @@
+@file:OptIn(ExperimentalKojectApi::class)
+
 package com.moriatsushi.koject.processor.container
 
+import com.moriatsushi.koject.ExperimentalKojectApi
+import com.moriatsushi.koject.component.ComponentExtras
 import com.moriatsushi.koject.error.MissingExtrasException
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.Identifier
@@ -18,6 +22,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.SET
+import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.buildCodeBlock
@@ -144,11 +149,14 @@ internal class AppContainerFileSpecFactory {
             unindent()
             add("}\n")
         }
+        val componentExtrasType = ComponentExtras::class.asTypeName()
+            .parameterizedBy(STAR)
+            .copy(nullable = true)
         return FunSpec.builder("resolve").apply {
             returns(ANY.copy(nullable = true))
             addModifiers(KModifier.OVERRIDE)
             addParameter("id", Identifier::class)
-            addParameter("componentExtras", ANY.copy(nullable = true))
+            addParameter("componentExtras", componentExtrasType)
             addCode(code)
         }.build()
     }

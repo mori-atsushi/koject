@@ -4,11 +4,9 @@ package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.ComponentExtras
-import com.moriatsushi.koject.processor.analytics.findAnnotation
-import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import com.moriatsushi.koject.processor.analytics.getClassDeclarationsWithSuperType
 
 internal data class ComponentExtrasDeclaration(
     val componentName: ComponentName,
@@ -18,8 +16,8 @@ internal data class ComponentExtrasDeclaration(
 }
 
 internal fun Resolver.findComponentExtrasDeclarations(): Sequence<ComponentExtrasDeclaration> {
-    return getSymbolsWithAnnotation(ComponentExtras::class.qualifiedName!!)
-        .filterIsInstance<KSClassDeclaration>()
+    return getClassDeclarationsWithSuperType(componentExtrasName)
+        .filterNot { it.isExpect }
         .map { ComponentExtrasDeclaration.of(it) }
 }
 
@@ -32,8 +30,15 @@ private fun ComponentExtrasDeclaration.Companion.of(
     )
 }
 
-private val KSClassDeclaration.componentName
-    get() = findAnnotation<ComponentExtras>()!!
-        .findArgumentByName<KSType>("of")!!
-        .declaration
-        .let { ComponentName.of(it) }
+private val KSClassDeclaration.componentName: ComponentName
+    get() {
+        val superType = superTypes
+            .map { it.resolve() }
+            .find { it.declaration.qualifiedName?.asString() == componentExtrasName }
+        val componentType = superType?.arguments?.first()?.type?.resolve()
+            ?: error("Not found component type")
+        return ComponentName.of(componentType.declaration)
+    }
+
+private val componentExtrasName = ComponentExtras::class.qualifiedName
+    ?: error("Not found qualifiedName of ComponentExtras")

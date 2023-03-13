@@ -58,7 +58,7 @@ inline fun <reified T : Any> rememberInject(
 @Composable
 inline fun <reified T : Any> rememberInject(
     qualifier: Any? = null,
-    componentExtras: Any?,
+    componentExtras: ComponentExtras<*>?,
 ): T {
     return remember(qualifier) {
         inject(qualifier, componentExtras)
@@ -103,7 +103,7 @@ inline fun <reified T : Any> rememberInject(
 @Composable
 inline fun <reified T : Any> rememberInject(
     name: String,
-    componentExtras: Any? = null,
+    componentExtras: ComponentExtras<*>? = null,
 ): T {
     return remember(name) {
         inject(name, componentExtras)

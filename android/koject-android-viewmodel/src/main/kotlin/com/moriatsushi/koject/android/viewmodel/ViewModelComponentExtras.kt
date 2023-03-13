@@ -8,10 +8,9 @@ import com.moriatsushi.koject.component.ComponentExtras
 
 @OptIn(ExperimentalKojectApi::class)
 @PublishedApi
-@ComponentExtras(ViewModelComponent::class)
 internal class ViewModelComponentExtras(
     private val extras: CreationExtras,
-) {
+) : ComponentExtras<ViewModelComponent> {
     val savedStateHandle: SavedStateHandle
         get() = extras.createSavedStateHandle()
 }

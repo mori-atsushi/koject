@@ -12,10 +12,9 @@ annotation class KojectExtrasComponent
 
 class ComponentExtra
 
-@ComponentExtras(KojectExtrasComponent::class)
 class KojectExtrasComponentExtras(
     val extra: ComponentExtra,
-)
+) : ComponentExtras<KojectExtrasComponent>
 
 @KojectExtrasComponent
 @Provides

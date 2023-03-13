@@ -12,11 +12,10 @@ import com.moriatsushi.koject.component.ComponentExtras
 @Retention(AnnotationRetention.BINARY)
 annotation class WithNamedComponent
 
-@ComponentExtras(WithNamedComponent::class)
 class WithNamedComponentExtras(
     @Named("component-constructor")
     val constructorValue: String = "component-named-constructor",
-) {
+) : ComponentExtras<WithNamedComponent> {
     @Named("component-property")
     val propertyValue: String = "component-named-property"
 

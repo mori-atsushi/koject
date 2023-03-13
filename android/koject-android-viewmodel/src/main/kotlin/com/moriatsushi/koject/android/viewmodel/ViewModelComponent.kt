@@ -27,6 +27,10 @@ import com.moriatsushi.koject.component.Component
  *     private val savedStateHandle: SavedStateHandle
  * ) : ViewModel()
  * ```
+ *
+ * Additional available types:
+ * * [androidx.lifecycle.SavedStateHandle]
+ * * [kotlinx.coroutines.CoroutineScope] with @[ViewModelCoroutineScope]
  */
 @OptIn(ExperimentalKojectApi::class)
 @Component

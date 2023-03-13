@@ -1,5 +1,6 @@
 package com.moriatsushi.koject.processor.symbol
 
+import com.google.devtools.ksp.isAbstract
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.FunctionKind
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -65,17 +66,23 @@ private fun ProviderDeclaration.Companion.of(
 }
 
 private fun check(ksClass: KSClassDeclaration) {
-    when (ksClass.classKind) {
-        ClassKind.INTERFACE -> {
+    when {
+        ksClass.classKind == ClassKind.INTERFACE -> {
             throw CodeGenerationException(
                 "${ksClass.location.name}: " +
                     "Interface cannot be provided.",
             )
         }
-        ClassKind.ENUM_CLASS -> {
+        ksClass.classKind == ClassKind.ENUM_CLASS -> {
             throw CodeGenerationException(
                 "${ksClass.location.name}: " +
-                    "Enum cannot be provided.",
+                    "Enum class cannot be provided.",
+            )
+        }
+        ksClass.isAbstract() -> {
+            throw CodeGenerationException(
+                "${ksClass.location.name}: " +
+                    "Abstract class cannot be provided.",
             )
         }
         else -> {

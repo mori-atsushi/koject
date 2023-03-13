@@ -16,5 +16,3 @@ fun provideEnum(): SampleEnum {
 class EnumHolder(
     val item: SampleEnum,
 )
-
-

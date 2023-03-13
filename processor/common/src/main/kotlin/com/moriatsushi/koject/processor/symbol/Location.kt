@@ -5,11 +5,11 @@ import com.google.devtools.ksp.symbol.KSNode
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
-import com.moriatsushi.koject.processor.analytics.locationString
+import com.moriatsushi.koject.processor.analytics.name
 import com.squareup.kotlinpoet.AnnotationSpec
 
 internal fun KSNode.createLocationAnnotation(): Location {
-    return Location(locationString)
+    return Location(location.name)
 }
 
 internal fun Location.asAnnotationSpec(): AnnotationSpec {

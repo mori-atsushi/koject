@@ -10,6 +10,8 @@ import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
+import com.moriatsushi.koject.processor.analytics.name
+import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -40,6 +42,8 @@ internal fun ProviderDeclaration.Companion.of(
 private fun ProviderDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
 ): ProviderDeclaration {
+    check(ksClass)
+
     val qualifier = ksClass.findQualifierAnnotation()
     val bindAnnotation = ksClass.findBindAnnotation()
     val typeName = bindAnnotation?.toTypeName
@@ -47,16 +51,32 @@ private fun ProviderDeclaration.Companion.of(
     val name = ProviderName.Class(
         className = ksClass.toClassName(),
     )
+    val primaryConstructor = ksClass.primaryConstructor
+        ?: error("Not found primaryConstructor")
 
     return ProviderDeclaration(
         name = name,
         identifier = TypedIdentifier(typeName, qualifier),
         component = ksClass.findComponentName(),
-        parameters = ksClass.primaryConstructor!!.providerParameters,
+        parameters = primaryConstructor.providerParameters,
         isSingleton = ksClass.isSingleton,
         location = ksClass.createLocationAnnotation(),
         containingFile = ksClass.containingFile,
     )
+}
+
+private fun check(ksClass: KSClassDeclaration) {
+    when (ksClass.classKind) {
+        ClassKind.INTERFACE -> {
+            throw CodeGenerationException(
+                "${ksClass.location.name}: " +
+                    "Interface cannot be provided.",
+            )
+        }
+        else -> {
+            // available
+        }
+    }
 }
 
 private fun ProviderDeclaration.Companion.of(

@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.android.activity.ActivityComponent
 import com.moriatsushi.koject.android.activity.ActivityContext
+import com.moriatsushi.koject.android.activity.ActivityCoroutineScope
+import kotlinx.coroutines.CoroutineScope
 
 @ActivityComponent
 @Provides
@@ -15,6 +17,13 @@ class ForActivity(
     @ActivityContext
     val activityContext: Context,
     val applicationContext: Context,
+)
+
+@ActivityComponent
+@Provides
+class ForActivityWithCoroutineScope(
+    @ActivityCoroutineScope
+    val coroutineScope: CoroutineScope,
 )
 
 @ActivityComponent

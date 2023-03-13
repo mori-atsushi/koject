@@ -1,21 +1,28 @@
 package com.moriatsushi.koject.android.activity
 
-import android.app.Activity
 import androidx.activity.ComponentActivity
 import com.moriatsushi.koject.ExperimentalKojectApi
-import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.component.Component
 
 /**
  * Mark it as a type to inject into [ComponentActivity].
  *
- * By using with @[Provides], you can inject [ComponentActivity]
- * or [Activity].
+ * Additional available types:
+ * * [androidx.activity.ComponentActivity]
+ * * [android.app.Activity]
+ * * [android.content.Context] with @[ActivityContext]
+ * * [kotlinx.coroutines.CoroutineScope] with @[ActivityCoroutineScope]
+ *
+ * example:
  * ```
  * @Provides
  * @ActivityComponent
  * class ForActivityClass(
- *     private val activity: ComponentActivity
+ *     private val activity: ComponentActivity,
+ *     @ActivityContext
+ *     private val context: Context,
+ *     @ActivityCoroutineScope
+ *     private val scope: CoroutineScope
  * )
  * ```
  */

@@ -10,7 +10,7 @@ import com.moriatsushi.koject.processor.extras.ExtrasHolderGenerator
 import com.moriatsushi.koject.processor.factory.FactoryGenerator
 
 internal class DIProcessor(
-    private val shouldGenerateContainer: Boolean,
+    private val options: DIProcessorOptions,
     private val factoryGenerator: FactoryGenerator,
     private val extrasHolderGenerator: ExtrasHolderGenerator,
     private val componentExtrasHolderGenerator: ComponentExtrasHolderGenerator,
@@ -49,7 +49,7 @@ internal class DIProcessor(
     }
 
     private fun generateContainer(resolver: Resolver) {
-        if (shouldGenerateContainer) {
+        if (options.shouldGenerateContainer) {
             containerGenerator.generate(resolver)
         }
         step = Step.Completed

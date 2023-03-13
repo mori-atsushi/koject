@@ -8,6 +8,9 @@ import androidx.fragment.app.FragmentActivity
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.android.activity.ActivityContext
 import com.moriatsushi.koject.android.fragment.FragmentComponent
+import com.moriatsushi.koject.android.fragment.FragmentCoroutineScope
+import com.moriatsushi.koject.android.fragment.FragmentViewCoroutineScope
+import kotlinx.coroutines.CoroutineScope
 
 @FragmentComponent
 @Provides
@@ -29,6 +32,15 @@ class ForFragmentContext(
     @ActivityContext
     val activityContext: Context,
     val applicationContext: Context,
+)
+
+@FragmentComponent
+@Provides
+class ForFragmentCoroutineScope(
+    @FragmentCoroutineScope
+    val coroutineScope: CoroutineScope,
+    @FragmentViewCoroutineScope
+    val viewCoroutineScope: CoroutineScope,
 )
 
 @FragmentComponent

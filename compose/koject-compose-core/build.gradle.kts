@@ -28,6 +28,7 @@ kotlin {
             dependencies {
                 api(project(":koject-core"))
                 implementation(compose.runtime)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
 

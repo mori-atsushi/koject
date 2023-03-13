@@ -33,6 +33,40 @@ class DIProcessorFailedTest {
     }
 
     @Test
+    fun provideEnum() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(provideEnumCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:6"
+        val expectedErrorMessage = "Enum class cannot be provided"
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun provideAbstract() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(provideAbstractCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:6"
+        val expectedErrorMessage = "Abstract class cannot be provided"
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
     fun provideClassMethod() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
@@ -108,7 +142,31 @@ class DIProcessorFailedTest {
                 import com.moriatsushi.koject.Provides
 
                 @Provides
-                interface SampleClass
+                interface SampleInterface
+            """,
+    )
+
+    private val provideEnumCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                enum class SampleEnum
+            """,
+    )
+
+    private val provideAbstractCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                abstract class SampleEnum
             """,
     )
 

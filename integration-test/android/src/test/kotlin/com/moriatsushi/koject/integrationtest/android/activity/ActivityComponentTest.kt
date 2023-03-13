@@ -2,6 +2,7 @@ package com.moriatsushi.koject.integrationtest.android.activity
 
 import android.app.Application
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -13,6 +14,7 @@ import com.moriatsushi.koject.integrationtest.android.runTest
 import com.moriatsushi.koject.lazyInject
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertSame
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -33,6 +35,16 @@ class ActivityComponentTest {
             assertEquals(applicationContext, componentClass.applicationContext)
 
             assertEquals(it, componentHolder.forActivity.componentActivity)
+        }
+    }
+
+    @Test
+    fun lazyInject_coroutineScope() = Koject.runTest {
+        val scenario = launchActivity<ComponentActivity>()
+        scenario.onActivity {
+            val value: ForActivityWithCoroutineScope by it.lazyInject()
+
+            assertSame(it.lifecycleScope, value.coroutineScope)
         }
     }
 

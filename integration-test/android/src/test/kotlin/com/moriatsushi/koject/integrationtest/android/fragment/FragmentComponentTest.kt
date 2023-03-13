@@ -3,6 +3,7 @@ package com.moriatsushi.koject.integrationtest.android.fragment
 import android.app.Application
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.launchFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moriatsushi.koject.Koject
@@ -14,6 +15,7 @@ import com.moriatsushi.koject.lazyInject
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
+import kotlin.test.assertSame
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -25,21 +27,42 @@ class FragmentComponentTest {
     fun lazyInject_forFragment() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
-            val value1: ForFragment by it.lazyInject()
-            val value2: ForFragmentActivity by it.lazyInject()
-            val value3: ForFragmentContext by it.lazyInject()
-            val value4: ForFragmentHolder by it.lazyInject()
+            val value: ForFragment by it.lazyInject()
+            val holder: ForFragmentHolder by it.lazyInject()
 
-            assertEquals(it, value1.fragment)
+            assertSame(it, value.fragment)
+            assertSame(it, holder.forFragment.fragment)
+        }
+    }
 
-            assertEquals(it.requireActivity(), value2.fragmentActivity)
-            assertEquals(it.requireActivity(), value2.componentActivity)
-            assertEquals(it.requireActivity(), value2.activity)
+    fun lazyInject_activity() = Koject.runTest {
+        val scenario = launchFragment<Fragment>()
+        scenario.onFragment {
+            val value: ForFragmentActivity by it.lazyInject()
 
-            assertEquals(applicationContext, value3.applicationContext)
-            assertEquals(it.requireActivity(), value3.activityContext)
+            assertSame(it.requireActivity(), value.fragmentActivity)
+            assertSame(it.requireActivity(), value.componentActivity)
+            assertSame(it.requireActivity(), value.activity)
+        }
+    }
 
-            assertEquals(it, value4.forFragment.fragment)
+    fun lazyInject_context() = Koject.runTest {
+        val scenario = launchFragment<Fragment>()
+        scenario.onFragment {
+            val value: ForFragmentContext by it.lazyInject()
+
+            assertSame(applicationContext, value.applicationContext)
+            assertSame(it.requireActivity(), value.activityContext)
+        }
+    }
+
+    fun lazyInject_coroutineScope() = Koject.runTest {
+        val scenario = launchFragment<Fragment>()
+        scenario.onFragment {
+            val value: ForFragmentCoroutineScope by it.lazyInject()
+
+            assertSame(it.lifecycleScope, value.coroutineScope)
+            assertSame(it.viewLifecycleOwner.lifecycleScope, value.viewCoroutineScope)
         }
     }
 
@@ -47,21 +70,11 @@ class FragmentComponentTest {
     fun inject_forFragment() = Koject.runTest {
         val scenario = launchFragment<Fragment>()
         scenario.onFragment {
-            val value1: ForFragment = it.inject()
-            val value2: ForFragmentActivity = it.inject()
-            val value3: ForFragmentContext = it.inject()
-            val value4: ForFragmentHolder = it.inject()
+            val value: ForFragment = it.inject()
+            val holder: ForFragmentHolder = it.inject()
 
-            assertEquals(it, value1.fragment)
-
-            assertEquals(it.requireActivity(), value2.fragmentActivity)
-            assertEquals(it.requireActivity(), value2.componentActivity)
-            assertEquals(it.requireActivity(), value2.activity)
-
-            assertEquals(applicationContext, value3.applicationContext)
-            assertEquals(it.requireActivity(), value3.activityContext)
-
-            assertEquals(it, value4.forFragment.fragment)
+            assertSame(it, value.fragment)
+            assertSame(it, holder.forFragment.fragment)
         }
     }
 
@@ -77,6 +90,10 @@ class FragmentComponentTest {
 
         assertFailsWith<IllegalStateException> {
             fragment.inject<ForFragmentContext>()
+        }
+
+        assertFailsWith<IllegalStateException> {
+            fragment.inject<ForFragmentCoroutineScope>()
         }
     }
 

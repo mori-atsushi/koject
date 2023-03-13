@@ -107,6 +107,7 @@ class DIProcessorFactory(
             createComponentExtrasHolderGenerator(),
             createContainerGenerator(),
             environment.codeGenerator,
+            environment.logger,
         )
     }
 }

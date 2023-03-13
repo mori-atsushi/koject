@@ -5,6 +5,7 @@ package com.moriatsushi.koject.processor.container
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.component.ComponentExtras
 import com.moriatsushi.koject.error.MissingExtrasException
+import com.moriatsushi.koject.extras.KojectExtras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
@@ -70,8 +71,9 @@ internal class AppContainerFileSpecFactory {
     }
 
     private fun createConstructorSpec(): FunSpec {
+        val extrasType = KojectExtras::class.asTypeName()
         return FunSpec.constructorBuilder().apply {
-            addParameter("extras", SET.parameterizedBy(ANY))
+            addParameter("extras", SET.parameterizedBy(extrasType))
         }.build()
     }
 

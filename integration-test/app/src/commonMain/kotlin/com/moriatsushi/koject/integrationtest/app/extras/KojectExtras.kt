@@ -7,12 +7,11 @@ import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.extras.KojectExtras
 
-@KojectExtras
 class GlobalExtras(
     val constructorClass: GlobalExtraClass1,
     @Singleton
     val constructorSingleton: GlobalExtraSingleton1,
-) {
+) : KojectExtras {
     val propertyClass: GlobalExtraClass2 = GlobalExtraClass2()
 
     @Singleton

@@ -8,9 +8,7 @@ import com.moriatsushi.koject.extras.KojectExtras
 interface KojectBuilder {
     /**
      * Add extra dependencies.
-     *
-     * @param extras [KojectExtras] class
      */
     @ExperimentalKojectApi
-    fun addExtras(extras: Any)
+    fun addExtras(extras: KojectExtras)
 }

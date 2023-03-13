@@ -7,7 +7,4 @@ import com.moriatsushi.koject.Koject
  * Extras to start [Koject]
  */
 @ExperimentalKojectApi
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.BINARY)
-@MustBeDocumented
-annotation class KojectExtras
+interface KojectExtras

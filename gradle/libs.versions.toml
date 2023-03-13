@@ -18,7 +18,7 @@ ktlint = "0.48.1"
 mockito-kotlin = "4.1.0"
 publish = "0.24.0"
 robolectric = "4.9.2"
-spotless = "6.16.0"
+spotless = "6.17.0"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }

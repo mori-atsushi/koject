@@ -8,7 +8,9 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.extras.KojectExtras
+import com.moriatsushi.koject.extras.KojectExtrasMessage
 import com.moriatsushi.koject.internal.Location
+import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.getClassDeclarationsWithSuperType
 import com.moriatsushi.koject.processor.code.escapedForCode
 import com.squareup.kotlinpoet.ClassName
@@ -18,6 +20,7 @@ internal data class ExtrasDeclaration(
     val className: ClassName,
     val extras: Sequence<ExtraDeclaration>,
     val location: Location,
+    val message: String?,
     val containingFile: KSFile?,
 ) {
     fun asCodeName(): String {
@@ -40,6 +43,7 @@ internal fun ExtrasDeclaration.Companion.of(
         className = declaration.toClassName(),
         extras = declaration.extrasParameters,
         location = declaration.createLocationAnnotation(),
+        message = declaration.message,
         containingFile = declaration.containingFile,
     )
 }
@@ -48,6 +52,12 @@ private val KSClassDeclaration.extrasParameters
     get() = getAllProperties()
         .filterNot { it.isPrivate() }
         .map { ExtraDeclaration.of(it) }
+
+private val KSClassDeclaration.message: String?
+    get() = findAnnotation<KojectExtrasMessage>()
+        ?.arguments
+        ?.firstOrNull()
+        ?.value as? String
 
 private val extrasName = KojectExtras::class.qualifiedName
     ?: error("Not found qualifiedName of KojectExtras")

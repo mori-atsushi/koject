@@ -44,7 +44,7 @@ internal class ExtrasHolderFileSpecFactory {
                 addProperty(createProvidePropertySpec(it))
             }
 
-            addType(createCompanionObjectSpec(extrasDeclaration.className))
+            addType(createCompanionObjectSpec(extrasDeclaration))
 
             extrasDeclaration.containingFile?.let {
                 addOriginatingKSFile(it)
@@ -89,19 +89,30 @@ internal class ExtrasHolderFileSpecFactory {
         }.build()
     }
 
-    private fun createCompanionObjectSpec(className: ClassName): TypeSpec {
-        val type = KClass::class.asTypeName().parameterizedBy(STAR)
-        val kClassProperty = PropertySpec.builder("kClass", type).apply {
+    private fun createCompanionObjectSpec(extrasDeclaration: ExtrasDeclaration): TypeSpec {
+        val className = extrasDeclaration.className
+        val kClassType = KClass::class.asTypeName().parameterizedBy(STAR)
+
+        val kClassProperty = PropertySpec.builder("kClass", kClassType).apply {
             initializer("%T::class", className)
         }.build()
+
         val nameProperty = PropertySpec.builder("name", STRING).apply {
             initializer("%S", className)
             addModifiers(KModifier.CONST)
         }.build()
 
+        val messageProperty = PropertySpec.builder(
+            "message",
+            STRING.copy(nullable = true),
+        ).apply {
+            initializer("%S", extrasDeclaration.message)
+        }.build()
+
         return TypeSpec.companionObjectBuilder().apply {
             addProperty(kClassProperty)
             addProperty(nameProperty)
+            addProperty(messageProperty)
         }.build()
     }
 }

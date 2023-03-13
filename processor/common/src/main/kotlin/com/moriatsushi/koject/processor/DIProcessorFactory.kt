@@ -98,15 +98,16 @@ class DIProcessorFactory(
     }
 
     fun create(
-        shouldGenerateContainer: Boolean = true,
+        options: DIProcessorOptions = DIProcessorOptions(),
     ): SymbolProcessor {
         return DIProcessor(
-            shouldGenerateContainer,
+            options,
             createFactoryGenerator(),
             createExtrasHolderGenerator(),
             createComponentExtrasHolderGenerator(),
             createContainerGenerator(),
             environment.codeGenerator,
+            environment.logger,
         )
     }
 }

@@ -5,11 +5,11 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 class TestProcessorProvider(
-    private val shouldGenerateContainer: Boolean = true,
+    private val options: DIProcessorOptions = DIProcessorOptions(),
 ) : SymbolProcessorProvider {
     override fun create(
         environment: SymbolProcessorEnvironment,
     ): SymbolProcessor {
-        return DIProcessorFactory(environment).create(shouldGenerateContainer)
+        return DIProcessorFactory(environment).create(options)
     }
 }

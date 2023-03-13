@@ -10,6 +10,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(libs.ksp.processor.api)
+                implementation(project(":koject-core"))
                 implementation(project(":processor:common"))
             }
             kotlin.srcDir("src/main/kotlin")

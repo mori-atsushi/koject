@@ -13,9 +13,13 @@ class DIProcessorLibraryTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
-    private val compilationFactory = KotlinCompilationFactory(
-        listOf(TestProcessorProvider(shouldGenerateContainer = false)),
+    private val provider = TestProcessorProvider(
+        DIProcessorOptions(
+            shouldGenerateContainer = false,
+        ),
     )
+
+    private val compilationFactory = KotlinCompilationFactory(listOf(provider))
 
     @Test
     fun compile() {

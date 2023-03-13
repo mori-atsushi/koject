@@ -72,6 +72,12 @@ private fun check(ksClass: KSClassDeclaration) {
                     "Interface cannot be provided.",
             )
         }
+        ClassKind.ENUM_CLASS -> {
+            throw CodeGenerationException(
+                "${ksClass.location.name}: " +
+                    "Enum cannot be provided.",
+            )
+        }
         else -> {
             // available
         }

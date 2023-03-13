@@ -2,71 +2,94 @@ package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
-import com.moriatsushi.koject.processor.error.CodeGenerationException
+import com.moriatsushi.koject.processor.error.DuplicateProvidedException
+import com.moriatsushi.koject.processor.error.NotProvidedException
+import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.tschuchort.compiletesting.SourceFile
 import kotlin.test.assertContains
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorFailedTest {
+class DIProcessorDependencyResolutionFailedTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
     private val compilationFactory = KotlinCompilationFactory()
 
     @Test
-    fun provideInterface() {
+    fun notProvided() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(provideInterfaceCode)
+        complication.sources = listOf(notProvidedInputCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
 
-        val expectedError = CodeGenerationException::class
-        val location = "Test.kt:6"
-        val expectedErrorMessage = "Interface cannot be provided"
+        val expectedError = NotProvidedException::class
+        val location = "Test.kt:9"
+        val expectedErrorMessage = "com.testpackage.NotProvided is not provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
         assertContains(result.messages, expectedErrorMessage)
     }
 
     @Test
-    fun provideClassMethod() {
+    fun duplicateProvided() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(provideClassMethod)
+        complication.sources = listOf(duplicateProvidedInputCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
 
-        val expectedError = CodeGenerationException::class
-        val location = "Test.kt:7"
+        val expectedError = DuplicateProvidedException::class
+        val location1 = "Test.kt:6"
+        val location2 = "Test.kt:9"
         val expectedErrorMessage =
-            "Provide by function is only allowed for top-level functions or object functions."
+            "com.testpackage.SampleClass provide is duplicated."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location1)
+        assertContains(result.messages, location2)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun wrongScope() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(invalidScopeCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = WrongScopeException::class
+        val location = "Test.kt:12"
+        val expectedErrorMessage =
+            "com.testpackage.NormalScope cannot be injected because it is not a singleton. " +
+                "Only a singleton can be injected into singletons."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
         assertContains(result.messages, expectedErrorMessage)
     }
 
-    @Test
-    fun notSupportedAnnotationMemberType() {
-        val folder = tempFolder.newFolder()
-        val complication = compilationFactory.create(folder)
-        complication.sources = listOf(notSupportedAnnotationMemberTypeCode)
-        val result = complication.compile()
+    private val notProvidedInputCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
 
-        assertCompileFailed(result)
+                import com.moriatsushi.koject.Provides
 
-        val expectedError = CodeGenerationException::class
-        val expectedErrorMessage =
-            "java.util.ArrayList is an unsupported annotation member type."
-        assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, expectedErrorMessage)
-    }
+                class NotProvided
 
-    private val provideInterfaceCode = SourceFile.kotlin(
+                @Provides
+                class SampleClass(
+                    private val notProvided: NotProvided
+                )
+            """,
+    )
+
+    private val duplicateProvidedInputCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
@@ -74,41 +97,31 @@ class DIProcessorFailedTest {
                 import com.moriatsushi.koject.Provides
 
                 @Provides
-                interface SampleClass
-            """,
-    )
+                class SampleClass
 
-    private val provideClassMethod = SourceFile.kotlin(
-        "Test.kt",
-        """
-                package com.testpackage
-
-                import com.moriatsushi.koject.Provides
-
-                class SomeClass {
-                    @Provides
-                    fun provideString(): String {
-                        return "not allowed"
-                    }
+                @Provides
+                fun provideSampleClass(): SampleClass {
+                    return SampleClass()
                 }
             """,
     )
 
-    private val notSupportedAnnotationMemberTypeCode = SourceFile.kotlin(
+    private val invalidScopeCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
 
                 import com.moriatsushi.koject.Provides
-                import com.moriatsushi.koject.Qualifier
+                import com.moriatsushi.koject.Singleton
 
-                @Qualifier
-                @Retention(AnnotationRetention.BINARY)
-                annotation class ArrayQualifier(val array: Array<String>)
-
-                @ArrayQualifier(["a", "b", "c"])
                 @Provides
-                fun provideString(): String = "not supported"
+                class NormalScope
+
+                @Singleton
+                @Provides
+                class SingletonScope(
+                    val normal: NormalScope
+                )
             """,
     )
 }

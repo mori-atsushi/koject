@@ -2,12 +2,16 @@ package com.moriatsushi.koject.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Named
 import com.moriatsushi.koject.Qualifier
 import com.moriatsushi.koject.component.Component
 import com.moriatsushi.koject.component.ComponentExtras
 import com.moriatsushi.koject.inject
+
+@OptIn(ExperimentalKojectApi::class)
+val LocalComposeComponentExtras = staticCompositionLocalOf<ComponentExtras<*>?> { null }
 
 /**
  * Inject an instance with resolved dependencies
@@ -21,20 +25,16 @@ import com.moriatsushi.koject.inject
  * }
  * ```
  *
- * @param qualifier Qualifier for identification.
- *   Specify the instantiation of the annotation with [Qualifier].
+ * @param componentExtras Specify [ComponentExtras] to create [Component].
  */
 @OptIn(ExperimentalKojectApi::class)
 @Composable
 inline fun <reified T : Any> rememberInject(
-    qualifier: Any? = null,
+    componentExtras: ComponentExtras<*>? = LocalComposeComponentExtras.current,
 ): T {
-    val componentExtras = composeComponentExtras()
-    return remember(qualifier) {
-        inject(
-            qualifier = qualifier,
-            componentExtras = componentExtras,
-        )
+    val finalComponentExtras = componentExtras ?: composeComponentExtras()
+    return remember {
+        inject(componentExtras = finalComponentExtras)
     }
 }
 
@@ -57,11 +57,12 @@ inline fun <reified T : Any> rememberInject(
 @ExperimentalKojectApi
 @Composable
 inline fun <reified T : Any> rememberInject(
-    qualifier: Any? = null,
-    componentExtras: ComponentExtras<*>?,
+    qualifier: Any?,
+    componentExtras: ComponentExtras<*>? = LocalComposeComponentExtras.current,
 ): T {
+    val finalComponentExtras = componentExtras ?: composeComponentExtras()
     return remember(qualifier) {
-        inject(qualifier, componentExtras)
+        inject(qualifier, finalComponentExtras)
     }
 }
 
@@ -103,9 +104,10 @@ inline fun <reified T : Any> rememberInject(
 @Composable
 inline fun <reified T : Any> rememberInject(
     name: String,
-    componentExtras: ComponentExtras<*>? = null,
+    componentExtras: ComponentExtras<*>? = LocalComposeComponentExtras.current,
 ): T {
+    val finalComponentExtras = componentExtras ?: composeComponentExtras()
     return remember(name) {
-        inject(name, componentExtras)
+        inject(name, finalComponentExtras)
     }
 }

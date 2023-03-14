@@ -1,8 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    alias(libs.plugins.ksp)
     alias(libs.plugins.android.library)
-    id("app.cash.sqldelight") version "2.0.0-alpha05"
 }
 
 kotlin {
@@ -20,17 +18,13 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "data"
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":examples:kmm:ui"))
-                api(project(":examples:kmm:data"))
-                implementation(project(":examples:kmm:infrastructure"))
-
                 implementation(project(":koject-core"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
@@ -42,8 +36,6 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(project(":android:koject-android-core"))
-                implementation(project(":compose:koject-compose-viewmodel"))
             }
         }
         val androidUnitTest by getting
@@ -69,7 +61,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.moriatsushi.koject.example.kmm"
+    namespace = "com.moriatsushi.koject.example.kmm.data"
     compileSdk = 33
     defaultConfig {
         minSdk = 23
@@ -83,11 +75,4 @@ android {
     buildFeatures {
         buildConfig = false
     }
-}
-
-dependencies {
-    add("kspAndroid", project(":processor:app"))
-    add("kspIosX64", project(":processor:app"))
-    add("kspIosArm64", project(":processor:app"))
-    add("kspIosSimulatorArm64", project(":processor:app"))
 }

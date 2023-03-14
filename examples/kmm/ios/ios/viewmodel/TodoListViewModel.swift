@@ -5,9 +5,9 @@ import Foundation
 
 class TodoListViewModel: ObservableObject {
     @Published
-    var list: TodoList = TodoList.Companion().empty
+    var list: DataTodoList = DataTodoList.Companion().empty
     
-    private let viewModel: IOSTodoListViewModel =
+    private let viewModel: UiIOSTodoListViewModel =
         KojectHelper_iosKt.injectTodoListViewModel()
     
     init() {
@@ -20,7 +20,7 @@ class TodoListViewModel: ObservableObject {
         self.viewModel.addTask(title: title)
     }
     
-    func changeComplete(task: TodoTask, isCompleted: Bool) {
+    func changeComplete(task: DataTodoTask, isCompleted: Bool) {
         self.viewModel.changeComplete(task: task, isCompleted: isCompleted)
     }
     

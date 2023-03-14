@@ -1,7 +1,7 @@
 package com.moriatsushi.koject.example.kmm.di
 
 import com.moriatsushi.koject.Koject
-import com.moriatsushi.koject.example.kmm.viewmodel.IOSTodoListViewModel
+import com.moriatsushi.koject.example.kmm.ui.viewmodel.IOSTodoListViewModel
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.start
 

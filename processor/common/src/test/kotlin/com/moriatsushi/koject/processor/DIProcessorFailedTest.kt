@@ -85,6 +85,24 @@ class DIProcessorFailedTest {
     }
 
     @Test
+    fun provideGenerics() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(provideGenericsCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = CodeGenerationException::class
+        val location = "Test.kt:6"
+        val expectedErrorMessage =
+            "Generics class cannot be provided directly. Please use provide function."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
     fun provideNullable() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
@@ -167,6 +185,18 @@ class DIProcessorFailedTest {
 
                 @Provides
                 abstract class SampleEnum
+            """,
+    )
+
+    private val provideGenericsCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+
+                @Provides
+                class SampleClass<T>
             """,
     )
 

@@ -85,6 +85,12 @@ private fun check(ksClass: KSClassDeclaration) {
                     "Abstract class cannot be provided.",
             )
         }
+        ksClass.typeParameters.isNotEmpty() -> {
+            throw CodeGenerationException(
+                "${ksClass.location.name}: " +
+                    "Generics class cannot be provided directly. Please use provide function.",
+            )
+        }
         else -> {
             // available
         }

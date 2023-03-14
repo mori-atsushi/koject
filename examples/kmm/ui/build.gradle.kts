@@ -2,7 +2,6 @@ plugins {
     kotlin("multiplatform")
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.library)
-    id("app.cash.sqldelight") version "2.0.0-alpha05"
 }
 
 kotlin {
@@ -20,16 +19,14 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "ui"
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":examples:kmm:ui"))
-                api(project(":examples:kmm:data"))
-                implementation(project(":examples:kmm:infrastructure"))
+                implementation(project(":examples:kmm:data"))
 
                 implementation(project(":koject-core"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -44,6 +41,12 @@ kotlin {
             dependencies {
                 implementation(project(":android:koject-android-core"))
                 implementation(project(":compose:koject-compose-viewmodel"))
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.compose.ui)
+                implementation("androidx.compose.ui:ui-tooling:1.3.3")
+                implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
+                implementation("androidx.compose.foundation:foundation:1.3.1")
+                implementation("androidx.compose.material:material:1.3.1")
             }
         }
         val androidUnitTest by getting
@@ -69,7 +72,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.moriatsushi.koject.example.kmm"
+    namespace = "com.moriatsushi.koject.example.kmm.ui"
     compileSdk = 33
     defaultConfig {
         minSdk = 23
@@ -82,12 +85,17 @@ android {
 
     buildFeatures {
         buildConfig = false
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion =
+            libs.versions.androidx.compose.compiler.get()
     }
 }
 
 dependencies {
-    add("kspAndroid", project(":processor:app"))
-    add("kspIosX64", project(":processor:app"))
-    add("kspIosArm64", project(":processor:app"))
-    add("kspIosSimulatorArm64", project(":processor:app"))
+    add("kspAndroid", project(":processor:lib"))
+    add("kspIosX64", project(":processor:lib"))
+    add("kspIosArm64", project(":processor:lib"))
+    add("kspIosSimulatorArm64", project(":processor:lib"))
 }

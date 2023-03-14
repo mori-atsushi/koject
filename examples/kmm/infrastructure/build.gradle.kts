@@ -20,16 +20,14 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "infrastructure"
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":examples:kmm:ui"))
-                api(project(":examples:kmm:data"))
-                implementation(project(":examples:kmm:infrastructure"))
+                implementation(project(":examples:kmm:data"))
 
                 implementation(project(":koject-core"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -42,8 +40,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(project(":android:koject-android-core"))
-                implementation(project(":compose:koject-compose-viewmodel"))
+                implementation("app.cash.sqldelight:android-driver:2.0.0-alpha05")
             }
         }
         val androidUnitTest by getting
@@ -55,6 +52,9 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation("app.cash.sqldelight:native-driver:2.0.0-alpha05")
+            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting
@@ -69,7 +69,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.moriatsushi.koject.example.kmm"
+    namespace = "com.moriatsushi.koject.example.kmm.infrastructure"
     compileSdk = 33
     defaultConfig {
         minSdk = 23
@@ -86,8 +86,16 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", project(":processor:app"))
-    add("kspIosX64", project(":processor:app"))
-    add("kspIosArm64", project(":processor:app"))
-    add("kspIosSimulatorArm64", project(":processor:app"))
+    add("kspAndroid", project(":processor:lib"))
+    add("kspIosX64", project(":processor:lib"))
+    add("kspIosArm64", project(":processor:lib"))
+    add("kspIosSimulatorArm64", project(":processor:lib"))
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.moriatsushi.koject.example.kmm.infrastructure.db")
+        }
+    }
 }

@@ -2,8 +2,8 @@ import SwiftUI
 import shared
 
 struct TodoListView: View {
-    let list: TodoList
-    let onChangeCompleted: (TodoTask, Bool) -> Void
+    let list: DataTodoList
+    let onChangeCompleted: (DataTodoTask, Bool) -> Void
     
     var body: some View {
         ScrollView {

@@ -2,7 +2,7 @@ import SwiftUI
 import shared
 
 struct TodoTaskView: View {
-    let task: TodoTask
+    let task: DataTodoTask
     let onChangeCompleted: (Bool) -> Void
 
     var body: some View {

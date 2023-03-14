@@ -1,8 +1,9 @@
 package com.moriatsushi.koject.example.kmm.di
 
 import com.moriatsushi.koject.Provides
-import com.moriatsushi.koject.Qualifier
 import com.moriatsushi.koject.Singleton
+import com.moriatsushi.koject.example.kmm.data.di.IODispatcher
+import com.moriatsushi.koject.example.kmm.data.di.MainDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 
 expect object CoroutineDispatcherProvider {
@@ -16,9 +17,3 @@ expect object CoroutineDispatcherProvider {
     @Provides
     fun provideIODispatcher(): CoroutineDispatcher
 }
-
-@Qualifier
-annotation class IODispatcher
-
-@Qualifier
-annotation class MainDispatcher

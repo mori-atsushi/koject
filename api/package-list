@@ -5,10 +5,15 @@ module:koject-core
 com.moriatsushi.koject
 com.moriatsushi.koject.component
 com.moriatsushi.koject.error
+com.moriatsushi.koject.extras
 com.moriatsushi.koject.internal
 module:koject-android-activity
+com.moriatsushi.koject
 com.moriatsushi.koject.android.activity
+module:koject-android-core
+com.moriatsushi.koject.android
 module:koject-android-fragment
+com.moriatsushi.koject
 com.moriatsushi.koject.android.fragment
 module:koject-android-viewmodel
 com.moriatsushi.koject.android.viewmodel

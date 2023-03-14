@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.publish)
-    alias(libs.plugins.dokka)
     alias(libs.plugins.ksp)
 }
 
@@ -101,10 +100,6 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
-}
-
-tasks.dokkaHtmlPartial {
-    moduleName.set("koject-compose-core")
 }
 
 dependencies {

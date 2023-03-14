@@ -1,0 +1,97 @@
+import {
+    ActivityInject,
+    ActivityLazyInject,
+    ActivityComponent,
+    ActivityContext,
+    ActivityCoroutineScope,
+} from '@site/src/components/CodeLink';
+
+# Inject into Activity
+Koject provides additional support for injecting into Activities.
+
+## Setup for Activity
+
+The following dependency is required to take advantage of the additional support.
+
+```kotlin
+dependencies {
+    implementation("com.moriatsushi.koject:koject-android-activity:1.2.0-beta01")
+}
+```
+
+Please also refer to the [Setup document](/docs/setup).
+
+## Basic usage
+You can use the <ActivityInject/> or <ActivityLazyInject/> methods to inject any provided type.
+
+```kotlin
+@Provides
+@Singleton
+class Repository
+
+@Provides
+class Controller(
+    private val repository: Repository
+)
+```
+```kotlin
+class MyActivity: ComponentActivity {
+    val controller: Controller by lazyInject()
+}
+```
+
+## Inject Activity / Context into other types
+Koject defines the <ActivityComponent/> and adding this annotation restricts it to be injectable only to `Activity` or `ActivityComponent` types.
+
+```kotlin
+@ActivityComponent
+class ActivityHelper
+```
+```kotlin
+@ActivityComponent
+class ActivityHelperHolder(
+    val helper: ActivityHelper // can be injected
+)
+```
+```kotlin
+class MyActivity: ComponentActivity {
+    val helper: ActivityHelper by lazyInject() // can be injected
+}
+```
+
+`ActivityComponent` types can be injected with `androidx.activity.ComponentActivity` and `android.app.Activity`.
+
+```kotlin
+@ActivityComponent
+class ActivityHelper(
+    val activity: ComponentActivity // can be injected
+)
+```
+
+Similarly, `android.content.Context` can be injected by adding an <ActivityContext/> qualifier.
+
+```kotlin
+@ActivityComponent
+class ActivityHelper(
+    @ActivityContext
+    val context: Context // activity's context
+)
+```
+
+## Inject Activity's CoroutineScope
+The `ActivityComponent` type can also inject an activity-scoped `CoroutineScope`.
+The `CoroutineScope` requires an <ActivityCoroutineScope/> qualifier.
+
+```kotlin
+@ActivityComponent
+class ActivityHelper(
+    @ActivityCoroutineScope
+    val coroutineScope: CoroutineScope // same as ComponentActivity.lifecycleScope
+)
+```
+
+:::info LINK
+
+Check the [Android components documentation](/docs/android/components) for all available components for Android.
+
+:::

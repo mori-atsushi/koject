@@ -1,3 +1,12 @@
+import {
+    Inject,
+    Qualifier,
+    Named,
+    Singleton,
+    Component,
+    ComponentExtras,
+} from '@site/src/components/CodeLink';
+
 # Component (Experimental)
 :::caution Experimental
 
@@ -6,10 +15,10 @@ API may change in the future.
 :::
 
 ## What is the Component
-The Component can group provided types and organize dependencies.
+The Component allows you to group provided types and organize dependencies.
 
 By default, provided types are registered on the root component.
-You can specify another component when provides.
+However, you can specify another component when providing types.
 
 ```kotlin
 // Registered in RootComponent
@@ -39,16 +48,16 @@ class OtherComponentClass
 @SomeComponent
 @Provides
 class ComponentClass(
-    val normalClass: NormalClass, // can inject
-    val sameComponentClass: SameComponentClass, // can inject
-    // val otherComponentClass: OtherComponentClass, // cannot inject!
+    val normalClass: NormalClass, // can be injected
+    val sameComponentClass: SameComponentClass, // can be injected
+    val otherComponentClass: OtherComponentClass, // cannot be injected!
 )
 ```
 
 ![](/img/docs/component.png)
 
-You can provide extras dependencies for your components during field injection.
-This can be used to provide instances created by the platform, or dynamically change the dependencies.
+You can provide extra dependencies for your components during field injection.
+This can be used to provide instances created by the platform or dynamically change the dependencies.
 
 ```kotlin
 class ExtraClass // not provided
@@ -70,20 +79,21 @@ val componentClass = inject<ComponentClass>(
 
 :::info Limitation
 
-Koject does not offer component hierarchy to avoid complexity.
+Koject does not offer a component hierarchy to avoid complexity.
 
 :::
 
 
 ## Create a custom Component
-:::caution
+:::tip
 
-In most cases, custom Component is not needed.
+In most cases, a custom component is not needed.
 Adding components can add complexity.
 Carefully consider your need to add it.
+
 :::
 
-First, create a component annotation using the <a href="/api/core/com.moriatsushi.koject.component/-component/index.html" target="_blank">`@Component`</a> annotation.
+To create a custom component, first, create a component annotation using the `@Component` annotation.
 
 ```kotlin
 @OptIn(ExperimentalKojectApi::class)
@@ -91,40 +101,96 @@ First, create a component annotation using the <a href="/api/core/com.moriatsush
 annotation class CustomComponent
 ```
 
-Add the component annotation created when providing and register the type to the component.
+Next, add the component annotation created when providing and register the type to the component.
 
 ```kotlin
 @Provides
 @CustomComponent
 class SomeClass(
-    val otherClass: OtherClass
+    val extraClass: ExtraClass
 )
 ```
 
-Create an Extras class using <a href="/api/core/com.moriatsushi.koject.component/-component-extras/index.html" target="_blank">`@ComonentExtras`</a>.
+Then, create an Extras class using the <ComponentExtras/> interface.
 At that time, specify the component to be created.
 
-If the component requires additional dependencies, provide them in properties of the Extras class.
+If the component requires additional dependencies, provide them in the properties of the Extras class.
+
+```kotlin
+@ExperimentalKojectApi
+class CustomComponentExtras(
+    val extraClass: ExtraClass // provide ExtraClass
+): ComponentExtras<CustomComponent> // for CustomComponent
+```
+
 Otherwise, create a class with no properties.
 
 ```kotlin
-@OptIn(ExperimentalKojectApi::class)
-@ComponentExtras(CustomComponent::class)
-class CustomComponentExtras(
-    val otherClass: OtherClass // provide OtherClass
-)
-```
-```kotlin
-@OptIn(ExperimentalKojectApi::class)
-@ComponentExtras(EmptyComponent::class)
-class EmptyComponentExtras
+@ExperimentalKojectApi
+class EmptyComponentExtras: ComponentExtras<EmptyComponent>
 ```
 
-Call the <a href="/api/core/com.moriatsushi.koject/inject.html" target="_blank">`inject()`</a> function with `componentExtras` to get the type of the component.
+Finally, call the <Inject/> function with the `componentExtras` parameter to get the type of the component.
 
 ```kotlin
 @OptIn(ExperimentalKojectApi::class)
 val someClass = inject<SomeClass>(
-    componentExtras = CustomComponentExtras(OtherClass())
+    componentExtras = CustomComponentExtras(ExtraClass())
 )
 ```
+
+:::note MIGRATION (VERSION 1.2.0)
+
+The `ComponentExtras` API has changed since v1.2.0.
+
+```kotlin
+// Until v1.1.0
+@ExperimentalKojectApi
+@ComponentExtras(CustomComponent::class)
+class CustomComponentExtras(
+    val extra: ExtraClass
+)
+
+// Since v1.2.0
+@ExperimentalKojectApi
+class CustomComponentExtras(
+    val extra: ExtraClass
+): ComponentExtras<CustomComponent>
+```
+
+:::
+
+## Advanced usage
+
+In `ComponentExtras`, all non-private properties are treated as provides, and getters are also available.
+
+```kotlin
+class SomeComponentExtras(
+    // provide SomeClass1
+    val someClass1: SomeClass1
+): ComponentExtras<SomeComponent> {
+    // provide SomeClass2
+    val someClass2: SomeClass2 = SomeClass2()
+
+    // provide SomeClass3
+    val someClass3: SomeClass3
+        get() = SomeClass3()
+}
+```
+
+<p><Qualifier/> and <Named/> annotations can be used to distinguish between multiple providers of the same type.</p>
+
+```kotlin
+class SomeComponentExtras: ComponentExtras<SomeComponent> {
+    // provide with a qualifier
+    @SomeQualifier
+    val someClass2: SomeClass2 = SomeClass2()
+
+    // provide with a name
+    @Named("some-name")
+    val someClass3: SomeClass3
+        get() = SomeClass3()
+}
+```
+
+Note that <Singleton/> is not available in `ComponentExtras`.

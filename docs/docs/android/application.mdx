@@ -1,0 +1,72 @@
+import {
+    Provides,
+    Singleton,
+    Inject,
+    LazyInject,
+    KojectStart,
+    AndroidApplication,
+} from '@site/src/components/CodeLink';
+
+# Using Koject on Android
+
+Integrating Koject into your Android application is easy.
+
+## Getting Started
+
+To get started, add the following dependencies for Android:
+
+```kotlin
+dependencies {
+    implementation("com.moriatsushi.koject:koject-android-core:1.2.0-beta01")
+}
+```
+
+Also, make sure to check the [Setup document](/docs/setup).
+
+Call <KojectStart/> in the `Application` class, and be sure to call <AndroidApplication/>.
+
+```kotlin
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        Koject.start {
+            application(this@MyApplication)
+        }
+    }
+}
+```
+
+To provide the necessary dependencies, use the <Provides/> annotation.
+You can inject the `Application` and the application's `Context`.
+
+```kotlin
+@Provides
+@Singleton
+fun provideAppDatabase(
+    applicationContext: Context
+): AppDatabase {
+    return Room.databaseBuilder(
+        applicationContext,
+        AppDatabase::class.java,
+        "database-name"
+    ).build()
+}
+
+@Provides
+class MyController(
+    val db: AppDatabase
+) {
+    /* ... */
+}
+```
+
+To inject into an `Activity`, etc., use the <Inject/> or <LazyInject/> method.
+
+```kotlin
+class MyActivity: Activity {
+    val controller: MyController by lazyInject()
+
+    /* ... */
+}
+```

@@ -1,0 +1,131 @@
+import {
+    FragmentInject,
+    FragmentLazyInject,
+    FragmentComponent,
+    ActivityContext,
+    FragmentCoroutineScope,
+    FragmentViewCoroutineScope,
+} from '@site/src/components/CodeLink';
+
+# Inject into Fragment
+Koject provides additional support for injecting into Fragments.
+
+## Setup for Fragment
+The following dependency is required to take advantage of the additional support.
+
+```kotlin
+dependencies {
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.2.0-beta01")
+}
+```
+
+Please also refer to the [Setup document](/docs/setup).
+
+## Basic usage
+You can use the <FragmentInject/> or <FragmentLazyInject/> methods to inject any provided type.
+
+```kotlin
+@Provides
+@Singleton
+class Repository
+
+@Provides
+class Controller(
+    private val repository: Repository
+)
+```
+```kotlin
+class MyFragment: Fragment {
+    val controller: Controller by lazyInject()
+}
+```
+
+## Inject Fragment into other types
+Koject defines the <FragmentComponent/> and adding this annotation restricts it to be injectable only to `Fragment` or `FragmentComponent` types.
+
+```kotlin
+@FragmentComponent
+class FragmentHelper
+```
+```kotlin
+@FragmentComponent
+class FragmentHelperHolder(
+    val helper: FragmentHelper // can be injected
+)
+```
+```kotlin
+class MyFragment: Fragment {
+    val helper: FragmentHelper by lazyInject() // can be injected
+}
+```
+
+You can inject `Fragment` into `FragmentComponent` types.
+
+```kotlin
+@FragmentComponent
+class FragmentHelper(
+    val fragment: Fragment // can be injected
+)
+```
+
+## Inject Activity / Context
+
+The following three types of Activities are also available for `FragmentComponent` types.
+
+* `androidx.fragment.app.FragmentActivity`
+* `androidx.activity.ComponentActivity`
+* `android.app.Activity`
+
+You can use them like this:
+
+```kotlin
+@FragmentComponent
+class FragmentHelper(
+    val activity: ComponentActivity // can be injected
+)
+```
+
+When using Activity, be careful to inject after the Fragment is attached.
+
+```kotlin
+class MyFragment: Fragment() {
+    val helper: Fragment = inject() // error!
+    val helper: Fragment by lazyInject() // can be injected
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        
+        val helper: Fragment = inject() // can be injected
+    }
+}
+```
+
+You can also inject `android.content.Context` by adding an <ActivityContext/> qualifier.
+
+```kotlin
+@FragmentComponent
+class FragmentHelper(
+    @ActivityContext
+    val context: Context // activity's context
+)
+```
+
+## Inject Fragment's CoroutineScope
+The `FragmentComponent` type can also inject an fragment-scoped `CoroutineScope` and fragment-view-scoped `CoroutineScope`.
+Use <FragmentCoroutineScope/> qualifier and <FragmentViewCoroutineScope/> qualifier respectively.
+
+```kotlin
+@FragmentComponent
+class FragmentHelper(
+    @FragmentCoroutineScope
+    val scope: CoroutineScope, // same as Fragment.lifecycleScope
+    @FragmentViewCoroutineScope
+    val viewScope: CoroutineScope, // same as Fragment.viewLifecycleOwner.lifecycleScope
+)
+```
+
+:::info LINK
+
+Check the [Android components documentation](/docs/android/components) for all available components for Android.
+
+:::

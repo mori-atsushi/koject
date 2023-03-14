@@ -1,33 +1,33 @@
 import {
     Provides,
     ViewModelComponent,
-    ActivityInjectViewModels,
-    FragmentInjectViewModels,
+    ViewModelCoroutineScope,
+    ActivityLazyViewModels,
+    FragmentLazyViewModels,
 } from '@site/src/components/CodeLink';
 
-
 # Inject ViewModels
-Koject supports providing [ViewModels](https://developer.android.com/reference/androidx/lifecycle/ViewModel).
+Koject allows you to easily inject [ViewModels](https://developer.android.com/reference/androidx/lifecycle/ViewModel) into your Android application.
 
 ## Setup for ViewModels
-Add dependencies according to the target to inject.
+Add the appropriate dependencies for the injection target:
 
 ```kotlin
 dependencies {
     // Inject ViewModel into Activity
-    implementation("com.moriatsushi.koject:koject-android-activity:1.1.0")
+    implementation("com.moriatsushi.koject:koject-android-activity:1.2.0-beta01")
     // Inject ViewModel into Fragment
-    implementation("com.moriatsushi.koject:koject-android-fragment:1.1.0")
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.2.0-beta01")
     // ViewModelFactory only
-    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.1.0")
+    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.2.0-beta01")
 }
 ```
 
-Please also check the [Setup document](/docs/setup).
+Please also refer to the [Setup document](/docs/setup).
 
 ## Using ViewModels
-Specify the <ViewModelComponent/> and <Provides/> annotations when defining a ViewModel.
-As with other providing types, constructor injection is available.
+To define a `ViewModel`, specify the <ViewModelComponent/> and <Provides/> annotations.
+You can use constructor injection as with other types:
 
 ```kotlin
 @Provides
@@ -40,11 +40,11 @@ class TopViewModel(
 }
 ```
 
-When using ViewModels, use the <ActivityInjectViewModels/> function.
+When using ViewModels, use the <ActivityLazyViewModels/> function:
 
 ```kotlin
 class TopActivity : ComponentActivity() {
-    private val viewModel: TopViewModel by injectViewModels()
+    private val viewModel: TopViewModel by lazyViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +53,11 @@ class TopActivity : ComponentActivity() {
 }
 ```
 
-For Fragment, please use the, please use the <FragmentInjectViewModels/> function instead.
+For fragments, use the <FragmentLazyViewModels/> function:
 
 ```kotlin
 class TopFragment : Fragment() {
-    private val viewModel: TopViewModel by injectViewModels()
+    private val viewModel: TopViewModel by lazyViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,15 +69,29 @@ class TopFragment : Fragment() {
 }
 ```
 
-:::tip LINK
+:::info LINK
 
-Check the [documentation](/docs/compose/viewmodel) to inject ViewModels in Jetpack Compose.
+Refer to the [documentation](/docs/compose/viewmodel) to inject ViewModels in Jetpack Compose.
 
+:::
+
+:::note MIGRATION (VERSION 1.2.0)
+
+As of version v1.2.0, `injectViewModels()` has been renamed to `lazyViewModels()`:
+
+```kotlin
+// Until v1.1.0
+private val viewModel: TopViewModel by injectViewModels()
+
+// Since v1.2.0
+private val viewModel: TopViewModel by lazyViewModels()
+```
 :::
 
 ## Working with SavedStateHandle
 [SavedStateHandle](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle) is used to save ViewModel state.
-Koject allows you to inject SavedStateHandle out of the box.
+Koject allows you to inject `SavedStateHandle` out of the box.
+
 ```kotlin
 @Provides
 @ViewModelComponent
@@ -89,7 +103,7 @@ class SavedStateViewModel(
 ```
 ```kotlin
 class TopActivity : ComponentActivity() {
-    private val viewModel: SavedStateViewModel by injectViewModels()
+    private val viewModel: SavedStateViewModel by lazyViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,3 +111,32 @@ class TopActivity : ComponentActivity() {
     }
 }
 ```
+
+## Inject ViewModel's CoroutineScope
+Types with `ViewModelComponent` annotations can only be injected into `ViewModel` and can inject ViewModel's `CoroutineScope`.
+The <ViewModelCoroutineScope/> qualifier is required to use the `CoroutineScope`.
+
+```kotlin
+@Provides
+@ViewModelComponent
+class ViewModelHelper(
+    @ViewModelCoroutineScope
+    val scope: CoroutineScope // same as ViewModel.viewModelScope
+) {
+    /* ... */
+}
+
+@Provides
+@ViewModelComponent
+class SomeViewModel(
+    val helper: ViewModelHelper
+): ViewModel() {
+    /* ... */
+}
+```
+
+:::info LINK
+
+Check the [Android components documentation](/docs/android/components) for all available components for Android.
+
+:::

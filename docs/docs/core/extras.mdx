@@ -1,0 +1,108 @@
+import {
+    Provides,
+    Singleton,
+    Qualifier,
+    Named,
+    KojectStart,
+    KojectExtras,
+    KojectExtrasMessage,
+    MissingExtrasException,
+} from '@site/src/components/CodeLink';
+
+# KojextExtras (Experimental)
+:::caution Experimental
+KojectExtras is experimental and the API may change in the future.
+:::
+
+Koject creates a dependency graph at compile time, but sometimes you may need to add types created on a platform at runtime. `KojectExtras` allows you to add dependencies at the start of Koject.
+
+## How to Use
+:::tip
+
+Dependencies should be provided using the <Provides/> annotation as much as possible, and `KojectExtras` should be used when that is not possible.
+
+:::
+
+First, implement the <KojectExtras/> interface and declare additional types to be provided using properties.
+
+```kotlin
+@ExperimentalKojectApi
+class PlatformExtras(
+    val platformClass: PlatformClass // provide PlatformClass
+): KojectExtras
+```
+
+Then specify its extras when calling <KojectStart/>.
+If not specified, <MissingExtrasException/> is thrown.
+
+```kotlin
+fun main() {
+    val platformExtras = PlatformExtras(/* ... */)
+    Koject.start {
+        @OptIn(ExperimentalKojectApi::class)
+        addExtras(platformExtras)
+    }
+}
+```
+
+This allows `PlatformClass` to be injected.
+
+```kotlin
+@Provides
+class SomeClass(
+    val platformClass: PlatformClass, // can be injected
+)
+```
+```kotlin
+class SomeClass {
+    val platformClass: PlatformClass = inject() // can be injected
+}
+```
+
+## Advanced usage
+In `KojectExtras`, all non-private properties are treated as provides, and getters are also available.
+
+```kotlin
+@ExperimentalKojectApi
+class GlobalExtras(
+    // provide SomeClass1
+    val someClass1: SomeClass1
+): KojectExtras {
+    // provide SomeClass2
+    val someClass2: SomeClass2 = SomeClass2()
+
+    // provide SomeClass3
+    val someClass3: SomeClass3
+        get() = SomeClass3()
+}
+```
+
+<p><Singleton/>, <Qualifier/> and <Named/> annotations can be used.</p>
+
+```kotlin
+@ExperimentalKojectApi
+class GlobalExtras(
+    // provide as singleton
+    @Singleton
+    val someClass1: SomeClass1
+): KojectExtras {
+    // provide with a qualifier
+    @SomeQualifier
+    val someClass2: SomeClass2 = SomeClass2()
+
+    // provide with a name
+    @Named("some-name")
+    val someClass3: SomeClass3
+        get() = SomeClass3()
+}
+```
+
+<p><KojectExtrasMessage/> can be used to change the error message when that extras is not set.</p>
+
+```kotlin
+@ExperimentalKojectApi
+@KojectExtrasMessage("error message for GlobalExtras")
+class GlobalExtras(
+    val someClass: SomeClass
+): KojectExtras
+```

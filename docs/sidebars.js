@@ -27,10 +27,11 @@ const sidebars = {
         'core/basic',
         'core/qualifier',
         'core/binds',
+        'core/extras',
         'core/component',
       ],
     },
-    {
+  {
       type: 'category',
       label: 'Android',
       link: {
@@ -39,7 +40,11 @@ const sidebars = {
       },
       collapsed: true,
       items: [
+        'android/application',
         'android/viewmodel',
+        'android/activity',
+        'android/fragment',
+        'android/components',
       ],
     },
     {

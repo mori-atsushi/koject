@@ -1,0 +1,44 @@
+import {
+    Inject,
+    LazyInject,
+    ViewModelComponent,
+    ViewModelCoroutineScope,
+    ActivityComponent,
+    ActivityInject,
+    ActivityLazyInject,
+    ActivityLazyViewModels,
+    ActivityContext,
+    ActivityCoroutineScope,
+    FragmentComponent,
+    FragmentInject,
+    FragmentLazyInject,
+    FragmentLazyViewModels,
+    FragmentCoroutineScope,
+    FragmentViewCoroutineScope,
+    RememberInject,
+    ComposeComponent,
+    ComposeCoroutineScope,
+    ComposeContext,
+    InjectViewModel,
+} from '@site/src/components/CodeLink';
+
+# Android components
+
+Koject provides multiple components for Android, including <ActivityComponent/> and <ViewModelComponent />.
+Here's a summary of all available components.
+
+:::info LINK
+
+Refer to the [Component documentation](/docs/core/component) for a basic understanding of Components.
+
+:::
+
+## Available components
+
+|  Component name  |  Injectable types  | Inject function | Docs |
+| ---- | ---- | ---- | ---- |
+|  Root (not set)  |  `Application`<br/>`Context`  | <Inject/><br/><LazyInject/> | [Link](/koject/docs/android/application)
+|  <ViewModelComponent/>  |  `SavedStateHandle`<br/>`CoroutineScope`(<ViewModelCoroutineScope/>)  | <ActivityLazyViewModels/><br/><FragmentLazyViewModels/><br/><InjectViewModel/>(Composable) | [Link](/koject/docs/android/viewmodel)
+|  <ActivityComponent/>  |  `ComponentActivity`<br/>`Activity`<br/>`Context`(<ActivityContext/>)<br/>`CoroutineScope`(<ActivityCoroutineScope/>)  | <ActivityInject/><br/><ActivityLazyInject/> | [Link](/koject/docs/android/activity)
+|  <FragmentComponent/>  |  `Fragment`<br/>`FragmentActivity`<br/>`ComponentActivity`<br/>`Activity`<br/>`Context`(<ActivityContext/>)<br/>`CoroutineScope`(<FragmentCoroutineScope/>)<br/>`CoroutineScope`(<FragmentViewCoroutineScope/>)  | <FragmentInject/><br/><FragmentLazyInject/> | [Link](/koject/docs/android/fragment)
+|  <ComposeComponent/>  | `Context`(<ComposeContext/>)<br/>`CoroutineScope`(<ComposeCoroutineScope/>) | <RememberInject/> | [Link](/koject/docs/compose/core)

@@ -1,0 +1,306 @@
+---
+slug: android-components
+title: Koject v1.2.0 - Androidコンポーネントの追加
+authors: atsushi
+image: /blog/2023-03-18/ogp.png
+---
+
+import {
+    Provides,
+    KojectStart,
+    AndroidApplication,
+    ViewModelComponent,
+    ViewModelCoroutineScope,
+    ActivityLazyViewModels,
+    ActivityComponent,
+    ActivityInject,
+    ActivityLazyInject,
+    FragmentComponent,
+    ComposeComponent,
+} from '@site/src/components/CodeLink';
+
+# Koject v1.2.0 - Androidコンポーネントの追加
+
+![](/blog/2023-03-18/banner.png)
+
+Koject 1.1.0で[Androidのサポートが強化](/blog/jp/android-support)されたばかりですが、Koject 1.2.0ではさらに複数の機能が追加されています。
+この記事では、v1.2.0の利用方法と、追加された主な機能について紹介します。
+
+<!--truncate-->
+
+[**Read in English →**](/blog/android-components)
+
+## v1.1.0から移行する
+v1.1.0からv1.2.0に向け、一部のAPIが変更されました。対応が必要になる可能性があります。
+
+
+<details>
+  <summary>[core] The inject() API for Named has changed (#148)</summary>
+
+```kotlin
+// Until v1.1.0
+val db1 = inject<DB>("db1")
+val db2 = inject<DB>("db2")
+
+// Since v1.2.0
+val db1 = inject<DB>(Named("db1"))
+val db2 = inject<DB>(Named("db2"))
+```
+
+</details>
+
+
+<details>
+  <summary>[core] The ComponentExtras API has changed. (#157)</summary>
+
+```kotlin
+// Until v1.1.0
+@ExperimentalKojectApi
+@ComponentExtras(CustomComponent::class)
+class CustomComponentExtras(
+    val extra: ExtraClass
+)
+
+// Since v1.2.0
+@ExperimentalKojectApi
+class CustomComponentExtras(
+    val extra: ExtraClass
+): ComponentExtras<CustomComponent>
+```
+
+</details>
+
+
+<details>
+  <summary>[android] injectViewModels() has been renamed to lazyViewModels() (#149)</summary>
+
+
+```kotlin
+// Until v1.1.0
+private val viewModel: TopViewModel by injectViewModels()
+
+// Since v1.2.0
+private val viewModel: TopViewModel by lazyViewModels()
+```
+
+</details>
+
+## Android Applicationを配布する
+Koject 1.2.0から、Androidアプリケーションの配布が可能になりました。
+`koject-android-core`パッケージを追加することで利用できます。
+
+```kotlin
+dependencies {
+    implementation("com.moriatsushi.koject:koject-android-core:1.2.0")
+}
+```
+
+利用するには、<KojectStart/>を呼び出す際に<AndroidApplication/>メソッドでApplicationを渡す必要があります。
+
+```kotlin
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        Koject.start {
+            application(this@MyApplication)
+        }
+    }
+}
+```
+
+これにより、 `Application`クラス及びApplication scopeの`Context`クラスが配布されるようになります。
+配布されたクラスは以下のように利用できます。
+
+```kotlin
+@Provides
+@Singleton
+fun provideAppDatabase(
+    applicationContext: Context // can be injected
+): AppDatabase {
+    return Room.databaseBuilder(
+        applicationContext,
+        AppDatabase::class.java,
+        "database-name"
+    ).build()
+}
+```
+
+## ViewModelのCoroutineScopeを配布する
+AndroidのViewModelを使ったアーキテクチャでは、ViewModelが肥大化する傾向になります。
+その対策としてViewModelの一部の処理を以下のように別クラスに切り出すことが考えられます。
+
+```kotlin
+class MyViewModel: ViewModel() {
+    private val helper = TopViewModelHelper(viewModelScope)
+
+    fun update() {
+        helper.update()
+    }
+}
+```
+
+class ViewModelHelper(
+    private val coroutineScope: CoroutineScope
+) {
+    fun update() {
+        coroutineScope.launch {
+            /* ... */
+        }
+    }
+}
+```
+
+DIコンテナを使用して、この`ViewModelHelper`を配布しようとすると、`ViewModel`の`CoroutineScope`を`ViewModelHelper`に渡すのが難しくなります。
+
+例えばこのように`setup`関数を通じて渡す方法が考えられますが、`setup`関数を呼び忘れる可能性があり、あまり安全ではありません。
+
+```kotlin
+@Provides
+class ViewModelHelper {
+    private lateinit var coroutineScope: CoroutineScope
+
+    fun setup(coroutineScope: CoroutineScope) {
+        this.coroutineScope = coroutineScope
+    }
+
+    fun update() {
+        coroutineScope.launch {
+            /* ... */
+        }
+    }
+}
+```
+```kotlin
+@Provides
+class MyViewModel(
+    private val helper: TopViewModelHelper
+): ViewModel() {
+    init {
+        helper.setup(viewModelScope)
+    }
+
+    fun update() {
+        helper.update()
+    }
+}
+```
+
+他にも、Factoryクラスを配布する方法も考えられます。
+
+```kotlin
+class ViewModelHelper(
+    private val coroutineScope: CoroutineScope
+) {
+    fun update() {
+        coroutineScope.launch {
+            /* ... */
+        }
+    }
+
+    @Provides
+    class Factory {
+        fun create(coroutineScope: CoroutineScope): ViewModelHelper {
+            return ViewModelHelper(coroutineScope)
+        }
+    }
+}
+```
+```kotlin
+@Provides
+class MyViewModel(
+    helperFactory: TopViewModelHelper.Factory
+): ViewModel() {
+    private val helper = helperFactory.create(viewMdoelScope)
+
+    fun update() {
+        helper.update()
+    }
+}
+```
+
+どちらの方法も動作はしますが、冗長さが残ります。
+
+Kojectでは、`ViewModelComponent`を使うことでシンプルに解決することができます。
+`@Provides`アノテーションをつける際に<ViewModelComponent/>をつけると、<ViewModelCoroutineScope/>アノテーションを使用してViewModel Scopeの`CoroutineScope`をinjectできるようになります。
+
+
+```kotlin
+@ViewModelComponent
+@Provides
+class MyViewModel(
+    private val helper: ViewModelHelper
+): ViewModel() {
+    fun update() {
+        helper.update()
+    }
+}
+```
+```kotlin
+@ViewModelComponent
+@Provides
+class ViewModelHelper(
+    @ViewModelCoroutineScope
+    private val coroutineScope: CoroutineScope // same as ViewModel.viewModelScope
+) {
+    fun update() {
+        coroutineScope.launch {
+            /* ... */
+        }
+    }
+}
+```
+
+`@ViewModelComponent` がついたタイプは、同じ`@ViewModelComponent` がついたタイプにのみinjectが可能な点に注意してください。
+`MyViewModel`クラスにも`@ViewModelComponent`アノテーションを付ける必要があります。
+
+
+ViewModelを利用する際は<ActivityLazyViewModels/>関数を使用します。
+
+```kotlin
+class TopActivity : ComponentActivity() {
+    private val viewModel: TopViewModel by lazyViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /* ... */
+    }
+}
+```
+
+この機能は、処理を移譲するだけでなく、ViewModelの処理の一部を共通化したいときにも役に立ちます。
+
+ViewModelのより詳しい説明は[Inject ViewModels ドキュメント](/docs/android/viewmodel)を確認してください。
+
+## Androidコンポーネントが追加されました
+Koject 1.2.0では`ViewModelComponent`に加えて<ActivityComponent/>, <FragmentComponent/>, <ComposeComponent/>が使えるようになりました。
+
+`@ActivityComponent`アノテーションが付与されているタイプは、`Activity`もしくは同じ`@ActivityComponent`がついたタイプにのみinjectができます。
+`@ActivityComponent`がついたアノテーションでは、`ComponentActivity`やActivity scopeの`Context`、`CoroutineScope`等が利用できます。
+
+```kotlin
+@ActivityComponent
+class ActivityHelper(
+    val activity: ComponentActivity, // can be injected
+    @ActivityContext
+    val context: Context, // activity's context
+    @ActivityCoroutineScope
+    val coroutineScope: CoroutineScope // same as ComponentActivity.lifecycleScope
+)
+```
+
+Activityで利用する際は<ActivityInject/>もしくは<ActivityLazyInject/>を使用してください。
+
+```kotlin
+class MyActivity: ComponentActivity {
+    val helper: ActivityHelper by lazyInject() // can be injected
+}
+```
+
+この機能はViewModelと同様に、クラス分割等のリファクタリングに役立てることができます。
+
+全てのコンポーネントと、それらが利用できるタイプについては、[Android components ドキュメント](/docs/android/components)で確認できます。
+
+## フィードバックをお待ちしています。
+Kojectは基本的な機能はシンプルに保ちつつ、様々な機能追加を行っています。
+足りない機能があれば、ぜひ[Issue](https://github.com/mori-atsushi/koject/issues)から教えて下さい。

@@ -32,6 +32,7 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
+                implementation(project(":koject-test"))
                 implementation(kotlin("test"))
             }
         }

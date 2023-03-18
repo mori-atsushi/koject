@@ -24,7 +24,11 @@ kotlin {
     linuxMips32()
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                api(project(":koject-core"))
+            }
+        }
 
         val commonTest by getting {
             dependencies {

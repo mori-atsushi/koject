@@ -86,5 +86,5 @@ class DIProcessorTest {
             "_AppContainer.kt"
 
     private val expectedStartFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/_Start.kt"
+        "ksp/sources/kotlin/com/moriatsushi/koject/_Koject.kt"
 }

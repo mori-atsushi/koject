@@ -1,7 +1,10 @@
+@file:Suppress("DEPRECATION_ERROR")
+
 package com.moriatsushi.koject
 
 import com.moriatsushi.koject.error.CodeNotGeneratedException
 import com.moriatsushi.koject.internal.Container
+import com.moriatsushi.koject.internal.DoNotUse
 import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.internal.KojectImpl
 
@@ -37,7 +40,7 @@ object Koject {
 }
 
 /**
- * Start application
+ * Start Koject application
  *
  * Will be replaced by automatic code generation.
  * Not actually called.
@@ -47,20 +50,9 @@ object Koject {
  */
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 fun Koject.start(
-    @Suppress("DEPRECATION_ERROR")
     doNotUse: DoNotUse = DoNotUse,
     builder: KojectBuilder.() -> Unit = {},
 ) {
-    codeNotGeneratedError()
-}
-
-/**
- * Do not use!
- */
-@Deprecated("Do not use!", level = DeprecationLevel.ERROR)
-object DoNotUse
-
-private fun codeNotGeneratedError(): Nothing {
     throw CodeNotGeneratedException(
         "Code generation failed. Check your ksp settings.",
     )

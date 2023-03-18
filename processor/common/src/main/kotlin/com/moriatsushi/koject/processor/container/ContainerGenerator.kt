@@ -10,14 +10,15 @@ internal class ContainerGenerator(
     private val fileGenerator: FileGenerator,
     private val componentContainerFileSpecFactory: ComponentContainerFileSpecFactory,
     private val appContainerFileSpecFactory: AppContainerFileSpecFactory,
-    private val startFileSpecFactory: StartFileSpecFactory,
+    private val kojectFileSpecFactory: KojectFileSpecFactory,
+    private val kojectTestFileSpecFactory: KojectTestFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
         val allFactories = resolver.collectAllFactoryDeclarations()
         dependencyValidator.validate(allFactories)
 
         generateContainer(allFactories)
-        generateStart()
+        generateEntry()
     }
 
     private fun generateContainer(allFactories: AllFactoryDeclarations) {
@@ -47,11 +48,18 @@ internal class ContainerGenerator(
         )
     }
 
-    private fun generateStart() {
-        val fileSpec = startFileSpecFactory.create()
+    private fun generateEntry() {
+        val kojectFileSpec = kojectFileSpecFactory.create()
 
         fileGenerator.createNewFile(
-            fileSpec = fileSpec,
+            fileSpec = kojectFileSpec,
+            aggregating = false,
+        )
+
+        val kojectTestFileSpec = kojectTestFileSpecFactory.create()
+
+        fileGenerator.createNewFile(
+            fileSpec = kojectTestFileSpec,
             aggregating = false,
         )
     }

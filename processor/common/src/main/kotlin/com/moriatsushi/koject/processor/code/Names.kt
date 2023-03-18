@@ -8,6 +8,7 @@ import com.squareup.kotlinpoet.ClassName
 
 internal object Names {
     const val rootPackageName = "com.moriatsushi.koject"
+    const val testPackageName = "$rootPackageName.test"
     const val generatedPackageName = "$rootPackageName.generated"
     const val factoryPackageName = "$generatedPackageName.factory"
     const val extrasPackageName = "$generatedPackageName.extras"

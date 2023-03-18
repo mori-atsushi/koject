@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.container
 
 import com.google.devtools.ksp.processing.Resolver
+import com.moriatsushi.koject.processor.analytics.includeTest
 import com.moriatsushi.koject.processor.file.FileGenerator
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.collectAllFactoryDeclarations
@@ -10,14 +11,17 @@ internal class ContainerGenerator(
     private val fileGenerator: FileGenerator,
     private val componentContainerFileSpecFactory: ComponentContainerFileSpecFactory,
     private val appContainerFileSpecFactory: AppContainerFileSpecFactory,
-    private val startFileSpecFactory: StartFileSpecFactory,
+    private val kojectFileSpecFactory: KojectFileSpecFactory,
+    private val kojectTestFileSpecFactory: KojectTestFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
+        val includeTest = resolver.includeTest()
+
         val allFactories = resolver.collectAllFactoryDeclarations()
         dependencyValidator.validate(allFactories)
 
         generateContainer(allFactories)
-        generateStart()
+        generateEntry(includeTest)
     }
 
     private fun generateContainer(allFactories: AllFactoryDeclarations) {
@@ -47,12 +51,21 @@ internal class ContainerGenerator(
         )
     }
 
-    private fun generateStart() {
-        val fileSpec = startFileSpecFactory.create()
+    private fun generateEntry(includeTest: Boolean) {
+        val kojectFileSpec = kojectFileSpecFactory.create()
 
         fileGenerator.createNewFile(
-            fileSpec = fileSpec,
+            fileSpec = kojectFileSpec,
             aggregating = false,
         )
+
+        if (includeTest) {
+            val kojectTestFileSpec = kojectTestFileSpecFactory.create()
+
+            fileGenerator.createNewFile(
+                fileSpec = kojectTestFileSpec,
+                aggregating = false,
+            )
+        }
     }
 }

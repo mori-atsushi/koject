@@ -10,6 +10,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(project(":koject-core"))
+                implementation(project(":koject-test"))
                 implementation(libs.ksp.processor.api)
                 implementation(libs.kotlinpoet.ksp)
             }

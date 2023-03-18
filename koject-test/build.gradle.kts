@@ -1,12 +1,12 @@
 plugins {
-    kotlin("multiplatform")
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.publish)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {
     jvm()
     js(IR) {
-        moduleName = "integration-test-app"
         nodejs()
         browser()
     }
@@ -14,6 +14,8 @@ kotlin {
     iosSimulatorArm64()
     macosX64()
     macosArm64()
+    watchos()
+    tvos()
 
     mingwX64()
     mingwX86()
@@ -24,22 +26,29 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":koject-core"))
-                implementation(kotlin("test"))
-                implementation(project(":integration-test:lib"))
+                api(project(":koject-core"))
             }
         }
 
         val commonTest by getting {
             dependencies {
-                implementation(project(":koject-test"))
                 implementation(kotlin("test"))
             }
         }
 
-        val jvmMain by getting
+        val jvmMain by getting {
+            dependsOn(commonMain)
+        }
 
         val jvmTest by getting {
+            dependsOn(commonTest)
+        }
+
+        val jsMain by getting {
+            dependsOn(commonMain)
+        }
+
+        val jsTest by getting {
             dependsOn(commonTest)
         }
 
@@ -67,7 +76,7 @@ kotlin {
         }
 
         val iosSimulatorArm64Test by getting {
-            dependsOn(iosTest)
+            dependsOn(iosMain)
         }
 
         val macosX64Main by getting {
@@ -83,6 +92,22 @@ kotlin {
         }
 
         val macosArm64Test by getting {
+            dependsOn(nativeTest)
+        }
+
+        val watchosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val watchosTest by getting {
+            dependsOn(nativeTest)
+        }
+
+        val tvosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val tvosTest by getting {
             dependsOn(nativeTest)
         }
 
@@ -125,32 +150,9 @@ kotlin {
         val linuxMips32Test by getting {
             dependsOn(nativeTest)
         }
-    }
-}
 
-dependencies {
-    add("kspJvm", project(":processor:app"))
-    add("kspJvmTest", project(":processor:app"))
-    add("kspJs", project(":processor:app"))
-    add("kspJsTest", project(":processor:app"))
-    add("kspIosX64", project(":processor:app"))
-    add("kspIosX64Test", project(":processor:app"))
-    add("kspIosArm64", project(":processor:app"))
-    add("kspIosArm64Test", project(":processor:app"))
-    add("kspIosSimulatorArm64", project(":processor:app"))
-    add("kspIosSimulatorArm64Test", project(":processor:app"))
-    add("kspMacosX64", project(":processor:app"))
-    add("kspMacosX64Test", project(":processor:app"))
-    add("kspMacosArm64", project(":processor:app"))
-    add("kspMacosArm64Test", project(":processor:app"))
-    add("kspMingwX64", project(":processor:app"))
-    add("kspMingwX64Test", project(":processor:app"))
-    add("kspMingwX86", project(":processor:app"))
-    add("kspMingwX86Test", project(":processor:app"))
-    add("kspLinuxX64", project(":processor:app"))
-    add("kspLinuxX64Test", project(":processor:app"))
-    add("kspLinuxArm32Hfp", project(":processor:app"))
-    add("kspLinuxArm32HfpTest", project(":processor:app"))
-    add("kspLinuxMips32", project(":processor:app"))
-    add("kspLinuxMips32Test", project(":processor:app"))
+        all {
+            languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
+        }
+    }
 }

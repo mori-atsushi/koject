@@ -10,7 +10,8 @@ import com.moriatsushi.koject.processor.container.AppContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ComponentContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ContainerGenerator
 import com.moriatsushi.koject.processor.container.DependencyValidator
-import com.moriatsushi.koject.processor.container.StartFileSpecFactory
+import com.moriatsushi.koject.processor.container.KojectFileSpecFactory
+import com.moriatsushi.koject.processor.container.KojectTestFileSpecFactory
 import com.moriatsushi.koject.processor.extras.ExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.extras.ExtrasHolderGenerator
 import com.moriatsushi.koject.processor.factory.FactoryFileSpecFactory
@@ -83,8 +84,12 @@ class DIProcessorFactory(
         return AppContainerFileSpecFactory()
     }
 
-    private fun createStartFileSpecFactory(): StartFileSpecFactory {
-        return StartFileSpecFactory()
+    private fun createKojectFileSpecFactory(): KojectFileSpecFactory {
+        return KojectFileSpecFactory()
+    }
+
+    private fun createKojectStartFileSpecFactory(): KojectTestFileSpecFactory {
+        return KojectTestFileSpecFactory()
     }
 
     private fun createContainerGenerator(): ContainerGenerator {
@@ -93,7 +98,8 @@ class DIProcessorFactory(
             fileGenerator,
             createComponentContainerFileSpecFactory(),
             createAppContainerFileSpecFactory(),
-            createStartFileSpecFactory(),
+            createKojectFileSpecFactory(),
+            createKojectStartFileSpecFactory(),
         )
     }
 

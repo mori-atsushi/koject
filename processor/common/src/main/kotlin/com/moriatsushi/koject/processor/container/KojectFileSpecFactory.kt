@@ -13,7 +13,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asTypeName
 
-internal class StartFileSpecFactory {
+internal class KojectFileSpecFactory {
     fun create(): FileSpec {
         val packageName = Names.rootPackageName
         val containerName = Names.appContainerClassName
@@ -40,7 +40,7 @@ internal class StartFileSpecFactory {
             addAnnotation(AnnotationSpecFactory.createOptInInternal())
         }.build()
 
-        return FileSpec.builder(packageName, "_Start").apply {
+        return FileSpec.builder(packageName, "_Koject").apply {
             applyCommon()
             addFunction(funSpec)
         }.build()

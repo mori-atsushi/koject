@@ -14,14 +14,14 @@ fun Koject.runTest(
     block: () -> Unit,
 ) {
     start {
-        addCommonExtras()
+        applyExtras()
     }
     block()
     stop()
 }
 
 @OptIn(ExperimentalKojectApi::class)
-private fun KojectBuilder.addCommonExtras() {
+internal fun KojectBuilder.applyExtras() {
     addExtras(GlobalExtras(GlobalExtraClass1(), GlobalExtraSingleton1()))
     addExtras(WithQualifierExtras())
     addExtras(WithNamedExtras())

@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 class QualifierTest {
     @Test
-    fun successInject_qualifier() = Koject.runTest {
+    fun successInject_qualifier() = Koject.runMain {
         val class1 = inject<QualifierClass>(ID1())
         assertEquals("id1", class1.string)
 
@@ -20,7 +20,7 @@ class QualifierTest {
     }
 
     @Test
-    fun successLazyInject_qualifier() = Koject.runTest {
+    fun successLazyInject_qualifier() = Koject.runMain {
         val class1 by lazyInject<QualifierClass>(ID1())
         assertEquals("id1", class1.string)
 
@@ -32,7 +32,7 @@ class QualifierTest {
     }
 
     @Test
-    fun successInject_qualifierHolderClass() = Koject.runTest {
+    fun successInject_qualifierHolderClass() = Koject.runMain {
         val holder = inject<QualifierHolderClass>()
         assertEquals("not set", holder.notSet.string)
         assertEquals("id1", holder.id1.string)
@@ -40,7 +40,7 @@ class QualifierTest {
     }
 
     @Test
-    fun successInject_qualifierHolderInterface() = Koject.runTest {
+    fun successInject_qualifierHolderInterface() = Koject.runMain {
         val holder = inject<QualifierHolderInterface>()
         assertEquals("not set", holder.notSet.string)
         assertEquals("id1", holder.id1.string)

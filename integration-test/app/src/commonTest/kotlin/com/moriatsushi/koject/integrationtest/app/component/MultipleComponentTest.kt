@@ -5,13 +5,13 @@ package com.moriatsushi.koject.integrationtest.app.component
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.integrationtest.app.runMain
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MultipleComponentTest {
     @Test
-    fun successInject_classes() = Koject.runTest {
+    fun successInject_classes() = Koject.runMain {
         val type1 = inject<MultipleCustomComponentClass>(
             componentExtras = CustomComponent1Extras(),
         )
@@ -24,7 +24,7 @@ class MultipleComponentTest {
     }
 
     @Test
-    fun successInject_holders() = Koject.runTest {
+    fun successInject_holders() = Koject.runMain {
         val holder1 = inject<CustomComponent1Holder>(
             componentExtras = CustomComponent1Extras(),
         )

@@ -5,13 +5,13 @@ package com.moriatsushi.koject.integrationtest.app.component
 import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.integrationtest.app.runMain
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ComponentExtrasWithQualifierTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val extras = WithQualifierComponentExtras()
         val value = inject<WithQualifierComponentClass>(
             componentExtras = extras,

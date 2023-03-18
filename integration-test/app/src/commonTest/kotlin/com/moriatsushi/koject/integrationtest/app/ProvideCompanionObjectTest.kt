@@ -7,13 +7,13 @@ import kotlin.test.assertIs
 
 class ProvideCompanionObjectTest {
     @Test
-    fun successInject_provideCompanionObject() = Koject.runTest {
+    fun successInject_provideCompanionObject() = Koject.runMain {
         val actual = inject<ProvideCompanionObject>()
         assertIs<ProvideCompanionObject>(actual)
     }
 
     @Test
-    fun successInject_provideCompanionObjectHolder() = Koject.runTest {
+    fun successInject_provideCompanionObjectHolder() = Koject.runMain {
         val actual = inject<ProvideCompanionObjectHolder>()
         assertIs<ProvideCompanionObject>(actual.value)
     }

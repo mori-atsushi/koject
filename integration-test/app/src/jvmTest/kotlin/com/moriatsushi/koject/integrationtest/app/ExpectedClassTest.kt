@@ -7,7 +7,7 @@ import org.junit.Test
 
 class ExpectedClassTest {
     @Test
-    fun successInject_ExpectedClassProvideByCommon() = Koject.runTest {
+    fun successInject_ExpectedClassProvideByCommon() = Koject.runMain {
         val value = inject<ExpectedClass>()
         assertIs<ExpectedClass>(value)
     }

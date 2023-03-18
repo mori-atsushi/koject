@@ -10,28 +10,28 @@ import kotlin.test.assertIs
 
 class ProvideGenericsTest {
     @Test
-    fun successInject_stringList() = Koject.runTest {
+    fun successInject_stringList() = Koject.runMain {
         val actual = inject<List<String>>()
         assertIs<List<String>>(actual)
         assertEquals(listOf("provided"), actual)
     }
 
     @Test
-    fun successInject_intList() = Koject.runTest {
+    fun successInject_intList() = Koject.runMain {
         val actual = inject<List<Int>>()
         assertIs<List<Int>>(actual)
         assertEquals(listOf(123), actual)
     }
 
     @Test
-    fun successInject_otherList() = Koject.runTest {
+    fun successInject_otherList() = Koject.runMain {
         assertFailsWith<NotProvidedException> {
             inject<List<Boolean>>()
         }
     }
 
     @Test
-    fun successInject_map() = Koject.runTest {
+    fun successInject_map() = Koject.runMain {
         val actual = inject<Map<String, String>>()
         assertIs<Map<String, String>>(actual)
         val expected = mapOf("provided" to "provided")

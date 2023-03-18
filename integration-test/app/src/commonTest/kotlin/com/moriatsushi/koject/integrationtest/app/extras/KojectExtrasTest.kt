@@ -6,7 +6,7 @@ import com.moriatsushi.koject.ExperimentalKojectApi
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.error.MissingExtrasException
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.integrationtest.app.runTest
+import com.moriatsushi.koject.integrationtest.app.runMain
 import com.moriatsushi.koject.start
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -16,14 +16,14 @@ import kotlin.test.assertSame
 
 class KojectExtrasTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val holder = inject<GlobalExtraHolder>()
 
         assertIs<GlobalExtraHolder>(holder)
     }
 
     @Test
-    fun successInject_singleton() = Koject.runTest {
+    fun successInject_singleton() = Koject.runMain {
         val holder1 = inject<GlobalExtraHolder>()
         val holder2 = inject<GlobalExtraHolder>()
 
@@ -35,7 +35,7 @@ class KojectExtrasTest {
     }
 
     @Test
-    fun successInject_singletonHolder() = Koject.runTest {
+    fun successInject_singletonHolder() = Koject.runMain {
         val holder1 = inject<SingletonGlobalExtraHolder>()
         val holder2 = inject<SingletonGlobalExtraHolder>()
 

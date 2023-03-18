@@ -7,7 +7,7 @@ import kotlin.test.assertIs
 
 class BindsQualifierTest {
     @Test
-    fun successInject_bindsQualifierInterface() = Koject.runTest {
+    fun successInject_bindsQualifierInterface() = Koject.runMain {
         val value1 = inject<BindsQualifierInterface>(BindsQualifier1())
         val value2 = inject<BindsQualifierInterface>(BindsQualifier2())
         assertIs<BindsQualifierImpl1>(value1)
@@ -15,7 +15,7 @@ class BindsQualifierTest {
     }
 
     @Test
-    fun successInject_bindsQualifierHolder() = Koject.runTest {
+    fun successInject_bindsQualifierHolder() = Koject.runMain {
         val holder = inject<BindsQualifierHolder>()
         assertIs<BindsQualifierImpl1>(holder.value1)
         assertIs<BindsQualifierImpl2>(holder.value2)

@@ -9,21 +9,21 @@ import kotlin.test.assertSame
 
 class SingletonTest {
     @Test
-    fun sameInstance_class() = Koject.runTest {
+    fun sameInstance_class() = Koject.runMain {
         val value1 = inject<SingletonClass>()
         val value2 = inject<SingletonClass>()
         assertSame(value1, value2)
     }
 
     @Test
-    fun sameInstance_interface() = Koject.runTest {
+    fun sameInstance_interface() = Koject.runMain {
         val value1 = inject<SingletonInterface>()
         val value2 = inject<SingletonInterface>()
         assertSame(value1, value2)
     }
 
     @Test
-    fun sameInstance_singletonHolder() = Koject.runTest {
+    fun sameInstance_singletonHolder() = Koject.runMain {
         val value1 = inject<SingletonHolderClass>()
         val value2 = inject<SingletonHolderClass>()
 
@@ -33,14 +33,14 @@ class SingletonTest {
     }
 
     @Test
-    fun sameInstance_lazyInject() = Koject.runTest {
+    fun sameInstance_lazyInject() = Koject.runMain {
         val value1 by lazyInject<SingletonClass>()
         val value2 by lazyInject<SingletonClass>()
         assertSame(value1, value2)
     }
 
     @Test
-    fun notSameInstance_default() = Koject.runTest {
+    fun notSameInstance_default() = Koject.runMain {
         val value1 = inject<NotSingletonClass>()
         val value2 = inject<NotSingletonClass>()
         assertNotSame(value1, value2)

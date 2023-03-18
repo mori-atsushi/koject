@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.container
 
 import com.google.devtools.ksp.processing.Resolver
+import com.moriatsushi.koject.processor.analytics.includeTest
 import com.moriatsushi.koject.processor.file.FileGenerator
 import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.collectAllFactoryDeclarations
@@ -14,11 +15,13 @@ internal class ContainerGenerator(
     private val kojectTestFileSpecFactory: KojectTestFileSpecFactory,
 ) {
     fun generate(resolver: Resolver) {
+        val includeTest = resolver.includeTest()
+
         val allFactories = resolver.collectAllFactoryDeclarations()
         dependencyValidator.validate(allFactories)
 
         generateContainer(allFactories)
-        generateEntry()
+        generateEntry(includeTest)
     }
 
     private fun generateContainer(allFactories: AllFactoryDeclarations) {
@@ -48,7 +51,7 @@ internal class ContainerGenerator(
         )
     }
 
-    private fun generateEntry() {
+    private fun generateEntry(includeTest: Boolean) {
         val kojectFileSpec = kojectFileSpecFactory.create()
 
         fileGenerator.createNewFile(
@@ -56,11 +59,13 @@ internal class ContainerGenerator(
             aggregating = false,
         )
 
-        val kojectTestFileSpec = kojectTestFileSpecFactory.create()
+        if (includeTest) {
+            val kojectTestFileSpec = kojectTestFileSpecFactory.create()
 
-        fileGenerator.createNewFile(
-            fileSpec = kojectTestFileSpec,
-            aggregating = false,
-        )
+            fileGenerator.createNewFile(
+                fileSpec = kojectTestFileSpec,
+                aggregating = false,
+            )
+        }
     }
 }

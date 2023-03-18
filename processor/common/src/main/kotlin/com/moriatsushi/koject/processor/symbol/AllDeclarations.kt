@@ -29,11 +29,6 @@ internal class AllDeclarations(
 
 internal fun Resolver.collectAllDeclarations(): AllDeclarations {
     @OptIn(KspExperimental::class)
-    val factories = getDeclarationsFromPackage(Names.factoryPackageName)
-        .filterIsInstance<KSClassDeclaration>()
-        .map { FactoryDeclaration.of(it) }
-
-    @OptIn(KspExperimental::class)
     val extrasHolders = getDeclarationsFromPackage(Names.extrasPackageName)
         .filterIsInstance<KSClassDeclaration>()
         .map { ExtrasHolderDeclaration.of(it) }
@@ -44,7 +39,7 @@ internal fun Resolver.collectAllDeclarations(): AllDeclarations {
         .map { ComponentExtrasHolderDeclaration.of(it) }
 
     return AllDeclarations(
-        factories = factories,
+        factories = findFactories(),
         extrasHolders = extrasHolders,
         componentExtrasHolders = componentExtrasHolders,
     )

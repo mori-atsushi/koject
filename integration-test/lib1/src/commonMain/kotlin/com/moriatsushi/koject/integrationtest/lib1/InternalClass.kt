@@ -1,4 +1,4 @@
-package com.moriatsushi.koject.integrationtest.lib
+package com.moriatsushi.koject.integrationtest.lib1
 
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.inject

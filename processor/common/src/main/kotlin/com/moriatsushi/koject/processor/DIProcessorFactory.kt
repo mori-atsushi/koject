@@ -16,6 +16,8 @@ import com.moriatsushi.koject.processor.container.KojectTestFileSpecFactory
 import com.moriatsushi.koject.processor.debug.TimeMeasure
 import com.moriatsushi.koject.processor.extras.ExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.extras.ExtrasHolderGenerator
+import com.moriatsushi.koject.processor.factory.CopiedFactoryFileSpecFactory
+import com.moriatsushi.koject.processor.factory.CopiedFactoryGenerator
 import com.moriatsushi.koject.processor.factory.FactoryFileSpecFactory
 import com.moriatsushi.koject.processor.factory.FactoryGenerator
 import com.moriatsushi.koject.processor.factory.ProviderValidator
@@ -39,6 +41,17 @@ class DIProcessorFactory(
 
     private fun createProviderValidator(): ProviderValidator {
         return ProviderValidator()
+    }
+
+    private fun createCopiedFactoryFileSpecFactory(): CopiedFactoryFileSpecFactory {
+        return CopiedFactoryFileSpecFactory()
+    }
+
+    private fun createCopiedFactoryGenerator(): CopiedFactoryGenerator {
+        return CopiedFactoryGenerator(
+            fileGenerator,
+            createCopiedFactoryFileSpecFactory(),
+        )
     }
 
     private fun createFactoryFileSpecFactory(): FactoryFileSpecFactory {
@@ -134,6 +147,7 @@ class DIProcessorFactory(
     fun createLibProcessor(): SymbolProcessor {
         return LibProcessor(
             createFactoryGenerator(),
+            createCopiedFactoryGenerator(),
             createExtrasHolderGenerator(),
             createComponentExtrasHolderGenerator(),
             timeMeasure,

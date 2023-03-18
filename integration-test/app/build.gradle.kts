@@ -26,7 +26,7 @@ kotlin {
             dependencies {
                 implementation(project(":koject-core"))
                 implementation(kotlin("test"))
-                implementation(project(":integration-test:lib"))
+                implementation(project(":integration-test:lib1"))
             }
         }
 

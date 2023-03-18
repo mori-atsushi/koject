@@ -6,10 +6,11 @@ import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderGenerator
 import com.moriatsushi.koject.processor.component.ComponentExtrasValidator
+import com.moriatsushi.koject.processor.container.AllContainersGenerator
 import com.moriatsushi.koject.processor.container.AppContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ComponentContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ContainerGenerator
-import com.moriatsushi.koject.processor.container.DependencyValidator
+import com.moriatsushi.koject.processor.container.ContainerValidator
 import com.moriatsushi.koject.processor.container.KojectFileSpecFactory
 import com.moriatsushi.koject.processor.container.KojectTestFileSpecFactory
 import com.moriatsushi.koject.processor.extras.ExtrasHolderFileSpecFactory
@@ -72,8 +73,8 @@ class DIProcessorFactory(
         )
     }
 
-    private fun createDependencyValidator(): DependencyValidator {
-        return DependencyValidator()
+    private fun createContainerValidator(): ContainerValidator {
+        return ContainerValidator()
     }
 
     private fun createComponentContainerFileSpecFactory(): ComponentContainerFileSpecFactory {
@@ -94,10 +95,17 @@ class DIProcessorFactory(
 
     private fun createContainerGenerator(): ContainerGenerator {
         return ContainerGenerator(
-            createDependencyValidator(),
-            fileGenerator,
+            createContainerValidator(),
             createComponentContainerFileSpecFactory(),
             createAppContainerFileSpecFactory(),
+            fileGenerator,
+        )
+    }
+
+    private fun createAllContainersGenerator(): AllContainersGenerator {
+        return AllContainersGenerator(
+            fileGenerator,
+            createContainerGenerator(),
             createKojectFileSpecFactory(),
             createKojectStartFileSpecFactory(),
         )
@@ -111,7 +119,7 @@ class DIProcessorFactory(
             createFactoryGenerator(),
             createExtrasHolderGenerator(),
             createComponentExtrasHolderGenerator(),
-            createContainerGenerator(),
+            createAllContainersGenerator(),
             environment.codeGenerator,
             environment.logger,
         )

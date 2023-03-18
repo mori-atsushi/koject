@@ -10,7 +10,7 @@ import kotlin.test.assertFailsWith
 
 class NamedTest {
     @Test
-    fun successInject_namedClass() = Koject.runTest {
+    fun successInject_namedClass() = Koject.runMain {
         val class1 = inject<NamedClass>(Named("name1"))
         assertEquals("name1", class1.name)
 
@@ -22,7 +22,7 @@ class NamedTest {
     }
 
     @Test
-    fun successInject_namedInterface() = Koject.runTest {
+    fun successInject_namedInterface() = Koject.runMain {
         val interface1 = inject<NamedInterface>(Named("name1"))
         assertEquals("name1", interface1.name)
 
@@ -31,7 +31,7 @@ class NamedTest {
     }
 
     @Test
-    fun successInject_namedClass_legacy() = Koject.runTest {
+    fun successInject_namedClass_legacy() = Koject.runMain {
         val class1 = inject<NamedClass>("name1")
         assertEquals("name1", class1.name)
 
@@ -43,7 +43,7 @@ class NamedTest {
     }
 
     @Test
-    fun successInject_namedInterface_legacy() = Koject.runTest {
+    fun successInject_namedInterface_legacy() = Koject.runMain {
         val interface1 = inject<NamedInterface>("name1")
         assertEquals("name1", interface1.name)
 
@@ -52,14 +52,14 @@ class NamedTest {
     }
 
     @Test
-    fun failedInject_notProvidedName() = Koject.runTest {
+    fun failedInject_notProvidedName() = Koject.runMain {
         assertFailsWith<NotProvidedException> {
             inject<NamedInterface>()
         }
     }
 
     @Test
-    fun successInject_namedHolderClass() = Koject.runTest {
+    fun successInject_namedHolderClass() = Koject.runMain {
         val holder = inject<NamedHolderClass>()
         assertEquals("name1", holder.class1.name)
         assertEquals("name2", holder.class2.name)

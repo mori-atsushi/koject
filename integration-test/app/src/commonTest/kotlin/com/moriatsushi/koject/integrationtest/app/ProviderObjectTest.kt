@@ -8,14 +8,14 @@ import kotlin.test.assertIs
 
 class ProviderObjectTest {
     @Test
-    fun successInject_byObject() = Koject.runTest {
+    fun successInject_byObject() = Koject.runMain {
         val actual = inject<Int>()
         val expected = 123
         assertEquals(expected, actual)
     }
 
     @Test
-    fun successInject_withParameters() = Koject.runTest {
+    fun successInject_withParameters() = Koject.runMain {
         val actual = inject<ProviderObjectWithParameters>()
         assertIs<ProviderObjectWithParameters>(actual)
         assertEquals(123, actual.int)

@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 class QualifierWithMembersTest {
     @Test
-    fun successInject_stringQualifier() = Koject.runTest {
+    fun successInject_stringQualifier() = Koject.runMain {
         val value1 = inject<String>(StringQualifier("id1"))
         assertEquals("StringQualifier-id1", value1)
 
@@ -19,7 +19,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_enumQualifier() = Koject.runTest {
+    fun successInject_enumQualifier() = Koject.runMain {
         val value1 = inject<String>(EnumQualifier(QualifierEnum.ID1))
         assertEquals("EnumQualifier-id1", value1)
 
@@ -28,7 +28,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_classQualifier() = Koject.runTest {
+    fun successInject_classQualifier() = Koject.runMain {
         val value1 = inject<String>(ClassQualifier(String::class))
         assertEquals("ClassQualifier-string", value1)
 
@@ -37,7 +37,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_multipleMemberQualifier() = Koject.runTest {
+    fun successInject_multipleMemberQualifier() = Koject.runMain {
         val value1 = inject<String>(MultipleMemberQualifier("id1", String::class))
         assertEquals("MultipleMemberQualifier-id1-string", value1)
 
@@ -46,7 +46,7 @@ class QualifierWithMembersTest {
     }
 
     @Test
-    fun successInject_qualifierWithMembersHolder() = Koject.runTest {
+    fun successInject_qualifierWithMembersHolder() = Koject.runMain {
         val holder = inject<QualifierWithMembersHolder>()
 
         assertEquals("StringQualifier-id1", holder.stringQualifier1)

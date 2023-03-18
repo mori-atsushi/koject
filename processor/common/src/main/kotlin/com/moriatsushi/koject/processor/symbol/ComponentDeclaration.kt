@@ -6,31 +6,34 @@ import com.moriatsushi.koject.processor.code.escapedForCode
 import com.squareup.kotlinpoet.ClassName
 
 internal sealed class ComponentDeclaration(
+    private val containerName: String,
     private val factories: Sequence<FactoryDeclaration>,
 ) {
     abstract val name: ComponentName
     abstract val extrasHolders: Sequence<ExtrasHolderDeclaration>
-    abstract val allProvided: Sequence<Provided>
+    abstract val allProvided: List<Provided>
 
     class Root(
+        containerName: String,
         factories: Sequence<FactoryDeclaration>,
         override val extrasHolders: Sequence<ExtrasHolderDeclaration>,
-    ) : ComponentDeclaration(factories) {
+    ) : ComponentDeclaration(containerName, factories) {
         override val name = ComponentName("RootComponent")
 
-        override val allProvided: Sequence<Provided>
+        override val allProvided: List<Provided>
             get() = allFactories.map { it.provided } +
                 extrasHolders.flatMap { it.extras }
     }
 
     class Child(
+        containerName: String,
         factories: Sequence<FactoryDeclaration>,
         val extrasHolder: ComponentExtrasHolderDeclaration,
         val rootComponent: Root,
-    ) : ComponentDeclaration(factories) {
+    ) : ComponentDeclaration(containerName, factories) {
         override val name = extrasHolder.componentName
 
-        override val allProvided: Sequence<Provided>
+        override val allProvided: List<Provided>
             get() = allFactories.map { it.provided } +
                 extrasHolder.extras +
                 rootComponent.allProvided
@@ -45,17 +48,25 @@ internal sealed class ComponentDeclaration(
         }
     }
 
-    val allFactories = factories.sortedBy { it.identifier.displayName }
+    val allFactories = factories.groupBy { it.identifier }
+        .map { (_, factories) ->
+            if (factories.any { it.forTest }) {
+                factories.filter { it.forTest }
+            } else {
+                factories
+            }
+        }
+        .flatten()
     val normalFactories = allFactories.filter { !it.isSingleton }
     val singletonFactories = allFactories.filter { it.isSingleton }
 
     fun findFactory(identifier: StringIdentifier): FactoryDeclaration? {
         return factories.find { it.identifier == identifier }
     }
-}
 
-internal val ComponentDeclaration.containerClassName: ClassName
-    get() = ClassName(
-        Names.generatedPackageName,
-        "_${name.value.escapedForCode}_Container",
-    )
+    val containerClassName: ClassName
+        get() = ClassName(
+            "${Names.generatedPackageName}.$containerName",
+            "_${name.value.escapedForCode}_Container",
+        )
+}

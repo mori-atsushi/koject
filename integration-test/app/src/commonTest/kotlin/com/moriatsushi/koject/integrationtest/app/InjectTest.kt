@@ -11,7 +11,7 @@ import kotlin.test.assertIs
 
 class InjectTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val appClass1 = inject<AppClass1>()
         assertIs<AppClass1>(appClass1)
 
@@ -23,7 +23,7 @@ class InjectTest {
     }
 
     @Test
-    fun successLazyInject() = Koject.runTest {
+    fun successLazyInject() = Koject.runMain {
         val appClass1 by lazyInject<AppClass1>()
         assertIs<AppClass1>(appClass1)
 
@@ -35,7 +35,7 @@ class InjectTest {
     }
 
     @Test
-    fun failInject_notProvided() = Koject.runTest {
+    fun failInject_notProvided() = Koject.runMain {
         assertFails {
             inject<NotProvided>()
         }

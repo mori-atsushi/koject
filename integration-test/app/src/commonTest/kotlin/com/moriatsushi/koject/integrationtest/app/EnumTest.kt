@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 class EnumTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val holder = inject<EnumHolder>()
         assertEquals(SampleEnum.Item1, holder.item)
     }

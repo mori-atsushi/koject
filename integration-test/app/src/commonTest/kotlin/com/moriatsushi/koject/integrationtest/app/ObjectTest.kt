@@ -7,7 +7,7 @@ import kotlin.test.assertIs
 
 class ObjectTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val value1 = inject<ProvidableObject>()
         assertIs<ProvidableObject>(value1)
 
@@ -22,7 +22,7 @@ class ObjectTest {
     }
 
     @Test
-    fun successInject_holder() = Koject.runTest {
+    fun successInject_holder() = Koject.runMain {
         val holder = inject<ProvidableObjectHolder>()
         assertIs<ProvidableObjectHolder>(holder)
     }

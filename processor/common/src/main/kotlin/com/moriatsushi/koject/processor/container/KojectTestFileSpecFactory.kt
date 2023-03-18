@@ -6,6 +6,7 @@ import com.moriatsushi.koject.internal.KojectBuilderImpl
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -15,7 +16,10 @@ import com.squareup.kotlinpoet.asTypeName
 
 class KojectTestFileSpecFactory {
     private val packageName = Names.testPackageName
-    private val containerName = Names.appContainerClassName
+    private val containerName = ClassName(
+        Names.generatedPackageName,
+        "_TestContainer",
+    )
     private val builderLambdaType = LambdaTypeName.get(
         receiver = KojectBuilder::class.asTypeName(),
         returnType = UNIT,

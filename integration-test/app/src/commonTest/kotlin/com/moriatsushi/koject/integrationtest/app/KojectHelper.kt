@@ -10,7 +10,7 @@ import com.moriatsushi.koject.integrationtest.app.extras.WithNamedExtras
 import com.moriatsushi.koject.integrationtest.app.extras.WithQualifierExtras
 import com.moriatsushi.koject.start
 
-fun Koject.runTest(
+fun Koject.runMain(
     block: () -> Unit,
 ) {
     start {

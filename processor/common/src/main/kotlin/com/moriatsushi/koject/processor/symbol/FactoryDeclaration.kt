@@ -20,6 +20,9 @@ internal data class FactoryDeclaration(
     val isSingleton: Boolean
         get() = provided.isSingleton
 
+    val forTest: Boolean
+        get() = provided.forTest
+
     val location: Location
         get() = provided.location
 

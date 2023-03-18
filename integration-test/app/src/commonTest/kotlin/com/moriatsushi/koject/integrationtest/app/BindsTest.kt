@@ -9,45 +9,45 @@ import kotlin.test.assertIs
 
 class BindsTest {
     @Test
-    fun successInject_bindsInterface() = Koject.runTest {
+    fun successInject_bindsInterface() = Koject.runMain {
         val value = inject<BindsInterface>()
         assertIs<BindsImplement>(value)
     }
 
     @Test
-    fun failInject_bindsImplement() = Koject.runTest {
+    fun failInject_bindsImplement() = Koject.runMain {
         assertFailsWith<NotProvidedException> {
             inject<BindsImplement>()
         }
     }
 
     @Test
-    fun failedInject_bindsBindsInterface1() = Koject.runTest {
+    fun failedInject_bindsBindsInterface1() = Koject.runMain {
         assertFailsWith<NotProvidedException> {
             inject<BindsInterface1>()
         }
     }
 
     @Test
-    fun successInject_bindsBindsInterface2() = Koject.runTest {
+    fun successInject_bindsBindsInterface2() = Koject.runMain {
         val value = inject<BindsInterface2>()
         assertIs<BindsMultipleImplement>(value)
     }
 
     @Test
-    fun successInject_bindsNested() = Koject.runTest {
+    fun successInject_bindsNested() = Koject.runMain {
         val value = inject<BindChild1>()
         assertIs<BindsNestedImplement>(value)
     }
 
     @Test
-    fun successInject_bindsAbstract() = Koject.runTest {
+    fun successInject_bindsAbstract() = Koject.runMain {
         val value = inject<BindsAbstract>()
         assertIs<BindsAbstractImplement>(value)
     }
 
     @Test
-    fun successInject_bindsInterfaceHolder() = Koject.runTest {
+    fun successInject_bindsInterfaceHolder() = Koject.runMain {
         val holder = inject<BindsInterfaceHolder>()
         assertIs<BindsImplement>(holder.single)
         assertIs<BindsMultipleImplement>(holder.multiple)

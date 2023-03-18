@@ -11,7 +11,7 @@ import kotlin.test.assertIs
 
 class LibInjectTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val libClass1 = inject<LibClass1>()
         assertIs<LibClass1>(libClass1)
 
@@ -23,7 +23,7 @@ class LibInjectTest {
     }
 
     @Test
-    fun successInject_internal() = Koject.runTest {
+    fun successInject_internal() = Koject.runMain {
         checkInternalClassInject()
     }
 }

@@ -7,7 +7,7 @@ import org.junit.Test
 
 class JvmClassTest {
     @Test
-    fun successInject() = Koject.runTest {
+    fun successInject() = Koject.runMain {
         val value = inject<JvmClass>()
         assertIs<JvmClass>(value)
     }

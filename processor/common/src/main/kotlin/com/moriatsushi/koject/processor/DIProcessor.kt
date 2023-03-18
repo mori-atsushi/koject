@@ -6,7 +6,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderGenerator
-import com.moriatsushi.koject.processor.container.ContainerGenerator
+import com.moriatsushi.koject.processor.container.AllContainersGenerator
 import com.moriatsushi.koject.processor.extras.ExtrasHolderGenerator
 import com.moriatsushi.koject.processor.factory.FactoryGenerator
 import kotlin.time.ExperimentalTime
@@ -18,7 +18,7 @@ internal class DIProcessor(
     private val factoryGenerator: FactoryGenerator,
     private val extrasHolderGenerator: ExtrasHolderGenerator,
     private val componentExtrasHolderGenerator: ComponentExtrasHolderGenerator,
-    private val containerGenerator: ContainerGenerator,
+    private val allContainerGenerator: AllContainersGenerator,
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
 ) : SymbolProcessor {
@@ -72,7 +72,7 @@ internal class DIProcessor(
 
     private fun generateContainer(resolver: Resolver) {
         if (options.shouldGenerateContainer) {
-            containerGenerator.generate(resolver)
+            allContainerGenerator.generate(resolver)
         }
         step = Step.Completed
     }

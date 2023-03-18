@@ -8,7 +8,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorMultimoduleTest {
+class AppProcessorMultimoduleTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 

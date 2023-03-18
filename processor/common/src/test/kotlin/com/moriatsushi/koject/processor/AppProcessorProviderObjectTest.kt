@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorSingletonTest {
+class AppProcessorProviderObjectTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
@@ -36,31 +36,26 @@ class DIProcessorSingletonTest {
                 package com.testpackage
 
                 import com.moriatsushi.koject.Provides
-                import com.moriatsushi.koject.Singleton
 
-                @Singleton
-                @Provides
-                class SingletonClass1
-
-                @Singleton
-                @Provides
-                class SingletonClass2(
-                    private val class1: SingletonClass1
-                )
-
-                interface SingletonInterface
+                object ProviderObject {
+                    @Provides
+                    fun provideInt(): Int {
+                        return 123
+                    }
                 
-                @Provides
-                @Singleton
-                fun provideSingletonInterface(): SingletonInterface {
-                    return object : SingletonInterface {}
+                    @Provides
+                    fun provideWithParameters(
+                        int: Int,
+                    ): ProviderObjectWithParameters {
+                        return ProviderObjectWithParameters(
+                            int = int,
+                        )
+                    }
                 }
 
-                @Provides
-                class SingletonHolderClass(
-                    val singletonClass: SingletonClass2,
-                    val singletonInterface: SingletonInterface,
+                data class ProviderObjectWithParameters(
+                    val int: Int,
                 )
-            """,
+                """,
     )
 }

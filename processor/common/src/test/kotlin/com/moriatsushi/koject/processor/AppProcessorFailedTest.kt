@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorFailedTest {
+class AppProcessorFailedTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 

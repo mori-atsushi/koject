@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorQualifierTest {
+class AppProcessorQualifierWithMembersTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
@@ -40,19 +40,20 @@ class DIProcessorQualifierTest {
 
                 @Qualifier
                 @Retention(AnnotationRetention.BINARY)
-                annotation class ID1
-                
-                @Qualifier
-                @Retention(AnnotationRetention.BINARY)
-                annotation class ID2
+                annotation class EnumQualifier(val enum: QualifierEnum)
 
-                @ID1
+                enum class QualifierEnum {
+                    ID1,
+                    ID2
+                }
+
+                @EnumQualifier(QualifierEnum.ID1)
                 @Provides
                 fun provideString1(): String {
                     return "id1"
                 }
 
-                @ID2
+                @EnumQualifier(QualifierEnum.ID2)
                 @Provides
                 fun provideString2(): String {
                     return "id2"
@@ -60,17 +61,17 @@ class DIProcessorQualifierTest {
 
                 @Provides
                 class SampleClass(
-                    @ID1
+                    @EnumQualifier(QualifierEnum.ID1)
                     private val string1: String,
-                    @ID2
+                    @EnumQualifier(QualifierEnum.ID2)
                     private val string2: String,
                 )
 
-                @ID1
+                @EnumQualifier(QualifierEnum.ID1)
                 @Provides
                 fun provideSampleClass(
-                    @ID1 string1: String,
-                    @ID2 string2: String,
+                    @EnumQualifier(QualifierEnum.ID1) string1: String,
+                    @EnumQualifier(QualifierEnum.ID2) string2: String,
                 ): SampleClass {
                     return SampleClass(
                         string1 + "by-id1",

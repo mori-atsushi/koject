@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorNamedTest {
+class AppProcessorSingletonTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
@@ -35,37 +35,32 @@ class DIProcessorNamedTest {
         """
                 package com.testpackage
 
-                import com.moriatsushi.koject.Named
                 import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.Singleton
 
-                @Named("name1")
+                @Singleton
                 @Provides
-                fun provideString1(): String {
-                    return "name1"
-                }
+                class SingletonClass1
 
-                @Named("name2")
+                @Singleton
                 @Provides
-                fun provideString2(): String {
-                    return "name2"
-                }
-
-                @Provides
-                class SampleClass(
-                    @Named("name1")
-                    private val name1: String,
-                    @Named("name2")
-                    private val name2: String,
+                class SingletonClass2(
+                    private val class1: SingletonClass1
                 )
 
-                @Named("by_function")
+                interface SingletonInterface
+                
                 @Provides
-                fun provideSampleClass(
-                    @Named("name1") name1: String,
-                    @Named("name2") name2: String,
-                ): SampleClass {
-                    return SampleClass(name1, name2)
+                @Singleton
+                fun provideSingletonInterface(): SingletonInterface {
+                    return object : SingletonInterface {}
                 }
+
+                @Provides
+                class SingletonHolderClass(
+                    val singletonClass: SingletonClass2,
+                    val singletonInterface: SingletonInterface,
+                )
             """,
     )
 }

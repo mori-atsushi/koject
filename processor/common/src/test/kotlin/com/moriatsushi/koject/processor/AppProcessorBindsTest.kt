@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
+import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.tschuchort.compiletesting.SourceFile
 import java.io.File
@@ -9,7 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorProviderObjectTest {
+class AppProcessorBindsTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
@@ -28,6 +29,9 @@ class DIProcessorProviderObjectTest {
         val result = complication.compile()
 
         assertCompileSucceed(result)
+
+        val expectedFactoryFile = folder.resolve(expectedFactoryFilePath)
+        assertFileExists(expectedFactoryFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -35,27 +39,18 @@ class DIProcessorProviderObjectTest {
         """
                 package com.testpackage
 
+                import com.moriatsushi.koject.Binds
                 import com.moriatsushi.koject.Provides
 
-                object ProviderObject {
-                    @Provides
-                    fun provideInt(): Int {
-                        return 123
-                    }
-                
-                    @Provides
-                    fun provideWithParameters(
-                        int: Int,
-                    ): ProviderObjectWithParameters {
-                        return ProviderObjectWithParameters(
-                            int = int,
-                        )
-                    }
-                }
+                @Binds
+                @Provides
+                class SampleImpl: Sample
 
-                data class ProviderObjectWithParameters(
-                    val int: Int,
-                )
-                """,
+                interface Sample
+            """,
     )
+
+    private val expectedFactoryFilePath =
+        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
+            "_com_testpackage_Sample_Factory.kt"
 }

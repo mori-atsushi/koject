@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorQualifierWithMembersTest {
+class AppProcessorQualifierTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
@@ -40,20 +40,19 @@ class DIProcessorQualifierWithMembersTest {
 
                 @Qualifier
                 @Retention(AnnotationRetention.BINARY)
-                annotation class EnumQualifier(val enum: QualifierEnum)
+                annotation class ID1
+                
+                @Qualifier
+                @Retention(AnnotationRetention.BINARY)
+                annotation class ID2
 
-                enum class QualifierEnum {
-                    ID1,
-                    ID2
-                }
-
-                @EnumQualifier(QualifierEnum.ID1)
+                @ID1
                 @Provides
                 fun provideString1(): String {
                     return "id1"
                 }
 
-                @EnumQualifier(QualifierEnum.ID2)
+                @ID2
                 @Provides
                 fun provideString2(): String {
                     return "id2"
@@ -61,17 +60,17 @@ class DIProcessorQualifierWithMembersTest {
 
                 @Provides
                 class SampleClass(
-                    @EnumQualifier(QualifierEnum.ID1)
+                    @ID1
                     private val string1: String,
-                    @EnumQualifier(QualifierEnum.ID2)
+                    @ID2
                     private val string2: String,
                 )
 
-                @EnumQualifier(QualifierEnum.ID1)
+                @ID1
                 @Provides
                 fun provideSampleClass(
-                    @EnumQualifier(QualifierEnum.ID1) string1: String,
-                    @EnumQualifier(QualifierEnum.ID2) string2: String,
+                    @ID1 string1: String,
+                    @ID2 string2: String,
                 ): SampleClass {
                     return SampleClass(
                         string1 + "by-id1",

@@ -11,23 +11,23 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorDependencyResolutionFailedTest {
+class AppProcessorKojectExtrasFailedTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 
     private val compilationFactory = KotlinCompilationFactory()
 
     @Test
-    fun notProvided() {
+    fun notProvidedInExtras() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(notProvidedInputCode)
+        complication.sources = listOf(notProvidedInExtrasCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
 
         val expectedError = NotProvidedException::class
-        val location = "Test.kt:9"
+        val location = "Test.kt:12"
         val expectedErrorMessage = "com.testpackage.NotProvided is not provided."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
@@ -38,16 +38,34 @@ class DIProcessorDependencyResolutionFailedTest {
     fun duplicateProvided() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(duplicateProvidedInputCode)
+        complication.sources = listOf(duplicateProvidedCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
 
         val expectedError = DuplicateProvidedException::class
-        val location1 = "Test.kt:6"
-        val location2 = "Test.kt:9"
-        val expectedErrorMessage =
-            "com.testpackage.SampleClass provide is duplicated."
+        val location1 = "Test.kt:11"
+        val location2 = "Test.kt:7"
+        val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated."
+        assertContains(result.messages, expectedError.qualifiedName!!)
+        assertContains(result.messages, location1)
+        assertContains(result.messages, location2)
+        assertContains(result.messages, expectedErrorMessage)
+    }
+
+    @Test
+    fun duplicateProvidedBetweenExtras() {
+        val folder = tempFolder.newFolder()
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(duplicateProvidedBetweenExtrasCode)
+        val result = complication.compile()
+
+        assertCompileFailed(result)
+
+        val expectedError = DuplicateProvidedException::class
+        val location1 = "Test.kt:11"
+        val location2 = "Test.kt:7"
+        val expectedErrorMessage = "com.testpackage.SampleClass provide is duplicated."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location1)
         assertContains(result.messages, location2)
@@ -58,27 +76,30 @@ class DIProcessorDependencyResolutionFailedTest {
     fun wrongScope() {
         val folder = tempFolder.newFolder()
         val complication = compilationFactory.create(folder)
-        complication.sources = listOf(invalidScopeCode)
+        complication.sources = listOf(wrongScopeCode)
         val result = complication.compile()
 
         assertCompileFailed(result)
 
         val expectedError = WrongScopeException::class
-        val location = "Test.kt:12"
+        val location = "Test.kt:16"
         val expectedErrorMessage =
-            "com.testpackage.NormalScope cannot be injected because it is not a singleton. " +
+            "com.testpackage.SampleClass cannot be injected because it is not a singleton. " +
                 "Only a singleton can be injected into singletons."
         assertContains(result.messages, expectedError.qualifiedName!!)
         assertContains(result.messages, location)
         assertContains(result.messages, expectedErrorMessage)
     }
 
-    private val notProvidedInputCode = SourceFile.kotlin(
+    private val notProvidedInExtrasCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
 
                 import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.extras.KojectExtras
+                
+                class GlobalExtras: KojectExtras
 
                 class NotProvided
 
@@ -89,38 +110,62 @@ class DIProcessorDependencyResolutionFailedTest {
             """,
     )
 
-    private val duplicateProvidedInputCode = SourceFile.kotlin(
+    private val duplicateProvidedCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
 
                 import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.extras.KojectExtras
+
+                class GlobalExtras(
+                    val sampleClass: SampleClass
+                ): KojectExtras
 
                 @Provides
                 class SampleClass
-
-                @Provides
-                fun provideSampleClass(): SampleClass {
-                    return SampleClass()
-                }
             """,
     )
 
-    private val invalidScopeCode = SourceFile.kotlin(
+    private val duplicateProvidedBetweenExtrasCode = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Provides
+                import com.moriatsushi.koject.extras.KojectExtras
+
+                class GlobalExtras1(
+                    val sampleClass: SampleClass
+                ): KojectExtras
+
+                class GlobalExtras2(
+                    val sampleClass: SampleClass
+                ): KojectExtras
+
+                class SampleClass
+            """,
+    )
+
+    private val wrongScopeCode = SourceFile.kotlin(
         "Test.kt",
         """
                 package com.testpackage
 
                 import com.moriatsushi.koject.Provides
                 import com.moriatsushi.koject.Singleton
+                import com.moriatsushi.koject.extras.KojectExtras
 
-                @Provides
-                class NormalScope
+                class SampleClass
+
+                class GlobalExtras(
+                    val sampleClass: SampleClass
+                ): KojectExtras
 
                 @Singleton
                 @Provides
-                class SingletonScope(
-                    val normal: NormalScope
+                class SampleClassHolder(
+                    val sampleClass: SampleClass
                 )
             """,
     )

@@ -13,6 +13,7 @@ import com.moriatsushi.koject.processor.container.ContainerGenerator
 import com.moriatsushi.koject.processor.container.ContainerValidator
 import com.moriatsushi.koject.processor.container.KojectFileSpecFactory
 import com.moriatsushi.koject.processor.container.KojectTestFileSpecFactory
+import com.moriatsushi.koject.processor.debug.TimeMeasure
 import com.moriatsushi.koject.processor.extras.ExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.extras.ExtrasHolderGenerator
 import com.moriatsushi.koject.processor.factory.FactoryFileSpecFactory
@@ -23,7 +24,15 @@ import com.moriatsushi.koject.processor.file.FileGenerator
 @InternalKojectApi
 class DIProcessorFactory(
     private val environment: SymbolProcessorEnvironment,
+    private val options: DIProcessorOptions = DIProcessorOptions(),
 ) {
+    private val timeMeasure by lazy {
+        TimeMeasure(
+            options.measureDuration,
+            environment.logger,
+        )
+    }
+
     private val fileGenerator by lazy {
         FileGenerator(environment.codeGenerator)
     }
@@ -111,17 +120,23 @@ class DIProcessorFactory(
         )
     }
 
-    fun create(
-        options: DIProcessorOptions = DIProcessorOptions(),
-    ): SymbolProcessor {
-        return DIProcessor(
-            options,
+    fun createAppProcessor(): SymbolProcessor {
+        return AppProcessor(
             createFactoryGenerator(),
             createExtrasHolderGenerator(),
             createComponentExtrasHolderGenerator(),
             createAllContainersGenerator(),
             environment.codeGenerator,
-            environment.logger,
+            timeMeasure,
+        )
+    }
+
+    fun createLibProcessor(): SymbolProcessor {
+        return LibProcessor(
+            createFactoryGenerator(),
+            createExtrasHolderGenerator(),
+            createComponentExtrasHolderGenerator(),
+            timeMeasure,
         )
     }
 }

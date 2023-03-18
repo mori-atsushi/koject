@@ -12,7 +12,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
-class DIProcessorComponentFailedTest {
+class AppProcessorComponentFailedTest {
     @get:Rule
     val tempFolder: TemporaryFolder = TemporaryFolder()
 

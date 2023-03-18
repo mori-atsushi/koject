@@ -1,17 +1,19 @@
 package com.moriatsushi.koject.integrationtest.app.test
 
 import com.moriatsushi.koject.Provides
-import com.moriatsushi.koject.test.TestProvides
+
+interface TestInterface {
+    val name: String
+}
 
 @Provides
-class ProvideInTest
-
-@TestProvides
-class TestProvideInTest
-
-@TestProvides
 fun provideTestInterface(): TestInterface {
     return object : TestInterface {
-        override val name: String = "replaced"
+        override val name: String = "base"
     }
 }
+
+@Provides
+class TestInterfaceHolder(
+    val value: TestInterface,
+)

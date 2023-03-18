@@ -44,6 +44,14 @@ annotation class StringComponent(
 annotation class Location(val value: String)
 
 /**
+ * mark for testing
+ */
+@InternalKojectApi
+@Retention(value = AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS)
+annotation class ForTest
+
+/**
  * Marks declarations that are internal in Koject API
  *
  * Don't use it outside of Koject.

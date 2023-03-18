@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.code
 
 import com.moriatsushi.koject.Singleton
+import com.moriatsushi.koject.internal.ForTest
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.asClassName
@@ -35,6 +36,11 @@ internal object AnnotationSpecFactory {
 
     fun createSingleton(): AnnotationSpec {
         return AnnotationSpec.builder(Singleton::class.asClassName())
+            .build()
+    }
+
+    fun createForTest(): AnnotationSpec {
+        return AnnotationSpec.builder(ForTest::class.asClassName())
             .build()
     }
 

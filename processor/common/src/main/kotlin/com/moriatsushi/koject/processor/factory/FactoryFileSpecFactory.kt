@@ -51,6 +51,9 @@ internal class FactoryFileSpecFactory {
             if (provider.isSingleton) {
                 addAnnotation(AnnotationSpecFactory.createSingleton())
             }
+            if (provider.forTest) {
+                addAnnotation(AnnotationSpecFactory.createForTest())
+            }
             addAnnotation(provider.identifier.asAnnotationSpec())
             provider.component?.let {
                 addAnnotation(it.asAnnotationSpec())

@@ -10,7 +10,7 @@ internal sealed class ComponentDeclaration(
 ) {
     abstract val name: ComponentName
     abstract val extrasHolders: Sequence<ExtrasHolderDeclaration>
-    abstract val allProvided: Sequence<Provided>
+    abstract val allProvided: List<Provided>
 
     class Root(
         factories: Sequence<FactoryDeclaration>,
@@ -18,7 +18,7 @@ internal sealed class ComponentDeclaration(
     ) : ComponentDeclaration(factories) {
         override val name = ComponentName("RootComponent")
 
-        override val allProvided: Sequence<Provided>
+        override val allProvided: List<Provided>
             get() = allFactories.map { it.provided } +
                 extrasHolders.flatMap { it.extras }
     }
@@ -30,7 +30,7 @@ internal sealed class ComponentDeclaration(
     ) : ComponentDeclaration(factories) {
         override val name = extrasHolder.componentName
 
-        override val allProvided: Sequence<Provided>
+        override val allProvided: List<Provided>
             get() = allFactories.map { it.provided } +
                 extrasHolder.extras +
                 rootComponent.allProvided
@@ -45,7 +45,15 @@ internal sealed class ComponentDeclaration(
         }
     }
 
-    val allFactories = factories.sortedBy { it.identifier.displayName }
+    val allFactories = factories.groupBy { it.identifier }
+        .map { (_, factories) ->
+            if (factories.any { it.forTest }) {
+                factories.filter { it.forTest }
+            } else {
+                factories
+            }
+        }
+        .flatten()
     val normalFactories = allFactories.filter { !it.isSingleton }
     val singletonFactories = allFactories.filter { it.isSingleton }
 

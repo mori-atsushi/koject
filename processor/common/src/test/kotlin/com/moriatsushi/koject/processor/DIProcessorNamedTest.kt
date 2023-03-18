@@ -46,7 +46,7 @@ class DIProcessorNamedTest {
 
                 @Named("name2")
                 @Provides
-                fun provideString1(): String {
+                fun provideString2(): String {
                     return "name2"
                 }
 

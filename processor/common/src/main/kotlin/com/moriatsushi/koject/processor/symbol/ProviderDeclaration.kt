@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.symbol
 
 import com.google.devtools.ksp.isAbstract
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.FunctionKind
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -8,11 +9,13 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.moriatsushi.koject.processor.analytics.name
 import com.moriatsushi.koject.processor.error.CodeGenerationException
+import com.moriatsushi.koject.test.TestProvides
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -24,24 +27,35 @@ internal data class ProviderDeclaration(
     val component: ComponentName?,
     val parameters: List<ProviderParameter>?,
     val isSingleton: Boolean,
+    val forTest: Boolean,
     val location: Location,
     val containingFile: KSFile?,
 ) {
     companion object
 }
 
+internal fun Resolver.findProviders(): Sequence<ProviderDeclaration> {
+    val providers = getSymbolsWithAnnotation(Provides::class.qualifiedName!!)
+        .map { ProviderDeclaration.of(it) }
+    val testProviders = getSymbolsWithAnnotation(TestProvides::class.qualifiedName!!)
+        .map { ProviderDeclaration.of(it, forTest = true) }
+    return providers + testProviders
+}
+
 internal fun ProviderDeclaration.Companion.of(
     node: KSAnnotated,
+    forTest: Boolean = false,
 ): ProviderDeclaration {
     return when (node) {
-        is KSClassDeclaration -> of(node)
-        is KSFunctionDeclaration -> of(node)
+        is KSClassDeclaration -> of(node, forTest)
+        is KSFunctionDeclaration -> of(node, forTest)
         else -> error("Not supported type: $node")
     }
 }
 
 private fun ProviderDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
+    forTest: Boolean,
 ): ProviderDeclaration {
     check(ksClass)
 
@@ -62,6 +76,7 @@ private fun ProviderDeclaration.Companion.of(
         isSingleton = ksClass.isSingleton,
         location = ksClass.createLocationAnnotation(),
         containingFile = ksClass.containingFile,
+        forTest = forTest,
     )
 }
 
@@ -99,13 +114,14 @@ private fun check(ksClass: KSClassDeclaration) {
 
 private fun ProviderDeclaration.Companion.of(
     ksFunction: KSFunctionDeclaration,
+    forTest: Boolean,
 ): ProviderDeclaration {
     val declaration = when (ksFunction.functionKind) {
-        FunctionKind.TOP_LEVEL -> createTopLevelFunction(ksFunction)
+        FunctionKind.TOP_LEVEL -> createTopLevelFunction(ksFunction, forTest)
         FunctionKind.MEMBER -> {
             val parent = ksFunction.parentDeclaration as KSClassDeclaration
             if (parent.classKind == ClassKind.OBJECT) {
-                createObjectFunction(parent, ksFunction)
+                createObjectFunction(parent, ksFunction, forTest)
             } else {
                 null
             }
@@ -120,6 +136,7 @@ private fun ProviderDeclaration.Companion.of(
 
 private fun ProviderDeclaration.Companion.createTopLevelFunction(
     ksFunction: KSFunctionDeclaration,
+    forTest: Boolean,
 ): ProviderDeclaration {
     val name = ProviderName.Function(
         functionName = MemberName(
@@ -133,6 +150,7 @@ private fun ProviderDeclaration.Companion.createTopLevelFunction(
         component = ksFunction.findComponentName(),
         parameters = ksFunction.providerParameters,
         isSingleton = ksFunction.isSingleton,
+        forTest = forTest,
         location = ksFunction.createLocationAnnotation(),
         containingFile = ksFunction.containingFile,
     )
@@ -141,6 +159,7 @@ private fun ProviderDeclaration.Companion.createTopLevelFunction(
 private fun ProviderDeclaration.Companion.createObjectFunction(
     parent: KSClassDeclaration,
     ksFunction: KSFunctionDeclaration,
+    forTest: Boolean,
 ): ProviderDeclaration {
     val objectName = parent.toClassName()
     val functionName = objectName.member(ksFunction.simpleName.asString())
@@ -155,6 +174,7 @@ private fun ProviderDeclaration.Companion.createObjectFunction(
         component = ksFunction.findComponentName(),
         parameters = ksFunction.providerParameters,
         isSingleton = ksFunction.isSingleton,
+        forTest = forTest,
         location = ksFunction.createLocationAnnotation(),
         containingFile = ksFunction.containingFile,
     )

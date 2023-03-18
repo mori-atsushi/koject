@@ -54,7 +54,7 @@ class DIProcessorQualifierTest {
 
                 @ID2
                 @Provides
-                fun provideString1(): String {
+                fun provideString2(): String {
                     return "id2"
                 }
 

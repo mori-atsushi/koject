@@ -10,7 +10,6 @@ import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.Provided
-import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -24,21 +23,15 @@ import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class ComponentContainerFileSpecFactory {
-    fun createRoot(
-        component: ComponentDeclaration.Root,
-    ): FileSpec {
+    fun createRoot(component: ComponentDeclaration.Root): FileSpec {
         return internalCreateComponent(component)
     }
 
-    fun createComponent(
-        component: ComponentDeclaration.Child,
-    ): FileSpec {
+    fun createComponent(component: ComponentDeclaration.Child): FileSpec {
         return internalCreateComponent(component)
     }
 
-    private fun internalCreateComponent(
-        component: ComponentDeclaration,
-    ): FileSpec {
+    private fun internalCreateComponent(component: ComponentDeclaration): FileSpec {
         val type = TypeSpec.classBuilder(component.containerClassName).apply {
             when (component) {
                 is ComponentDeclaration.Child -> {
@@ -97,8 +90,8 @@ internal class ComponentContainerFileSpecFactory {
         }.build()
 
         return FileSpec.builder(
-            Names.generatedPackageName,
-            type.name!!,
+            component.containerClassName.packageName,
+            component.containerClassName.simpleName,
         ).apply {
             applyCommon()
             addType(type)

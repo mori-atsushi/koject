@@ -4,22 +4,22 @@ import com.moriatsushi.koject.processor.error.DuplicateComponentExtrasException
 import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
 import com.moriatsushi.koject.processor.error.WrongScopeException
-import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentName
+import com.moriatsushi.koject.processor.symbol.ContainerDeclaration
 import com.moriatsushi.koject.processor.symbol.Dependency
 import com.moriatsushi.koject.processor.symbol.FactoryDeclaration
 import com.moriatsushi.koject.processor.symbol.Provided
 import com.moriatsushi.koject.processor.symbol.displayName
 
-internal class DependencyValidator {
+internal class ContainerValidator {
     fun validate(
-        allFactories: AllFactoryDeclarations,
+        container: ContainerDeclaration,
     ) {
-        validateRootComponent(allFactories.rootComponent)
-        validateComponentExtras(allFactories.componentExtrasHolders)
-        allFactories.childComponents.forEach {
+        validateRootComponent(container.rootComponent)
+        validateComponentExtras(container.componentExtrasHolders)
+        container.childComponents.forEach {
             validateDependencies(it)
         }
     }

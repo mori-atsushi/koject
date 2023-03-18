@@ -103,5 +103,5 @@ class DIProcessorMultimoduleTest {
 
     private val expectedContainerFilePath =
         "ksp/sources/kotlin/com/moriatsushi/koject/generated/" +
-            "_AppContainer.kt"
+            "_MainContainer.kt"
 }

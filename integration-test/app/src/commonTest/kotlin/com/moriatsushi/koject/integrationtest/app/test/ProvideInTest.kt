@@ -10,7 +10,7 @@ class ProvideInTest
 class TestProvideInTest
 
 @TestProvides
-fun provideTestInterface(): TestInterface {
+fun overrideTestInterface(): TestInterface {
     return object : TestInterface {
         override val name: String = "replaced"
     }

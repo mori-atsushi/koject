@@ -9,12 +9,10 @@ import com.moriatsushi.koject.extras.KojectExtras
 import com.moriatsushi.koject.internal.Container
 import com.moriatsushi.koject.internal.Identifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
-import com.moriatsushi.koject.processor.code.Names
 import com.moriatsushi.koject.processor.code.applyCommon
-import com.moriatsushi.koject.processor.symbol.AllFactoryDeclarations
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
+import com.moriatsushi.koject.processor.symbol.ContainerDeclaration
 import com.moriatsushi.koject.processor.symbol.ExtrasHolderDeclaration
-import com.moriatsushi.koject.processor.symbol.containerClassName
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -31,40 +29,40 @@ import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 internal class AppContainerFileSpecFactory {
     fun create(
-        allFactoryDeclarations: AllFactoryDeclarations,
+        containerDeclaration: ContainerDeclaration,
     ): FileSpec {
         return FileSpec.builder(
-            Names.appContainerClassName.packageName,
-            Names.appContainerClassName.simpleName,
+            containerDeclaration.containerClassName.packageName,
+            containerDeclaration.containerClassName.simpleName,
         ).apply {
             applyCommon()
-            addType(createContainerClass(allFactoryDeclarations))
+            addType(createContainerClass(containerDeclaration))
         }.build()
     }
 
     private fun createContainerClass(
-        allFactoryDeclarations: AllFactoryDeclarations,
+        containerDeclaration: ContainerDeclaration,
     ): TypeSpec {
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
 
-        return TypeSpec.classBuilder(Names.appContainerClassName).apply {
+        return TypeSpec.classBuilder(containerDeclaration.containerClassName).apply {
             addSuperinterface(Container::class)
             primaryConstructor(createConstructorSpec())
             addProperty(
                 createGlobalComponentPropertySpec(
-                    allFactoryDeclarations.rootComponent,
+                    containerDeclaration.rootComponent,
                 ),
             )
             addInitializerBlock(
                 createInitializerBlock(
-                    allFactoryDeclarations.rootComponent,
+                    containerDeclaration.rootComponent,
                 ),
             )
-            addFunction(createGetFunSpec(allFactoryDeclarations.childComponents))
+            addFunction(createGetFunSpec(containerDeclaration.childComponents))
             addAnnotation(internalAnnotationSpec)
 
-            allFactoryDeclarations.childComponents
+            containerDeclaration.childComponents
                 .mapNotNull { it.extrasHolder.containingFile }
                 .forEach { addOriginatingKSFile(it) }
         }.build()

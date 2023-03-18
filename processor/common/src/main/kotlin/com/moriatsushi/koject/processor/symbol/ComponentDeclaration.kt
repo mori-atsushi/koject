@@ -6,6 +6,7 @@ import com.moriatsushi.koject.processor.code.escapedForCode
 import com.squareup.kotlinpoet.ClassName
 
 internal sealed class ComponentDeclaration(
+    private val containerName: String,
     private val factories: Sequence<FactoryDeclaration>,
 ) {
     abstract val name: ComponentName
@@ -13,9 +14,10 @@ internal sealed class ComponentDeclaration(
     abstract val allProvided: List<Provided>
 
     class Root(
+        containerName: String,
         factories: Sequence<FactoryDeclaration>,
         override val extrasHolders: Sequence<ExtrasHolderDeclaration>,
-    ) : ComponentDeclaration(factories) {
+    ) : ComponentDeclaration(containerName, factories) {
         override val name = ComponentName("RootComponent")
 
         override val allProvided: List<Provided>
@@ -24,10 +26,11 @@ internal sealed class ComponentDeclaration(
     }
 
     class Child(
+        containerName: String,
         factories: Sequence<FactoryDeclaration>,
         val extrasHolder: ComponentExtrasHolderDeclaration,
         val rootComponent: Root,
-    ) : ComponentDeclaration(factories) {
+    ) : ComponentDeclaration(containerName, factories) {
         override val name = extrasHolder.componentName
 
         override val allProvided: List<Provided>
@@ -60,10 +63,10 @@ internal sealed class ComponentDeclaration(
     fun findFactory(identifier: StringIdentifier): FactoryDeclaration? {
         return factories.find { it.identifier == identifier }
     }
-}
 
-internal val ComponentDeclaration.containerClassName: ClassName
-    get() = ClassName(
-        Names.generatedPackageName,
-        "_${name.value.escapedForCode}_Container",
-    )
+    val containerClassName: ClassName
+        get() = ClassName(
+            "${Names.generatedPackageName}.$containerName",
+            "_${name.value.escapedForCode}_Container",
+        )
+}

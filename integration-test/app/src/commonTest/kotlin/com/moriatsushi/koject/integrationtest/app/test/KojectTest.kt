@@ -3,6 +3,7 @@ package com.moriatsushi.koject.integrationtest.app.test
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.integrationtest.app.applyExtras
+import com.moriatsushi.koject.integrationtest.app.runMain
 import com.moriatsushi.koject.test.runTest
 import com.moriatsushi.koject.test.startTest
 import kotlin.test.Test
@@ -44,5 +45,14 @@ class KojectTest {
             val holder = inject<TestInterfaceHolder>()
             assertEquals("replaced", holder.value.name)
         }
+    }
+
+    @Test
+    fun notReplaceInNotTest() = Koject.runMain {
+        val value = inject<TestInterface>()
+        assertEquals("base", value.name)
+
+        val holder = inject<TestInterfaceHolder>()
+        assertEquals("base", holder.value.name)
     }
 }

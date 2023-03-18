@@ -5,30 +5,29 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.moriatsushi.koject.processor.code.Names
 
-internal class AllFactoryDeclarations(
-    val factories: Sequence<FactoryDeclaration>,
-    extrasHolders: Sequence<ExtrasHolderDeclaration>,
-    val componentExtrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
+internal class AllDeclarations(
+    private val factories: Sequence<FactoryDeclaration>,
+    private val extrasHolders: Sequence<ExtrasHolderDeclaration>,
+    private val componentExtrasHolders: Sequence<ComponentExtrasHolderDeclaration>,
 ) {
-    val rootComponent: ComponentDeclaration.Root =
-        ComponentDeclaration.Root(
-            factories = factories.filter { it.component == null },
+    val mainContainer: ContainerDeclaration
+        get() = ContainerDeclaration(
+            name = "main",
+            factories = factories.filterNot { it.forTest },
             extrasHolders = extrasHolders,
+            componentExtrasHolders = componentExtrasHolders,
         )
 
-    val childComponents: Sequence<ComponentDeclaration.Child> =
-        componentExtrasHolders.map { extrasHolder ->
-            ComponentDeclaration.Child(
-                extrasHolder = extrasHolder,
-                factories = factories.filter {
-                    it.component == extrasHolder.componentName
-                },
-                rootComponent = rootComponent,
-            )
-        }
+    val testContainer: ContainerDeclaration
+        get() = ContainerDeclaration(
+            name = "test",
+            factories = factories,
+            extrasHolders = extrasHolders,
+            componentExtrasHolders = componentExtrasHolders,
+        )
 }
 
-internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
+internal fun Resolver.collectAllDeclarations(): AllDeclarations {
     @OptIn(KspExperimental::class)
     val factories = getDeclarationsFromPackage(Names.factoryPackageName)
         .filterIsInstance<KSClassDeclaration>()
@@ -44,7 +43,7 @@ internal fun Resolver.collectAllFactoryDeclarations(): AllFactoryDeclarations {
         .filterIsInstance<KSClassDeclaration>()
         .map { ComponentExtrasHolderDeclaration.of(it) }
 
-    return AllFactoryDeclarations(
+    return AllDeclarations(
         factories = factories,
         extrasHolders = extrasHolders,
         componentExtrasHolders = componentExtrasHolders,

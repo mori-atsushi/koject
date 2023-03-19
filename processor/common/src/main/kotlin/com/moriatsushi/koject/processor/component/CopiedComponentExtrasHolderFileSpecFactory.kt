@@ -20,8 +20,11 @@ import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.KClass
 
 internal class CopiedComponentExtrasHolderFileSpecFactory {
-    fun generate(extrasDeclaration: ComponentExtrasHolderDeclaration): FileSpec {
-        val classSpec = createClassSpec(extrasDeclaration)
+    fun create(
+        extrasDeclaration: ComponentExtrasHolderDeclaration,
+        moduleName: String,
+    ): FileSpec {
+        val classSpec = createClassSpec(extrasDeclaration, moduleName)
         return FileSpec.builder(Names.componentPackageName, classSpec.name!!).apply {
             applyCommon()
             addType(classSpec)
@@ -30,8 +33,9 @@ internal class CopiedComponentExtrasHolderFileSpecFactory {
 
     private fun createClassSpec(
         extrasDeclaration: ComponentExtrasHolderDeclaration,
+        moduleName: String,
     ): TypeSpec {
-        return TypeSpec.classBuilder(extrasDeclaration.copiedName()).apply {
+        return TypeSpec.classBuilder(extrasDeclaration.copiedName(moduleName)).apply {
             addAnnotation(AnnotationSpecFactory.createInternal())
             addAnnotation(extrasDeclaration.location.asAnnotationSpec())
 

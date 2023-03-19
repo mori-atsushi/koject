@@ -8,7 +8,6 @@ import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.internal.StringIdentifier
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
-import com.moriatsushi.koject.processor.code.escapedForCode
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -37,8 +36,7 @@ internal data class FactoryDeclaration(
         get() = copiedCount != 0
 
     fun copiedName(moduleName: String): ClassName {
-        val simpleName = "_${moduleName.escapedForCode}_${className.simpleName}"
-        return ClassName(className.packageName, simpleName)
+        return copiedName(className, moduleName)
     }
 
     fun createCopiedAnnotation(): AnnotationSpec {

@@ -26,24 +26,15 @@ internal class ComponentExtrasHolderDeclaration(
     val copied: Boolean
         get() = copiedCount != 0
 
-    fun copiedName(): ClassName {
-        val base = className.simpleName
-        val matchResult = regex.find(base)
-        val updated = if (matchResult != null) {
-            base.substring(0, matchResult.range.first) + (copiedCount + 2)
-        } else {
-            base + "2"
-        }
-        return ClassName(className.packageName, updated)
+    fun copiedName(moduleName: String): ClassName {
+        return copiedName(className, moduleName)
     }
 
     fun createCopiedAnnotation(): AnnotationSpec {
         return AnnotationSpecFactory.createCopied(copiedCount + 1)
     }
 
-    companion object {
-        private val regex = Regex("\\d+$")
-    }
+    companion object
 }
 
 internal fun Resolver.findComponentExtrasHolders(): Sequence<ComponentExtrasHolderDeclaration> {

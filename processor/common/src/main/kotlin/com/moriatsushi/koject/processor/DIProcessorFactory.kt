@@ -107,6 +107,7 @@ class DIProcessorFactory(
     private fun createCopiedComponentExtrasHolderGenerator():
         CopiedComponentExtrasHolderGenerator {
         return CopiedComponentExtrasHolderGenerator(
+            options.moduleName,
             createCopiedComponentExtrasHolderFileSpecFactory(),
             fileGenerator,
         )

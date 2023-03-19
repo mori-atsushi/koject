@@ -99,3 +99,8 @@ sqldelight {
         }
     }
 }
+
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", project.name)
+}

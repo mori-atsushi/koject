@@ -116,6 +116,11 @@ dependencies {
     add("kspLinuxX64", project(":processor:lib"))
 }
 
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", project.name)
+}
+
 // Workaround for KSP
 // https://github.com/google/ksp/issues/1318
 afterEvaluate {

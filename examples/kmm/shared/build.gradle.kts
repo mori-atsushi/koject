@@ -43,7 +43,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(project(":android:koject-android-core"))
-                implementation(project(":compose:koject-compose-viewmodel"))
             }
         }
         val androidUnitTest by getting
@@ -90,4 +89,8 @@ dependencies {
     add("kspIosX64", project(":processor:app"))
     add("kspIosArm64", project(":processor:app"))
     add("kspIosSimulatorArm64", project(":processor:app"))
+}
+
+ksp {
+    arg("measureDuration", "true")
 }

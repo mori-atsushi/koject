@@ -31,3 +31,8 @@ dependencies {
     api(project(":android:koject-android-viewmodel"))
     implementation(libs.androidx.fragment)
 }
+
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", project.name)
+}

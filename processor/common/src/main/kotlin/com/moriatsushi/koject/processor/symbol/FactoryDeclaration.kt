@@ -4,14 +4,10 @@ import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.moriatsushi.koject.internal.Copied
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.internal.StringIdentifier
-import com.moriatsushi.koject.processor.analytics.findAnnotation
-import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
-import com.moriatsushi.koject.processor.code.escapedForCode
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -40,8 +36,7 @@ internal data class FactoryDeclaration(
         get() = copiedCount != 0
 
     fun copiedName(moduleName: String): ClassName {
-        val simpleName = "_${moduleName.escapedForCode}_${className.simpleName}"
-        return ClassName(className.packageName, simpleName)
+        return copiedName(className, moduleName)
     }
 
     fun createCopiedAnnotation(): AnnotationSpec {
@@ -61,15 +56,12 @@ internal fun Resolver.findFactories(): Sequence<FactoryDeclaration> {
 internal fun FactoryDeclaration.Companion.of(
     ksClass: KSClassDeclaration,
 ): FactoryDeclaration {
-    val copiedCount = ksClass.findAnnotation<Copied>()
-        ?.findArgumentByName<Int>("count") ?: 0
-
     return FactoryDeclaration(
         provided = Provided.of(ksClass),
         component = ksClass.findStringComponentName(),
         className = ksClass.toClassName(),
         parameters = ksClass.factoryParameters,
-        copiedCount = copiedCount,
+        copiedCount = ksClass.findCopiedCount(),
         containingFile = ksClass.containingFile,
     )
 }

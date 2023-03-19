@@ -11,9 +11,12 @@ internal class CopiedFactoryGenerator(
 ) {
     fun generate(resolver: Resolver) {
         val factories = resolver.findFactories()
-        factories.forEach {
-            processNode(it)
-        }
+        factories
+            .groupBy { it.identifier to it.component }
+            .forEach { (_, factories) ->
+                val min = factories.minBy { it.copiedCount }
+                processNode(min)
+            }
     }
 
     private fun processNode(factory: FactoryDeclaration) {

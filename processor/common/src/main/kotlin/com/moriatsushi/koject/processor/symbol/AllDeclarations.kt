@@ -1,9 +1,6 @@
 package com.moriatsushi.koject.processor.symbol
 
-import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.moriatsushi.koject.processor.code.Names
 
 internal class AllDeclarations(
     private val factories: Sequence<FactoryDeclaration>,
@@ -28,19 +25,9 @@ internal class AllDeclarations(
 }
 
 internal fun Resolver.collectAllDeclarations(): AllDeclarations {
-    @OptIn(KspExperimental::class)
-    val extrasHolders = getDeclarationsFromPackage(Names.extrasPackageName)
-        .filterIsInstance<KSClassDeclaration>()
-        .map { ExtrasHolderDeclaration.of(it) }
-
-    @OptIn(KspExperimental::class)
-    val componentExtrasHolders = getDeclarationsFromPackage(Names.componentPackageName)
-        .filterIsInstance<KSClassDeclaration>()
-        .map { ComponentExtrasHolderDeclaration.of(it) }
-
     return AllDeclarations(
         factories = findFactories(),
-        extrasHolders = extrasHolders,
-        componentExtrasHolders = componentExtrasHolders,
+        extrasHolders = findExtrasHolders(),
+        componentExtrasHolders = findComponentExtrasHolders(),
     )
 }

@@ -6,6 +6,8 @@ import com.moriatsushi.koject.internal.InternalKojectApi
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderFileSpecFactory
 import com.moriatsushi.koject.processor.component.ComponentExtrasHolderGenerator
 import com.moriatsushi.koject.processor.component.ComponentExtrasValidator
+import com.moriatsushi.koject.processor.component.CopiedComponentExtrasHolderFileSpecFactory
+import com.moriatsushi.koject.processor.component.CopiedComponentExtrasHolderGenerator
 import com.moriatsushi.koject.processor.container.AllContainersGenerator
 import com.moriatsushi.koject.processor.container.AppContainerFileSpecFactory
 import com.moriatsushi.koject.processor.container.ComponentContainerFileSpecFactory
@@ -97,6 +99,19 @@ class DIProcessorFactory(
         )
     }
 
+    private fun createCopiedComponentExtrasHolderFileSpecFactory():
+        CopiedComponentExtrasHolderFileSpecFactory {
+        return CopiedComponentExtrasHolderFileSpecFactory()
+    }
+
+    private fun createCopiedComponentExtrasHolderGenerator():
+        CopiedComponentExtrasHolderGenerator {
+        return CopiedComponentExtrasHolderGenerator(
+            createCopiedComponentExtrasHolderFileSpecFactory(),
+            fileGenerator,
+        )
+    }
+
     private fun createContainerValidator(): ContainerValidator {
         return ContainerValidator()
     }
@@ -152,6 +167,7 @@ class DIProcessorFactory(
             createCopiedFactoryGenerator(),
             createExtrasHolderGenerator(),
             createComponentExtrasHolderGenerator(),
+            createCopiedComponentExtrasHolderGenerator(),
             timeMeasure,
         )
     }

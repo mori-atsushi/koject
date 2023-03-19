@@ -68,3 +68,8 @@ dependencies {
     add("kspLinuxArm32Hfp", project(":processor:lib"))
     add("kspLinuxMips32", project(":processor:lib"))
 }
+
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", "integration-test-lib3")
+}

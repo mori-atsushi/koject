@@ -11,6 +11,7 @@ import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
 import com.moriatsushi.koject.processor.code.AnnotationSpecFactory
 import com.moriatsushi.koject.processor.code.Names
+import com.moriatsushi.koject.processor.code.escapedForCode
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -38,24 +39,16 @@ internal data class FactoryDeclaration(
     val copied: Boolean
         get() = copiedCount != 0
 
-    fun copiedName(): ClassName {
-        val base = className.simpleName
-        val matchResult = regex.find(base)
-        val updated = if (matchResult != null) {
-            base.substring(0, matchResult.range.first) + (copiedCount + 2)
-        } else {
-            base + "2"
-        }
-        return ClassName(className.packageName, updated)
+    fun copiedName(moduleName: String): ClassName {
+        val simpleName = "_${moduleName.escapedForCode}_${className.simpleName}"
+        return ClassName(className.packageName, simpleName)
     }
 
     fun createCopiedAnnotation(): AnnotationSpec {
         return AnnotationSpecFactory.createCopied(copiedCount + 1)
     }
 
-    companion object {
-        private val regex = Regex("\\d+$")
-    }
+    companion object
 }
 
 internal fun Resolver.findFactories(): Sequence<FactoryDeclaration> {

@@ -9,6 +9,7 @@ import java.util.Base64
 internal val String.escapedForCode: String
     get() = this
         .replace(" ", "")
+        .replace("-", "")
         .replace(".", "_")
         .replace("<", "__")
         .replace(">", "__")

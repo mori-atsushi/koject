@@ -26,8 +26,9 @@ import com.moriatsushi.koject.processor.file.FileGenerator
 @InternalKojectApi
 class DIProcessorFactory(
     private val environment: SymbolProcessorEnvironment,
-    private val options: DIProcessorOptions = DIProcessorOptions(),
 ) {
+    private val options = DIProcessorOptions.of(environment.options)
+
     private val timeMeasure by lazy {
         TimeMeasure(
             options.measureDuration,
@@ -49,6 +50,7 @@ class DIProcessorFactory(
 
     private fun createCopiedFactoryGenerator(): CopiedFactoryGenerator {
         return CopiedFactoryGenerator(
+            moduleName = options.moduleName,
             fileGenerator,
             createCopiedFactoryFileSpecFactory(),
         )

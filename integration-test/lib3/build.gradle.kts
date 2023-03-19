@@ -27,7 +27,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":koject-core"))
-                implementation(project(":integration-test:lib3"))
                 implementation(kotlin("test"))
             }
         }

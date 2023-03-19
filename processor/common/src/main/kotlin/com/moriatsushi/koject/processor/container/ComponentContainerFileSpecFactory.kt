@@ -240,7 +240,7 @@ internal class ComponentContainerFileSpecFactory {
     }
 
     private fun createGetFunSpec(
-        factories: List<FactoryDeclaration>,
+        factories: Sequence<FactoryDeclaration>,
         hasRootComponent: Boolean,
     ): FunSpec {
         return FunSpec.builder("resolve").apply {

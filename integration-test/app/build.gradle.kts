@@ -27,6 +27,7 @@ kotlin {
                 implementation(project(":koject-core"))
                 implementation(kotlin("test"))
                 implementation(project(":integration-test:lib1"))
+                implementation(project(":integration-test:lib3"))
             }
         }
 

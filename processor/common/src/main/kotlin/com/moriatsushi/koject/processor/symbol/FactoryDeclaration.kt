@@ -35,6 +35,9 @@ internal data class FactoryDeclaration(
     val location: Location
         get() = provided.location
 
+    val copied: Boolean
+        get() = copiedCount != 0
+
     fun copiedName(): ClassName {
         val base = className.simpleName
         val matchResult = regex.find(base)

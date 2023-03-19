@@ -92,7 +92,7 @@ internal class ContainerValidator {
 
     private fun validateDuplicates(
         target: Provided,
-        allProvided: List<Provided>,
+        allProvided: Sequence<Provided>,
         component: ComponentName?,
     ) {
         val duplicate = allProvided.filter { it.identifier == target.identifier }
@@ -114,7 +114,7 @@ internal class ContainerValidator {
     private fun validateParameter(
         factory: FactoryDeclaration,
         parameter: Dependency,
-        allProvided: List<Provided>,
+        allProvided: Sequence<Provided>,
     ) {
         val dependencyFactory = allProvided.find {
             it.identifier == parameter.identifier

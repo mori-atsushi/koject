@@ -40,6 +40,7 @@ internal class CopiedFactoryFileSpecFactory {
             addFunction(createCreateFunSpec())
             addType(companionObject)
             addAnnotation(internalAnnotationSpec)
+            addAnnotation(factory.createCopiedAnnotation())
             if (factory.isSingleton) {
                 addAnnotation(AnnotationSpecFactory.createSingleton())
             }

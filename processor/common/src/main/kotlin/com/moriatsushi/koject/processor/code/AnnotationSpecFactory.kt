@@ -1,6 +1,7 @@
 package com.moriatsushi.koject.processor.code
 
 import com.moriatsushi.koject.Singleton
+import com.moriatsushi.koject.internal.Copied
 import com.moriatsushi.koject.internal.ForTest
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -42,6 +43,12 @@ internal object AnnotationSpecFactory {
     fun createForTest(): AnnotationSpec {
         return AnnotationSpec.builder(ForTest::class.asClassName())
             .build()
+    }
+
+    fun createCopied(count: Int): AnnotationSpec {
+        return AnnotationSpec.builder(Copied::class.asClassName()).apply {
+            addMember(count.toString())
+        }.build()
     }
 
     fun createSuppress(vararg names: String): AnnotationSpec {

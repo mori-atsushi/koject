@@ -8,7 +8,7 @@ kotlin {
     android()
     jvm()
     js(IR) {
-        moduleName = "integration-test-lib"
+        moduleName = "integration-test-lib3"
         nodejs()
         browser()
     }

@@ -17,8 +17,8 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
 
 internal class CopiedFactoryFileSpecFactory {
-    fun create(factory: FactoryDeclaration): FileSpec {
-        val type = createClassSpec(factory)
+    fun create(factory: FactoryDeclaration, moduleName: String): FileSpec {
+        val type = createClassSpec(factory, moduleName)
         return FileSpec.builder(
             packageName = Names.factoryPackageName,
             fileName = type.name!!,
@@ -28,13 +28,13 @@ internal class CopiedFactoryFileSpecFactory {
         }.build()
     }
 
-    private fun createClassSpec(factory: FactoryDeclaration): TypeSpec {
+    private fun createClassSpec(factory: FactoryDeclaration, moduleName: String): TypeSpec {
         val constructorSpec = createConstructorSpec(factory)
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
         val companionObject = createCompanionObjectSpec(factory)
 
-        return TypeSpec.classBuilder(factory.copiedName()).apply {
+        return TypeSpec.classBuilder(factory.copiedName(moduleName)).apply {
             primaryConstructor(constructorSpec)
             addProperty(createFactoryPropertySpec(factory))
             addFunction(createCreateFunSpec())

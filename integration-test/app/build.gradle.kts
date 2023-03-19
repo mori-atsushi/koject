@@ -155,3 +155,7 @@ dependencies {
     add("kspLinuxMips32", project(":processor:app"))
     add("kspLinuxMips32Test", project(":processor:app"))
 }
+
+ksp {
+    arg("measureDuration", "true")
+}

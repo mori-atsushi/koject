@@ -3,7 +3,7 @@ package com.moriatsushi.koject.integrationtest.app
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.integrationtest.lib1.Lib2ClassHolder
-import com.moriatsushi.koject.integrationtest.lib1.checkNestedModuleComponents
+import com.moriatsushi.koject.integrationtest.lib1.injectNestedModuleComponents
 import com.moriatsushi.koject.integrationtest.lib3.Lib3Class
 import kotlin.test.Test
 
@@ -20,6 +20,6 @@ class NestedModuleTest {
 
     @Test
     fun successInject_nestedModuleComponents() = Koject.runMain {
-        checkNestedModuleComponents()
+        injectNestedModuleComponents()
     }
 }

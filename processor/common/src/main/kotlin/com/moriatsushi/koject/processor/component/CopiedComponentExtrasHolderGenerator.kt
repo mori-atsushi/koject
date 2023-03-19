@@ -10,9 +10,13 @@ internal class CopiedComponentExtrasHolderGenerator(
 ) {
     fun generate(resolver: Resolver) {
         val extrasDeclarations = resolver.findComponentExtrasHolders()
-        extrasDeclarations.forEach {
-            val fileSpec = fileSpecFactory.generate(it)
-            fileGenerator.createNewFile(fileSpec, false)
-        }
+        extrasDeclarations
+            .filter { it.containingFile == null } // The file is in the current module
+            .groupBy { it.componentName }
+            .forEach { (_, holders) ->
+                val min = holders.minBy { it.copiedCount }
+                val fileSpec = fileSpecFactory.generate(min)
+                fileGenerator.createNewFile(fileSpec, false)
+            }
     }
 }

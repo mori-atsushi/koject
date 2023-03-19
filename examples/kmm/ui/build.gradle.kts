@@ -99,3 +99,8 @@ dependencies {
     add("kspIosArm64", project(":processor:lib"))
     add("kspIosSimulatorArm64", project(":processor:lib"))
 }
+
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", project.name)
+}

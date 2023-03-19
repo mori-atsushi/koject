@@ -28,3 +28,8 @@ dependencies {
     api(project(":koject-core"))
     ksp(project(":processor:lib"))
 }
+
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", project.name)
+}

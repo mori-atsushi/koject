@@ -30,3 +30,8 @@ dependencies {
     api(project(":android:koject-android-viewmodel"))
     implementation(libs.androidx.activity)
 }
+
+ksp {
+    arg("measureDuration", "true")
+    arg("moduleName", project.name)
+}

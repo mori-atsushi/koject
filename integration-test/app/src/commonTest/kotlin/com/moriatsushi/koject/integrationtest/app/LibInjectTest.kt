@@ -2,10 +2,10 @@ package com.moriatsushi.koject.integrationtest.app
 
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.inject
-import com.moriatsushi.koject.integrationtest.lib.LibClass1
-import com.moriatsushi.koject.integrationtest.lib.LibClass2
-import com.moriatsushi.koject.integrationtest.lib.LibClass3
-import com.moriatsushi.koject.integrationtest.lib.checkInternalClassInject
+import com.moriatsushi.koject.integrationtest.lib1.LibClass1
+import com.moriatsushi.koject.integrationtest.lib1.LibClass2
+import com.moriatsushi.koject.integrationtest.lib1.LibClass3
+import com.moriatsushi.koject.integrationtest.lib1.checkInternalClassInject
 import kotlin.test.Test
 import kotlin.test.assertIs
 

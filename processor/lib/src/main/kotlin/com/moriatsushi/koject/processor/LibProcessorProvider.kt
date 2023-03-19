@@ -10,10 +10,6 @@ class LibProcessorProvider : SymbolProcessorProvider {
     override fun create(
         environment: SymbolProcessorEnvironment,
     ): SymbolProcessor {
-        // Don't generate a container class in the library module.
-        val options = DIProcessorOptions(
-            shouldGenerateContainer = false,
-        )
-        return DIProcessorFactory(environment).create(options)
+        return DIProcessorFactory(environment).createLibProcessor()
     }
 }

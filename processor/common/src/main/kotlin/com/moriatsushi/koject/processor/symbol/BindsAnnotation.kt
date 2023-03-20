@@ -5,6 +5,10 @@ import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import com.moriatsushi.koject.processor.analytics.isNothing
+import com.moriatsushi.koject.processor.analytics.name
+import com.moriatsushi.koject.processor.analytics.primarySuperType
+import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
@@ -18,15 +22,39 @@ internal value class BindsAnnotation(
 internal fun KSClassDeclaration.findBindAnnotation(): BindsAnnotation? {
     val annotation = findAnnotation<Binds>() ?: return null
     val argument = annotation.findArgumentByName<KSType>("to")
-    val toType = if (argument != null && !argument.isNothing) {
-        argument
+    val toType = if (argument == null || argument.isNothing) {
+        primarySuperType
+            ?: throwNotFoundSuperTypeException(this)
     } else {
-        superTypes.first().resolve()
+        superTypes
+            .map { it.resolve() }
+            .find { it == argument }
+            ?: throwNotIncludedSuperTypeException(this, argument)
     }
     return BindsAnnotation(
         toTypeName = toType.toTypeName(),
     )
 }
 
-private val KSType.isNothing: Boolean
-    get() = declaration.qualifiedName?.asString() == Nothing::class.qualifiedName
+private fun throwNotFoundSuperTypeException(
+    declaration: KSClassDeclaration,
+): Nothing {
+    val location = declaration.location.name
+    val qualifiedName = declaration.qualifiedName?.asString()
+    throw CodeGenerationException(
+        "$location: $qualifiedName super type not found.",
+    )
+}
+
+private fun throwNotIncludedSuperTypeException(
+    declaration: KSClassDeclaration,
+    argument: KSType,
+): Nothing {
+    val location = declaration.location.name
+    val qualifiedName = declaration.qualifiedName?.asString()
+    val argumentName = argument.declaration.qualifiedName?.asString()
+    throw CodeGenerationException(
+        "$location: " +
+            "$argumentName is not included in the super types of $qualifiedName.",
+    )
+}

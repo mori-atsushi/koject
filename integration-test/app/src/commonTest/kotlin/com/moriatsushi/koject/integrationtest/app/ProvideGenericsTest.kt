@@ -24,6 +24,13 @@ class ProvideGenericsTest {
     }
 
     @Test
+    fun successInject_starList() = Koject.runMain {
+        val actual = inject<List<*>>()
+        assertIs<List<*>>(actual)
+        assertEquals(listOf("provided", 123), actual)
+    }
+
+    @Test
     fun successInject_otherList() = Koject.runMain {
         assertFailsWith<NotProvidedException> {
             inject<List<Boolean>>()

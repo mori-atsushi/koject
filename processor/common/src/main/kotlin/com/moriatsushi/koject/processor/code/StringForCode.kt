@@ -14,6 +14,7 @@ internal val String.escapedForCode: String
         .replace("<", "__")
         .replace(">", "__")
         .replace(",", "__")
+        .replace("*", "star")
         .replace("?", "_nullable")
         .replace("`", "")
 

@@ -14,6 +14,8 @@ import com.moriatsushi.koject.Singleton
 import com.moriatsushi.koject.internal.Location
 import com.moriatsushi.koject.processor.analytics.hasAnnotation
 import com.moriatsushi.koject.processor.analytics.name
+import com.moriatsushi.koject.processor.code.escapedForCode
+import com.moriatsushi.koject.processor.code.hashForCode
 import com.moriatsushi.koject.processor.error.CodeGenerationException
 import com.moriatsushi.koject.test.TestProvides
 import com.squareup.kotlinpoet.MemberName
@@ -31,6 +33,38 @@ internal data class ProviderDeclaration(
     val location: Location,
     val containingFile: KSFile?,
 ) {
+    val factoryName: String
+        get() {
+            val typeName = identifier.typeName.toString()
+            val qualifierName = identifier.qualifier?.fullName
+            val declarationName = when (name) {
+                is ProviderName.Class -> {
+                    name.className.canonicalName
+                }
+                is ProviderName.Function -> {
+                    name.functionName.canonicalName
+                }
+            }
+            val extraName = buildString {
+                if (qualifierName != null) {
+                    append("__")
+                    append(qualifierName)
+                }
+                if (typeName != declarationName) {
+                    append("__")
+                    append(declarationName.hashForCode)
+                }
+            }
+            return buildString {
+                append("_")
+                append(typeName.escapedForCode)
+                if (extraName.isNotEmpty()) {
+                    append(extraName.hashForCode)
+                }
+                append("_Factory")
+            }
+        }
+
     companion object
 }
 

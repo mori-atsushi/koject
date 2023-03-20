@@ -33,14 +33,13 @@ internal class FactoryFileSpecFactory {
     }
 
     private fun createClassSpec(provider: ProviderDeclaration): TypeSpec {
-        val factoryName = Names.factoryNameOf(provider)
         val constructorSpec = createConstructorSpec(provider)
         val createFunSpec = createCreateFunSpec(provider)
         val internalAnnotationSpec =
             AnnotationSpecFactory.createInternal()
         val companionObject = createCompanionObjectSpec(provider)
 
-        return TypeSpec.classBuilder(factoryName).apply {
+        return TypeSpec.classBuilder(provider.factoryName).apply {
             primaryConstructorWithParameters(
                 constructorSpec,
                 setOf(KModifier.PRIVATE),

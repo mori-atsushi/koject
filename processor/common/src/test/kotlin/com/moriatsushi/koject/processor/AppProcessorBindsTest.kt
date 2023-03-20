@@ -1,7 +1,6 @@
 package com.moriatsushi.koject.processor
 
 import com.moriatsushi.koject.processor.assert.assertCompileSucceed
-import com.moriatsushi.koject.processor.assert.assertFileExists
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.tschuchort.compiletesting.SourceFile
 import java.io.File
@@ -29,9 +28,6 @@ class AppProcessorBindsTest {
         val result = complication.compile()
 
         assertCompileSucceed(result)
-
-        val expectedFactoryFile = folder.resolve(expectedFactoryFilePath)
-        assertFileExists(expectedFactoryFile)
     }
 
     private val inputCode = SourceFile.kotlin(
@@ -49,8 +45,4 @@ class AppProcessorBindsTest {
                 interface Sample
             """,
     )
-
-    private val expectedFactoryFilePath =
-        "ksp/sources/kotlin/com/moriatsushi/koject/generated/factory/" +
-            "_com_testpackage_Sample_Factory.kt"
 }

@@ -111,6 +111,20 @@ class StringIdentifierTest {
     }
 
     @Test
+    fun starGenerics() {
+        val typeName = typeOf<List<*>>().asTypeName()
+        val target = StringIdentifier.of(typeName)
+        assertEquals(
+            expected = "kotlin.collections.List<*>",
+            actual = target.displayName,
+        )
+        assertEquals(
+            expected = "kotlin_collections_List__star__",
+            actual = target.asCodeName(),
+        )
+    }
+
+    @Test
     fun named() {
         val typeName = Int::class.asTypeName()
         val qualifier = QualifierAnnotation("Named(name)", CodeBlock.of("Named(name)"))

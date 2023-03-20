@@ -17,6 +17,14 @@ fun provideIntList(
 }
 
 @Provides
+fun provideStarList(
+    string: String,
+    number: Int,
+): List<*> {
+    return listOf(string, number)
+}
+
+@Provides
 fun provideMap(
     list: List<String>,
     value: String,

@@ -15,11 +15,11 @@ Add the appropriate dependencies for the injection target:
 ```kotlin
 dependencies {
     // Inject ViewModel into Activity
-    implementation("com.moriatsushi.koject:koject-android-activity:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-activity:1.3.0-beta01")
     // Inject ViewModel into Fragment
-    implementation("com.moriatsushi.koject:koject-android-fragment:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.3.0-beta01")
     // ViewModelFactory only
-    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.3.0-beta01")
 }
 ```
 
@@ -75,15 +75,15 @@ Refer to the [documentation](/docs/compose/viewmodel) to inject ViewModels in Je
 
 :::
 
-:::note MIGRATION (VERSION 1.2.0)
+:::note MIGRATION (VERSION 1.3.0-beta01)
 
-As of version v1.2.0, `injectViewModels()` has been renamed to `lazyViewModels()`:
+As of version v1.3.0-beta01, `injectViewModels()` has been renamed to `lazyViewModels()`:
 
 ```kotlin
 // Until v1.1.0
 private val viewModel: TopViewModel by injectViewModels()
 
-// Since v1.2.0
+// Since v1.3.0-beta01
 private val viewModel: TopViewModel by lazyViewModels()
 ```
 :::

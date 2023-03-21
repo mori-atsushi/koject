@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newFixedThreadPoolContext
 
-actual object CoroutineDispatcherProvider {
+internal actual object CoroutineDispatcherProvider {
     actual fun provideMainDispatcher(): CoroutineDispatcher {
         return Dispatchers.Main.immediate
     }

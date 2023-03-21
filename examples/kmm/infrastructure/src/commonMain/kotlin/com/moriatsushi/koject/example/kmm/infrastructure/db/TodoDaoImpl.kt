@@ -3,7 +3,8 @@ package com.moriatsushi.koject.example.kmm.infrastructure.db
 import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.Provides
 import com.moriatsushi.koject.Singleton
-import com.moriatsushi.koject.example.kmm.data.di.IODispatcher
+import com.moriatsushi.koject.example.kmm.data.di.Dispatcher
+import com.moriatsushi.koject.example.kmm.data.di.Dispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -12,7 +13,7 @@ import kotlinx.coroutines.withContext
 @Binds
 internal class TodoDaoImpl(
     private val db: Database,
-    @IODispatcher
+    @Dispatcher(IO)
     private val ioDispatcher: CoroutineDispatcher,
 ) : TodoDao {
     override suspend fun fetchAll(): List<TodoTask> {

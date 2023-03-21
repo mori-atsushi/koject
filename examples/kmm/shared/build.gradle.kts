@@ -32,7 +32,7 @@ kotlin {
                 implementation(project(":examples:kmm:infrastructure"))
 
                 implementation(project(":koject-core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
         val commonTest by getting {
@@ -56,6 +56,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation(project(":koject-test"))
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val iosX64Test by getting

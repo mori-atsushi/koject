@@ -2,7 +2,8 @@ package com.moriatsushi.koject.example.kmm.ui.viewmodel
 
 import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.Provides
-import com.moriatsushi.koject.example.kmm.data.di.MainDispatcher
+import com.moriatsushi.koject.example.kmm.data.di.Dispatcher
+import com.moriatsushi.koject.example.kmm.data.di.Dispatchers.Main
 import com.moriatsushi.koject.example.kmm.data.model.TodoList
 import com.moriatsushi.koject.example.kmm.data.model.TodoTask
 import com.moriatsushi.koject.example.kmm.data.repository.TodoRepository
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 @Provides
 internal class TodoListViewModelImpl(
     private val todoRepository: TodoRepository,
-    @MainDispatcher
+    @Dispatcher(Main)
     private val dispatcher: CoroutineDispatcher,
 ) : TodoListViewModel {
     private val job = SupervisorJob()

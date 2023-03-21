@@ -3,11 +3,11 @@ package com.moriatsushi.koject.example.kmm
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.example.kmm.ui.viewmodel.TodoListViewModel
 import com.moriatsushi.koject.inject
-import kotlinx.coroutines.isActive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.isActive
 
 class TodoListViewModelTest {
     @Test

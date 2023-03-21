@@ -3,7 +3,6 @@ package com.moriatsushi.koject.processor.container
 import com.moriatsushi.koject.processor.error.DuplicateComponentExtrasException
 import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
-import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.moriatsushi.koject.processor.symbol.ComponentDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentExtrasHolderDeclaration
 import com.moriatsushi.koject.processor.symbol.ComponentName
@@ -17,7 +16,7 @@ internal class ContainerValidator {
     fun validate(
         container: ContainerDeclaration,
     ) {
-        validateRootComponent(container.rootComponent)
+        validateDependencies(container.rootComponent)
         validateComponentExtras(container.componentExtrasHolders)
         container.childComponents.forEach {
             validateDependencies(it)
@@ -40,24 +39,6 @@ internal class ContainerValidator {
                     }
                 }
                 throw DuplicateComponentExtrasException(errorMessage)
-            }
-        }
-    }
-
-    private fun validateRootComponent(
-        component: ComponentDeclaration.Root,
-    ) {
-        val provided = component.allProvided
-        validateDependencies(component)
-
-        component.allFactories.forEach { factory ->
-            factory.parameters.forEach { dependency ->
-                val resolved = provided.find {
-                    it.identifier == dependency.identifier
-                }!!
-                if (factory.isSingleton && !resolved.isSingleton) {
-                    throwWrongScopeException(dependency)
-                }
             }
         }
     }
@@ -141,16 +122,5 @@ internal class ContainerValidator {
             append(".")
         }
         throw NotProvidedException(message)
-    }
-
-    private fun throwWrongScopeException(
-        parameter: Dependency,
-    ) {
-        throw WrongScopeException(
-            "${parameter.location.value}: " +
-                "${parameter.identifier.displayName} cannot be injected " +
-                "because it is not a singleton. " +
-                "Only a singleton can be injected into singletons.",
-        )
     }
 }

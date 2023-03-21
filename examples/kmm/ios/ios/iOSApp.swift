@@ -4,7 +4,12 @@ import shared
 @main
 struct iOSApp: App {
     init() {
-        KojectHelper_iosKt.startKoject()
+        #if DEBUG
+        let isTesting = CommandLine.arguments.contains("TESTING")
+        KojectHelper.shared.startKoject(isTesting: isTesting)
+        #else
+        KojectHelper.shared.startKoject()
+        #endif
     }
     
 	var body: some Scene {

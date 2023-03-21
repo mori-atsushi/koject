@@ -4,11 +4,22 @@ import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.example.kmm.ui.viewmodel.IOSTodoListViewModel
 import com.moriatsushi.koject.inject
 import com.moriatsushi.koject.start
+import com.moriatsushi.koject.test.startTest
 
-fun startKoject() {
-    Koject.start()
-}
+object KojectHelper {
+    fun startKoject() {
+        Koject.start()
+    }
 
-fun injectTodoListViewModel(): IOSTodoListViewModel {
-    return inject()
+    fun startKoject(isTesting: Boolean) {
+        if (isTesting) {
+            Koject.startTest()
+        } else {
+            Koject.start()
+        }
+    }
+
+    fun injectTodoListViewModel(): IOSTodoListViewModel {
+        return inject()
+    }
 }

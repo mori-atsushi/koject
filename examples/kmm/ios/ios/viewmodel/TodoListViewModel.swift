@@ -8,7 +8,7 @@ class TodoListViewModel: ObservableObject {
     var list: DataTodoList = DataTodoList.Companion().empty
     
     private let viewModel: UiIOSTodoListViewModel =
-        KojectHelper_iosKt.injectTodoListViewModel()
+        KojectHelper.shared.injectTodoListViewModel()
     
     init() {
         self.viewModel.observeTasks { [unowned self] list in

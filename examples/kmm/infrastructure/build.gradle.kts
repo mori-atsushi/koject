@@ -30,6 +30,7 @@ kotlin {
                 implementation(project(":examples:kmm:data"))
 
                 implementation(project(":koject-core"))
+                implementation(project(":koject-test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }

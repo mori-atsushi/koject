@@ -1,0 +1,159 @@
+import {
+    KojectStop,
+    KojectRunTest,
+    KojectStartTest,
+    TestProvides,
+} from '@site/src/components/CodeLink';
+
+# Test
+When writing test code, it is recommended to use actual dependencies as much as possible rather than mocks.
+By using Koject, you can easily replace only some dependencies and test them.
+
+## Setup for Testing
+To use Koject in tests, add `koject-test` to the test dependencies and register `koject-processor-app` to the test source set.
+
+### Multiplatform
+```diff title="build.gradle.kts"
+kotlin {
+    /* ... */
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
+            }
+        }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
++                implementation("com.moriatsushi.koject:koject-test:1.3.0-beta01")
+            }
+        }
+    }
+}
+
+
+dependencies {
+    // Add it according to your targets.
+    val processor = "com.moriatsushi.koject:koject-processor-app:1.3.0-beta01"
+    add("kspAndroid", processor)
+    add("kspJvm", processor)
+    add("kspJs", processor)
+    add("kspIosX64", processor)
+    add("kspIosArm64", processor)
+
++     add("kspAndroidTest", processor)
++     add("kspJvmTest", processor)
++     add("kspJsTest", processor)
++     add("kspIosX64Test", processor)
++     add("kspIosArm64Test", processor)
+}
+```
+
+### Single platform
+```diff title="build.gradle.kts"
+dependencies {
+    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
+
+    testImplementation(kotlin("test"))
++     testImplementation("com.moriatsushi.koject:koject-test:1.3.0-beta01")
++     kspTest("com.moriatsushi.koject:koject-processor-app:1.3.0-beta01")
+}
+```
+
+## Running tests
+
+Using <KojectRunTest/>, you can start the test DI container and use the provided dependencies.
+
+```kotlin
+@Provides
+class Controller
+```
+```kotlin
+class SampleTest() {
+    @Test
+    fun test() = Koject.runTest {
+        val controller = inject<Controller>() // can be injected
+    }
+}
+```
+
+You can also start a test DI container by executing <KojectStartTest/> in `@Before` and <KojectStop/> in `@After`.
+
+```kotlin
+class SampleTest() {
+    @Before
+    fun start() {
+        Koject.startTest()
+    }
+
+    @After
+    fun stop() {
+        Koject.stop()
+    }
+
+    @Test
+    fun test() {
+        val controller = inject<Controller>()
+    }
+}
+```
+
+## Swapping dependencies
+Using <TestProvides/>, you can replace dependencies.
+In the following example, `SampleRepositoryImpl` is used in production, and `FakeSampleRepository` is used in testing.
+
+```kotlin title="src/main/kotlin/SampleRepository.kt"
+@Provides
+interface SampleRepository
+
+@Provide
+@Binds
+class SampleRepositoryImpl: SampleRepository
+```
+```kotlin title="src/main/kotlin/main.kt"
+fun main() {
+    Koject.start()
+
+    val repository = inject<SampleRepository>() // is SampleRepositoryImpl
+}
+```
+```kotlin title="src/test/kotlin/FakeSampleRepository.kt"
+@TestProvides
+@Binds
+class FakeSampleRepository: SampleRepository
+```
+```kotlin title="src/test/kotlin/FakeSampleRepository.kt"
+class SampleTest() {
+    @Test
+    fun test() = Koject.runTest {
+        val repository = inject<SampleRepository>() // is FakeSampleRepository
+    }
+}
+```
+
+You can provide both `FakeSampleRepository` and `SampleRepository` by using `@TestProvides` as follows.
+
+```kotlin title="src/test/kotlin/FakeSampleRepository.kt"
+@TestProvides
+class FakeSampleRepository: SampleRepository {
+    companion object {
+        @TestProvides
+        fun bindAsSampleRepository(
+            fake: FakeSampleRepository
+        ): SampleRepository {
+            return fake
+        }
+    }
+}
+```
+```kotlin title="src/test/kotlin/FakeSampleRepository.kt"
+class SampleTest() {
+    @Test
+    fun test() = Koject.runTest {
+        val fakeRepository = inject<FakeSampleRepository>() // is FakeSampleRepository
+        val repository = inject<SampleRepository>()         // is FakeSampleRepository
+    }
+}
+```

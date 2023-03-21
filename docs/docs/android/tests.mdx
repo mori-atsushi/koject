@@ -1,0 +1,162 @@
+import {
+    KojectStart,
+    KojectStartTest,
+} from '@site/src/components/CodeLink';
+
+
+# Android tests
+
+Here we will introduce some tips for testing Android applications.
+
+:::info LINK
+
+To understand the basics of testing, please refer to the [Test documentation](/docs/test) first.
+
+:::
+
+## Unit tests
+If the subject to be tested does not require the Android Framework, you can start testing by mocking the application class using mock libraries such as [mockito](https://site.mockito.org/) or [MockK](https://mockk.io/).
+When calling <KojectStartTest/>, specify the mocked application class as follows:
+
+```kotlin
+class SampleViewModelTest() {
+    @Before
+    fun start() {
+        Koject.startTest {
+            application(mock(Application::class.java))
+        }
+    }
+
+    @After
+    fun stop() {
+        Koject.stop()
+    }
+
+    @Test
+    fun test() {
+        val viewModel = inject<SampleViewModel>()
+        /* ... */
+    }
+}
+```
+
+Create JUnit rules as needed:
+
+```kotlin
+class KojectTestRule : TestWatcher() {
+    override fun starting(description: Description) {
+        Koject.startTest {
+            application(mock(Application::class.java))
+        }
+    }
+
+    override fun finished(description: Description) {
+        Koject.stop()
+    }
+}
+```
+```kotlin
+class SampleViewModelTest() {
+    @get:Rule
+    val kojectTestRule = KojectTestRule()
+
+    @Test
+    fun test() {
+        val viewModel = inject<SampleViewModel>()
+        /* ... */
+    }
+}
+```
+
+## Instrumented tests / Robolectric tests
+
+If you want to run [instrumented tests](https://developer.android.com/training/testing/instrumented-tests) on a physical device or emulator, or run unit tests using [Robolectric](https://robolectric.org/), you need to replace <KojectStart/> with `Koject.startTest()`.
+
+First, create a test application class using `Koject.startTest()`.
+
+```kotlin
+class TestApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        Koject.startTest {
+            application(this@TestApplication)
+        }
+    }
+}
+```
+
+Next, create a custom runner to use the test application class.
+
+```kotlin
+class TestRunner : AndroidJUnitRunner() {
+    override fun newApplication(
+        classLoader: ClassLoader?,
+        className: String?,
+        context: Context?
+    ): Application {
+        return super.newApplication(classLoader, TestApplication::class.java.name, context)
+    }
+}
+```
+
+Don't forget to register the runner in the `build.gradle.kts` file.
+
+```diff title="build.gradle.kts"
+android {
+    defaultConfig {
+        /* ... */
+
++        testInstrumentationRunner = "com.mypackage.test.TestRunner"
+    }
+
+    /* ... */
+}
+```
+
+After that, you can write tests as usual.
+
+```kotlin
+@RunWith(AndroidJUnit4::class)
+class SampleActivityTest() {
+    @Test
+    fun test() {
+        val scenario = launchActivity<SampleActivit>()
+    }
+}
+```
+
+### Configuring KojectExtras
+If you are using [KojectExtras](/docs/core/extras) and need more detailed settings, consider starting Koject for each test instead of in the `Application`.
+
+```kotlin
+class TestApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        // Do not start Koject
+    }
+}
+```
+```kotlin
+@RunWith(AndroidJUnit4::class)
+class SampleActivityTest() {
+    @Before
+    fun start() {
+        Koject.startTest {
+            application(ApplicationProvider.getApplicationContext())
+            addExtras(/* ... */)
+        }
+    }
+
+    @After
+    fun stop() {
+        Koject.stop()
+    }
+
+    @Test
+    fun test() {
+        val scenario = launchActivity<SampleActivit>()
+    }
+}
+```

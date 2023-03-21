@@ -31,7 +31,8 @@ const sidebars = {
         'core/component',
       ],
     },
-  {
+    "test",
+    {
       type: 'category',
       label: 'Android',
       link: {
@@ -45,6 +46,7 @@ const sidebars = {
         'android/activity',
         'android/fragment',
         'android/components',
+        'android/tests',
       ],
     },
     {

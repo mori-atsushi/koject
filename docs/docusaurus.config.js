@@ -81,6 +81,10 @@ const config = {
                 label: 'Core',
               },
               {
+                to: 'docs/test',
+                label: 'Test',
+              },
+              {
                 to: 'docs/android',
                 label: 'Android',
               },

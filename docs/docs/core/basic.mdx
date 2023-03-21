@@ -95,20 +95,6 @@ class Repository(
 
 In this case, all three classes (`Api`, `DB`, and `Repository`) are annotated with `@Singleton`, which means that Koject will create only one instance of each and reuse them throughout the application.
 
-It's important to note that you can't inject a normally-scoped type into a singleton-scoped type.
-
-```kotlin
-@Provides
-class NormalScope
-
-@Singleton
-@Provides
-class SingletonScope(
-    // Cannot inject NormalScope into SingletonScope!
-    private val normal: NormalScope
-)
-```
-
 ## Lazy Injection
 By using <LazyInject/> instead of `inject()`, you can get `Lazy` instance and enable lazy injection.
 

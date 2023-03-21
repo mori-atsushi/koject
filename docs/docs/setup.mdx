@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-+                implementation("com.moriatsushi.koject:koject-core:1.2.0")
++                implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
             }
         }
     }
@@ -35,7 +35,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-+    val processor = "com.moriatsushi.koject:koject-processor-app:1.2.0"
++    val processor = "com.moriatsushi.koject:koject-processor-app:1.3.0-beta01"
 +    add("kspAndroid", processor)
 +    add("kspJvm", processor)
 +    add("kspJs", processor)
@@ -55,38 +55,47 @@ plugins {
 }
 
 dependencies {
-+    implementation("com.moriatsushi.koject:koject-core:1.2.0")
-+    ksp("com.moriatsushi.koject:koject-processor-app1.2.0")
++    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.3.0-beta01")
 }
 ```
 
 ## Library module
-In the library modules, use `koject-processor-lib` instead of `koject-processor-app`.
-This prevents the container from being generated in the library module.
+In the library module, use `koject-processor-lib` instead of `koject-processor-app` to prevent container generation in the library module.
+
+To enable the collection of transitive dependencies, set the `moduleName` property.
 
 ### Multiplatform
 
 ```diff title="build.gradle.kts"
 dependencies {
     // Add it according to your targets.
--    val processor = "com.moriatsushi.koject:koject-processor-app:1.2.0"
-+    val processor = "com.moriatsushi.koject:koject-processor-lib:1.2.0"
+-    val processor = "com.moriatsushi.koject:koject-processor-app:1.3.0-beta01"
++    val processor = "com.moriatsushi.koject:koject-processor-lib:1.3.0-beta01"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
     add("kspIosX64", processor)
     add("kspIosArm64", processor)
 }
+
++ ksp {
++     arg("moduleName", project.name) 
++ }
 ```
 
 ### Single platform
 
 ```diff title="build.gradle.kts"
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.2.0")
--    ksp("com.moriatsushi.koject:koject-processor-app:1.2.0")
-+    ksp("com.moriatsushi.koject:koject-processor-lib:1.2.0")
+    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
+-    ksp("com.moriatsushi.koject:koject-processor-app:1.3.0-beta01")
++    ksp("com.moriatsushi.koject:koject-processor-lib:1.3.0-beta01")
 }
+
++ ksp {
++     arg("moduleName", project.name) 
++ }
 ```
 
 ## Android
@@ -95,13 +104,13 @@ For Android applications, additional functionality is available by adding the fo
 ```kotlin
 dependencies {
     // Inject Application / Context (Recommended)
-    implementation("com.moriatsushi.koject:koject-android-core:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-core:1.3.0-beta01")
     // Activity support
-    implementation("com.moriatsushi.koject:koject-android-activity:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-activity:1.3.0-beta01")
     // Fragment support
-    implementation("com.moriatsushi.koject:koject-android-fragment:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-fragment:1.3.0-beta01")
     // ViewModelFactory only
-    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.2.0")
+    implementation("com.moriatsushi.koject:koject-android-viewmodel:1.3.0-beta01")
 }
 ```
 
@@ -110,7 +119,7 @@ If you are using [Jetpack Compose](https://developer.android.com/jetpack/compose
 
 ```kotlin
 dependencies {
-    implementation("com.moriatsushi.koject:koject-compose-core:1.2.0")
+    implementation("com.moriatsushi.koject:koject-compose-core:1.3.0-beta01")
 }
 ```
 
@@ -119,7 +128,7 @@ To inject Android ViewModel into Composable, use the following package.
 ```kotlin
 dependencies {
     // Inject ViewModel into Composable (Android only)
-    implementation("com.moriatsushi.koject:koject-compose-viewmodel:1.2.0")
+    implementation("com.moriatsushi.koject:koject-compose-viewmodel:1.3.0-beta01")
 }
 ```
 
@@ -128,10 +137,11 @@ Copy the following snippets if you are using [gradle verion catalog](https://doc
 
 ```xml title="libs.versions.toml"
 [versions]
-koject = "1.2.0"
+koject = "1.3.0-beta01"
 
 [libraries]
 koject-core = { group = "com.moriatsushi.koject", name = "koject-core", version.ref = "koject" }
+koject-test = { group = "com.moriatsushi.koject", name = "koject-test", version.ref = "koject" }
 koject-processor-app = { group = "com.moriatsushi.koject", name = "koject-processor-app", version.ref = "koject" }
 koject-processor-lib = { group = "com.moriatsushi.koject", name = "koject-processor-lib", version.ref = "koject" }
 koject-android-core = { group = "com.moriatsushi.koject", name = "koject-android-core", version.ref = "koject" }

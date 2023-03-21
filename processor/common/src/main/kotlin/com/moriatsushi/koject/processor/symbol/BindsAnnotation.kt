@@ -5,6 +5,7 @@ import com.google.devtools.ksp.symbol.KSType
 import com.moriatsushi.koject.Binds
 import com.moriatsushi.koject.processor.analytics.findAnnotation
 import com.moriatsushi.koject.processor.analytics.findArgumentByName
+import com.moriatsushi.koject.processor.analytics.hasSuperType
 import com.moriatsushi.koject.processor.analytics.isNothing
 import com.moriatsushi.koject.processor.analytics.name
 import com.moriatsushi.koject.processor.analytics.primarySuperType
@@ -23,13 +24,13 @@ internal fun KSClassDeclaration.findBindAnnotation(): BindsAnnotation? {
     val annotation = findAnnotation<Binds>() ?: return null
     val argument = annotation.findArgumentByName<KSType>("to")
     val toType = if (argument == null || argument.isNothing) {
-        primarySuperType
-            ?: throwNotFoundSuperTypeException(this)
+        primarySuperType ?: throwNotFoundSuperTypeException(this)
     } else {
-        superTypes
-            .map { it.resolve() }
-            .find { it == argument }
-            ?: throwNotIncludedSuperTypeException(this, argument)
+        if (hasSuperType(argument)) {
+            argument
+        } else {
+            throwNotIncludedSuperTypeException(this, argument)
+        }
     }
     return BindsAnnotation(
         toTypeName = toType.toTypeName(),

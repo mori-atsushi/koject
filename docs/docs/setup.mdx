@@ -56,13 +56,14 @@ plugins {
 
 dependencies {
 +    implementation("com.moriatsushi.koject:koject-core:1.2.0")
-+    ksp("com.moriatsushi.koject:koject-processor-app1.2.0")
++    ksp("com.moriatsushi.koject:koject-processor-app:1.2.0")
 }
 ```
 
 ## Library module
-In the library modules, use `koject-processor-lib` instead of `koject-processor-app`.
-This prevents the container from being generated in the library module.
+In the library module, use `koject-processor-lib` instead of `koject-processor-app` to prevent container generation in the library module.
+
+To enable the collection of transitive dependencies, set the `moduleName` property.
 
 ### Multiplatform
 
@@ -77,6 +78,10 @@ dependencies {
     add("kspIosX64", processor)
     add("kspIosArm64", processor)
 }
+
++ ksp {
++     arg("moduleName", project.name) 
++ }
 ```
 
 ### Single platform
@@ -87,6 +92,10 @@ dependencies {
 -    ksp("com.moriatsushi.koject:koject-processor-app:1.2.0")
 +    ksp("com.moriatsushi.koject:koject-processor-lib:1.2.0")
 }
+
++ ksp {
++     arg("moduleName", project.name) 
++ }
 ```
 
 ## Android
@@ -132,6 +141,7 @@ koject = "1.2.0"
 
 [libraries]
 koject-core = { group = "com.moriatsushi.koject", name = "koject-core", version.ref = "koject" }
+koject-test = { group = "com.moriatsushi.koject", name = "koject-test", version.ref = "koject" }
 koject-processor-app = { group = "com.moriatsushi.koject", name = "koject-processor-app", version.ref = "koject" }
 koject-processor-lib = { group = "com.moriatsushi.koject", name = "koject-processor-lib", version.ref = "koject" }
 koject-android-core = { group = "com.moriatsushi.koject", name = "koject-android-core", version.ref = "koject" }

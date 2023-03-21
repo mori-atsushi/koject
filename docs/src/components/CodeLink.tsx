@@ -43,6 +43,12 @@ export const KojectStart: React.FC = () => (
   </CodeLink>
 );
 
+export const KojectStop: React.FC = () => (
+  <CodeLink href="/koject-core/com.moriatsushi.koject/-koject/stop.html">
+    Koject.stop()
+  </CodeLink>
+);
+
 export const Inject: React.FC = () => (
   <CodeLink href="/koject-core/com.moriatsushi.koject/inject.html">
     inject()
@@ -82,6 +88,24 @@ export const ComponentExtras: React.FC = () => (
 export const MissingExtrasException: React.FC = () => (
   <CodeLink href="/koject-core/com.moriatsushi.koject.error/-missing-extras-exception/index.html">
     MissingExtrasException
+  </CodeLink>
+);
+
+export const KojectRunTest: React.FC = () => (
+  <CodeLink href="/koject-test/com.moriatsushi.koject.test/run-test.html">
+    Koject.runTest()
+  </CodeLink>
+);
+
+export const KojectStartTest: React.FC = () => (
+  <CodeLink href="/koject-test/com.moriatsushi.koject.test/start-test.html">
+    Koject.startTest()
+  </CodeLink>
+);
+
+export const TestProvides: React.FC = () => (
+  <CodeLink href="/koject-test/com.moriatsushi.koject.test/-test-provides/index.html">
+    @TestProvides
   </CodeLink>
 );
 

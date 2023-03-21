@@ -18,6 +18,7 @@ struct TodoTaskField: View {
                     "Input title…",
                     text: $title
                 )
+                .accessibilityIdentifier("input")
                 .onSubmit {
                     onClickAddButton()
                 }
@@ -37,6 +38,7 @@ struct TodoTaskField: View {
                         .background(Color(.black))
                         .cornerRadius(21)
                 }
+                .accessibilityIdentifier("add")
             }
             .padding(.vertical, 4)
             .padding(.horizontal, 16)

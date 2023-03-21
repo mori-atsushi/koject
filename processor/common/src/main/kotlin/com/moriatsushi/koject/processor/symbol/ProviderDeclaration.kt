@@ -47,18 +47,20 @@ internal data class ProviderDeclaration(
             }
             val extraName = buildString {
                 if (qualifierName != null) {
-                    append("__")
                     append(qualifierName)
                 }
                 if (typeName != declarationName) {
-                    append("__")
-                    append(declarationName.hashForCode)
+                    if (isNotEmpty()) {
+                        append("__")
+                    }
+                    append(declarationName)
                 }
             }
             return buildString {
                 append("_")
                 append(typeName.escapedForCode)
                 if (extraName.isNotEmpty()) {
+                    append("__")
                     append(extraName.hashForCode)
                 }
                 append("_Factory")

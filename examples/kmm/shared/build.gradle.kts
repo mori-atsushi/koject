@@ -32,7 +32,9 @@ kotlin {
                 implementation(project(":examples:kmm:infrastructure"))
 
                 implementation(project(":koject-core"))
+                implementation(project(":koject-test"))
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val commonTest by getting {
@@ -54,10 +56,6 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-            dependencies {
-                implementation(project(":koject-test"))
-                implementation(libs.kotlinx.coroutines.test)
-            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting

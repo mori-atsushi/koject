@@ -3,14 +3,14 @@ package com.moriatsushi.koject.example.kmm
 import android.app.Application
 import com.moriatsushi.koject.Koject
 import com.moriatsushi.koject.android.application
-import com.moriatsushi.koject.start
+import com.moriatsushi.koject.test.startTest
 
-class MyApplication : Application() {
+class TestApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Koject.start {
-            application(this@MyApplication)
+        Koject.startTest {
+            application(this@TestApplication)
         }
     }
 }

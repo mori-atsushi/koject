@@ -4,7 +4,6 @@ import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
-import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.tschuchort.compiletesting.SourceFile
 import kotlin.test.assertContains
 import org.junit.Rule
@@ -72,25 +71,6 @@ class AppProcessorKojectExtrasFailedTest {
         assertContains(result.messages, expectedErrorMessage)
     }
 
-    @Test
-    fun wrongScope() {
-        val folder = tempFolder.newFolder()
-        val complication = compilationFactory.create(folder)
-        complication.sources = listOf(wrongScopeCode)
-        val result = complication.compile()
-
-        assertCompileFailed(result)
-
-        val expectedError = WrongScopeException::class
-        val location = "Test.kt:16"
-        val expectedErrorMessage =
-            "com.testpackage.SampleClass cannot be injected because it is not a singleton. " +
-                "Only a singleton can be injected into singletons."
-        assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, location)
-        assertContains(result.messages, expectedErrorMessage)
-    }
-
     private val notProvidedInExtrasCode = SourceFile.kotlin(
         "Test.kt",
         """
@@ -144,29 +124,6 @@ class AppProcessorKojectExtrasFailedTest {
                 ): KojectExtras
 
                 class SampleClass
-            """,
-    )
-
-    private val wrongScopeCode = SourceFile.kotlin(
-        "Test.kt",
-        """
-                package com.testpackage
-
-                import com.moriatsushi.koject.Provides
-                import com.moriatsushi.koject.Singleton
-                import com.moriatsushi.koject.extras.KojectExtras
-
-                class SampleClass
-
-                class GlobalExtras(
-                    val sampleClass: SampleClass
-                ): KojectExtras
-
-                @Singleton
-                @Provides
-                class SampleClassHolder(
-                    val sampleClass: SampleClass
-                )
             """,
     )
 }

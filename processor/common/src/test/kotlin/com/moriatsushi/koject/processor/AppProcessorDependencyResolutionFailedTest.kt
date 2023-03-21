@@ -4,7 +4,6 @@ import com.moriatsushi.koject.processor.assert.assertCompileFailed
 import com.moriatsushi.koject.processor.compiletesting.KotlinCompilationFactory
 import com.moriatsushi.koject.processor.error.DuplicateProvidedException
 import com.moriatsushi.koject.processor.error.NotProvidedException
-import com.moriatsushi.koject.processor.error.WrongScopeException
 import com.tschuchort.compiletesting.SourceFile
 import kotlin.test.assertContains
 import org.junit.Rule
@@ -54,25 +53,6 @@ class AppProcessorDependencyResolutionFailedTest {
         assertContains(result.messages, expectedErrorMessage)
     }
 
-    @Test
-    fun wrongScope() {
-        val folder = tempFolder.newFolder()
-        val complication = compilationFactory.create(folder)
-        complication.sources = listOf(invalidScopeCode)
-        val result = complication.compile()
-
-        assertCompileFailed(result)
-
-        val expectedError = WrongScopeException::class
-        val location = "Test.kt:12"
-        val expectedErrorMessage =
-            "com.testpackage.NormalScope cannot be injected because it is not a singleton. " +
-                "Only a singleton can be injected into singletons."
-        assertContains(result.messages, expectedError.qualifiedName!!)
-        assertContains(result.messages, location)
-        assertContains(result.messages, expectedErrorMessage)
-    }
-
     private val notProvidedInputCode = SourceFile.kotlin(
         "Test.kt",
         """
@@ -103,25 +83,6 @@ class AppProcessorDependencyResolutionFailedTest {
                 fun provideSampleClass(): SampleClass {
                     return SampleClass()
                 }
-            """,
-    )
-
-    private val invalidScopeCode = SourceFile.kotlin(
-        "Test.kt",
-        """
-                package com.testpackage
-
-                import com.moriatsushi.koject.Provides
-                import com.moriatsushi.koject.Singleton
-
-                @Provides
-                class NormalScope
-
-                @Singleton
-                @Provides
-                class SingletonScope(
-                    val normal: NormalScope
-                )
             """,
     )
 }

@@ -28,9 +28,3 @@ internal class DuplicateProvidedException(
 internal class DuplicateComponentExtrasException(
     message: String,
 ) : DependencyResolutionException(message)
-
-/**
- * Injecting in wrong scope
- */
-internal class WrongScopeException(message: String) :
-    DependencyResolutionException(message)

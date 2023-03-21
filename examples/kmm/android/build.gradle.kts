@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     kotlin("android")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -43,6 +44,7 @@ android {
 
 dependencies {
     implementation(project(":examples:kmm:shared"))
+    implementation(project(":examples:kmm:infrastructure"))
     implementation(project(":android:koject-android-core"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)
@@ -55,5 +57,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation("app.cash.sqldelight:android-driver:2.0.0-alpha05")
     androidTestImplementation("androidx.test:runner:1.5.2")
+    kspAndroidTest(project(":processor:app"))
 }

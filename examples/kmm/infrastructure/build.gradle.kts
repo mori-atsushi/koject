@@ -30,7 +30,6 @@ kotlin {
                 implementation(project(":examples:kmm:data"))
 
                 implementation(project(":koject-core"))
-                implementation(project(":koject-test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
@@ -54,6 +53,7 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
+                implementation(project(":koject-test"))
                 implementation("app.cash.sqldelight:native-driver:2.0.0-alpha05")
             }
         }

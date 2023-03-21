@@ -47,7 +47,12 @@ kotlin {
                 implementation(project(":android:koject-android-core"))
             }
         }
-        val androidUnitTest by getting
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.mockito.kotlin)
+                implementation("app.cash.sqldelight:sqlite-driver:2.0.0-alpha05")
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -88,6 +93,7 @@ android {
 
 dependencies {
     add("kspAndroid", project(":processor:app"))
+    add("kspAndroidTest", project(":processor:app"))
     add("kspIosX64", project(":processor:app"))
     add("kspIosArm64", project(":processor:app"))
     add("kspIosSimulatorArm64", project(":processor:app"))

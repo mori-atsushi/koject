@@ -34,6 +34,15 @@ class AppProcessorBindsTest {
     }
 
     @Test
+    fun success_nestedSupertype() {
+        val complication = compilationFactory.create(folder)
+        complication.sources = listOf(nestedSuperType)
+        val result = complication.compile()
+
+        assertCompileSucceed(result)
+    }
+
+    @Test
     fun failed_notFoundSupertype() {
         val complication = compilationFactory.create(folder)
         complication.sources = listOf(notFoundSupertypeCode)
@@ -79,6 +88,24 @@ class AppProcessorBindsTest {
                 class SampleImpl: Sample
 
                 interface Sample
+            """,
+    )
+
+    private val nestedSuperType = SourceFile.kotlin(
+        "Test.kt",
+        """
+                package com.testpackage
+
+                import com.moriatsushi.koject.Binds
+                import com.moriatsushi.koject.Provides
+
+                @Binds(to = Type2::class)
+                @Provides
+                class SampleImpl: Type1
+
+                interface Type1: Type2
+
+                interface Type2
             """,
     )
 

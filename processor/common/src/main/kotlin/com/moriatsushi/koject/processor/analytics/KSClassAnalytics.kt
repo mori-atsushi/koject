@@ -8,3 +8,17 @@ internal val KSClassDeclaration.primarySuperType: KSType?
         .map { it.resolve() }
         .filterNot { it.isAny }
         .firstOrNull()
+
+internal fun KSClassDeclaration.hasSuperType(ksType: KSType): Boolean {
+    superTypes
+        .map { it.resolve() }
+        .forEach {
+            if (it == ksType) return true
+
+            val declaration = it.declaration
+            if (declaration is KSClassDeclaration && declaration.hasSuperType(ksType)) {
+                return true
+            }
+        }
+    return false
+}

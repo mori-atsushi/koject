@@ -7,6 +7,8 @@ com.moriatsushi.koject.component
 com.moriatsushi.koject.error
 com.moriatsushi.koject.extras
 com.moriatsushi.koject.internal
+module:koject-test
+com.moriatsushi.koject.test
 module:koject-android-activity
 com.moriatsushi.koject
 com.moriatsushi.koject.android.activity

@@ -1,0 +1,77 @@
+import {
+    Provides,
+} from '@site/src/components/CodeLink';
+
+# Inject into Swift
+Koject supports KMM projects, allowing you to share code between Android and iOS.
+This document explains how to use the dependencies provided by Kotlin in your Swift code.
+
+## Getting Started
+
+To call Koject from Swift, you need to define the necessary actions in Kotlin.
+
+First, create a `KojectHelper` object in the `iosMain` folder and add a `start` function for initialization.
+
+```kotlin title="src/iosMain/kotlin/KojectHelper.ios.kt"
+object KojectHelper {
+    fun start() {
+        Koject.start()
+    }
+}
+```
+
+Next, call `KojectHelper.shared.start()` in `@main` in Swift to start Koject.
+
+```swift title="MyApp.swift"
+import SwiftUI
+import shared
+
+@main
+struct MyApp: App {
+    init() {
+        KojectHelper.shared.start()
+    }
+    
+	var body: some Scene {
+		/* ... */
+	}
+}
+```
+
+Define the necessary dependencies in Kotlin and provide them using <Provides/>.
+
+```kotlin title="src/commonMain/kotlin/SampleRepository.kt"
+@Provides
+@Singleton
+class SampleRepository
+```
+```kotlin title="src/commonMain/kotlin/SampleViewModel.kt"
+@Provides
+class SampleViewModel(
+    private val repository: SampleRepository
+)
+```
+
+Add the necessary dependencies on the Swift side to `KojectHelper` as shown below.
+
+```kotlin title="src/iosMain/kotlin/KojectHelper.ios.kt"
+object KojectHelper {
+    fun start() {
+        Koject.start()
+    }
+
+    fun injectSampleViewModel(): SampleViewModel {
+        return inject()
+    }
+}
+```
+
+You can use it by calling `KojectHelper.shared.injectSampleViewModel()` in Swift.
+
+```swift title="SampleState.swift"
+import shared
+
+class SampleState {
+    private let viewModel = KojectHelper.shared.injectSampleViewModel()
+}
+```

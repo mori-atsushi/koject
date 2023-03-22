@@ -7,16 +7,16 @@ import com.moriatsushi.koject.start
 import com.moriatsushi.koject.test.startTest
 
 object KojectHelper {
-    fun startKoject() {
+    fun start() {
         Koject.start()
     }
 
-    fun startKoject(isTesting: Boolean) {
-        if (isTesting) {
-            Koject.startTest()
-        } else {
-            Koject.start()
-        }
+    fun startTest() {
+        Koject.startTest()
+    }
+
+    fun stop() {
+        Koject.stop()
     }
 
     fun injectTodoListViewModel(): IOSTodoListViewModel {

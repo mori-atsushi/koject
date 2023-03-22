@@ -15,11 +15,19 @@
 		0DB6D92B29B0D882003CA0D3 /* TodoTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB6D92A29B0D882003CA0D3 /* TodoTaskView.swift */; };
 		0DB6D92D29B0D934003CA0D3 /* TodoTaskField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB6D92C29B0D934003CA0D3 /* TodoTaskField.swift */; };
 		0DB6D93029B0DC10003CA0D3 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB6D92F29B0DC10003CA0D3 /* CheckBox.swift */; };
+		0DC47C8129CA9A17009C55F8 /* TodoListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC47C8029CA9A17009C55F8 /* TodoListViewModelTests.swift */; };
 		0DFBA1C129C9F12A007A5A5B /* IosUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFBA1C029C9F12A007A5A5B /* IosUITests.swift */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0DC47C8229CA9A17009C55F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7555FF73242A565900829871 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7555FF7A242A565900829871;
+			remoteInfo = ios;
+		};
 		0DFBA1C429C9F12A007A5A5B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7555FF73242A565900829871 /* Project object */;
@@ -51,6 +59,8 @@
 		0DB6D92A29B0D882003CA0D3 /* TodoTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTaskView.swift; sourceTree = "<group>"; };
 		0DB6D92C29B0D934003CA0D3 /* TodoTaskField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTaskField.swift; sourceTree = "<group>"; };
 		0DB6D92F29B0DC10003CA0D3 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
+		0DC47C7E29CA9A17009C55F8 /* iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DC47C8029CA9A17009C55F8 /* TodoListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewModelTests.swift; sourceTree = "<group>"; };
 		0DFBA1BE29C9F12A007A5A5B /* iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DFBA1C029C9F12A007A5A5B /* IosUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosUITests.swift; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
@@ -59,6 +69,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0DC47C7B29CA9A17009C55F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0DFBA1BB29C9F12A007A5A5B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -112,6 +129,14 @@
 			path = component;
 			sourceTree = "<group>";
 		};
+		0DC47C7F29CA9A17009C55F8 /* iosTests */ = {
+			isa = PBXGroup;
+			children = (
+				0DC47C8029CA9A17009C55F8 /* TodoListViewModelTests.swift */,
+			);
+			path = iosTests;
+			sourceTree = "<group>";
+		};
 		0DFBA1BF29C9F12A007A5A5B /* iosUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +150,7 @@
 			children = (
 				7555FF7D242A565900829871 /* ios */,
 				0DFBA1BF29C9F12A007A5A5B /* iosUITests */,
+				0DC47C7F29CA9A17009C55F8 /* iosTests */,
 				7555FF7C242A565900829871 /* Products */,
 				7555FFB0242A642200829871 /* Frameworks */,
 			);
@@ -135,6 +161,7 @@
 			children = (
 				7555FF7B242A565900829871 /* ios.app */,
 				0DFBA1BE29C9F12A007A5A5B /* iosUITests.xctest */,
+				0DC47C7E29CA9A17009C55F8 /* iosTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,6 +189,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0DC47C7D29CA9A17009C55F8 /* iosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0DC47C8629CA9A17009C55F8 /* Build configuration list for PBXNativeTarget "iosTests" */;
+			buildPhases = (
+				0DC47C7A29CA9A17009C55F8 /* Sources */,
+				0DC47C7B29CA9A17009C55F8 /* Frameworks */,
+				0DC47C7C29CA9A17009C55F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0DC47C8329CA9A17009C55F8 /* PBXTargetDependency */,
+			);
+			name = iosTests;
+			productName = iosTests;
+			productReference = 0DC47C7E29CA9A17009C55F8 /* iosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		0DFBA1BD29C9F12A007A5A5B /* iosUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0DFBA1C829C9F12A007A5A5B /* Build configuration list for PBXNativeTarget "iosUITests" */;
@@ -209,6 +254,10 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = orgName;
 				TargetAttributes = {
+					0DC47C7D29CA9A17009C55F8 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 7555FF7A242A565900829871;
+					};
 					0DFBA1BD29C9F12A007A5A5B = {
 						CreatedOnToolsVersion = 14.2;
 						TestTargetID = 7555FF7A242A565900829871;
@@ -233,11 +282,19 @@
 			targets = (
 				7555FF7A242A565900829871 /* ios */,
 				0DFBA1BD29C9F12A007A5A5B /* iosUITests */,
+				0DC47C7D29CA9A17009C55F8 /* iosTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0DC47C7C29CA9A17009C55F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0DFBA1BC29C9F12A007A5A5B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -277,6 +334,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0DC47C7A29CA9A17009C55F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0DC47C8129CA9A17009C55F8 /* TodoListViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0DFBA1BA29C9F12A007A5A5B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -302,6 +367,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0DC47C8329CA9A17009C55F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7555FF7A242A565900829871 /* ios */;
+			targetProxy = 0DC47C8229CA9A17009C55F8 /* PBXContainerItemProxy */;
+		};
 		0DFBA1C529C9F12A007A5A5B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7555FF7A242A565900829871 /* ios */;
@@ -310,6 +380,55 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0DC47C8429CA9A17009C55F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					shared,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.moriatsushi.koject.example.kmm.iosTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ios.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ios";
+			};
+			name = Debug;
+		};
+		0DC47C8529CA9A17009C55F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					shared,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.moriatsushi.koject.example.kmm.iosTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ios.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ios";
+			};
+			name = Release;
+		};
 		0DFBA1C629C9F12A007A5A5B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -474,6 +593,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = ios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Koject TODO";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -504,6 +624,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = ios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Koject TODO";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -526,6 +647,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0DC47C8629CA9A17009C55F8 /* Build configuration list for PBXNativeTarget "iosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0DC47C8429CA9A17009C55F8 /* Debug */,
+				0DC47C8529CA9A17009C55F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0DFBA1C829C9F12A007A5A5B /* Build configuration list for PBXNativeTarget "iosUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

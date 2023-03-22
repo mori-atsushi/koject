@@ -51,6 +51,19 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'iOS (KMM)',
+      link: {
+        type: "doc",
+        id: "ios/index"
+      },
+      collapsed: true,
+      items: [
+        'ios/basic',
+        'ios/tests',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Compose',
       link: {
         type: "doc",

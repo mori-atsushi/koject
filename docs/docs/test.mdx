@@ -20,14 +20,14 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
+                implementation("com.moriatsushi.koject:koject-core:1.3.0-beta02")
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-+                implementation("com.moriatsushi.koject:koject-test:1.3.0-beta01")
++                implementation("com.moriatsushi.koject:koject-test:1.3.0-beta02")
             }
         }
     }
@@ -36,7 +36,7 @@ kotlin {
 
 dependencies {
     // Add it according to your targets.
-    val processor = "com.moriatsushi.koject:koject-processor-app:1.3.0-beta01"
+    val processor = "com.moriatsushi.koject:koject-processor-app:1.3.0-beta02"
     add("kspAndroid", processor)
     add("kspJvm", processor)
     add("kspJs", processor)
@@ -54,11 +54,11 @@ dependencies {
 ### Single platform
 ```diff title="build.gradle.kts"
 dependencies {
-    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta01")
+    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta02")
 
     testImplementation(kotlin("test"))
-+     testImplementation("com.moriatsushi.koject:koject-test:1.3.0-beta01")
-+     kspTest("com.moriatsushi.koject:koject-processor-app:1.3.0-beta01")
++     testImplementation("com.moriatsushi.koject:koject-test:1.3.0-beta02")
++     kspTest("com.moriatsushi.koject:koject-processor-app:1.3.0-beta02")
 }
 ```
 
@@ -105,7 +105,6 @@ Using <TestProvides/>, you can replace dependencies.
 In the following example, `SampleRepositoryImpl` is used in production, and `FakeSampleRepository` is used in testing.
 
 ```kotlin title="src/main/kotlin/SampleRepository.kt"
-@Provides
 interface SampleRepository
 
 @Provide

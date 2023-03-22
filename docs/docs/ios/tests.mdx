@@ -1,0 +1,145 @@
+import {
+    KojectRunTest,
+    KojectStartTest,
+} from '@site/src/components/CodeLink';
+
+# iOS tests
+There are two ways to test KMM iOS code: testing with Kotlin only and integration testing from iOS.
+Here is an introduction to both methods.
+
+:::info LINK
+
+To understand the basics of testing, please refer to the [Test documentation](/docs/test) first.
+
+:::
+
+## Testing with Kotlin only
+
+To test with Kotlin only, you can use <KojectRunTest/> or <KojectStartTest/> to use the DI container for testing.
+
+```kotlin
+@Provides
+class Controller
+```
+```kotlin
+class SampleTest() {
+    @Test
+    fun test() = Koject.runTest {
+        val controller = inject<Controller>() // can be injected
+    }
+}
+```
+
+Please refer to the [Test documentation](/docs/test) for more details.
+
+## iOS Unit tests
+To test including code written in Swift, use [XCTest](https://developer.apple.com/documentation/xctest).
+
+First, add the `koject-test` dependency to `iosMain` in shared/build.gradle.kts.
+
+```diff title="shared/build.gradle.kts"
+kotlin {
+    /* ... */
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("com.moriatsushi.koject:koject-core:1.3.0-beta02")
+            }
+        }
+
+        val iosMain by getting {
++            dependencies {
++                implementation("com.moriatsushi.koject:koject-test:1.3.0-beta02")
++            }
+        }
+    }
+}
+```
+
+Create a `KojectHelper` object and add `startTest()` and `stop()` functions.
+
+```kotlin title="src/iosMain/kotlin/KojectHelper.ios.kt"
+object KojectHelper {
+    fun start() {
+        Koject.start()
+    }
+
+    fun startTest() {
+        Koject.startTest()
+    }
+
+    fun stop() {
+        Koject.stop()
+    }
+}
+```
+
+You can test with the DI container for testing by calling `startTest` in `setUpWithError` and `stop` in `tearDownWithError`.
+
+```swift title="SampleStateTests.swift"
+import XCTest
+@testable import ios
+@testable import shared
+
+final class SampleStateTests: XCTestCase {
+    override func setUpWithError() throws {
+        KojectHelper.shared.startTest()
+    }
+
+    override func tearDownWithError() throws {
+        KojectHelper.shared.stop()
+    }
+
+    func test() throws {
+        /* ... */
+    }
+}
+```
+
+## iOS UI tests
+When performing UI tests, the DI container for the application is used, so branching must be done on the application side.
+
+First, create a branch in `@main` as follows:
+
+```swift title="MyApp.swift"
+import SwiftUI
+import shared
+
+@main
+struct MyApp: App {
+    init() {
+        #if DEBUG
+        let isTesting = CommandLine.arguments.contains("TESTING")
+        if isTesting {
+            KojectHelper.shared.startTest()
+        } else {
+            KojectHelper.shared.start()
+        }
+        #else
+        KojectHelper.shared.start()
+        #endif
+    }
+    
+	var body: some Scene {
+		/* ... */
+	}
+}
+```
+
+Specify `launchArguments` when starting the test, and UI tests can be executed using the DI container for testing.
+
+```swift title="UITests.swift"
+import XCTest
+
+final class UITests: XCTestCase {
+    let app = XCUIApplication()
+    
+    func testAddTask() {
+        app.launchArguments = ["TESTING"]
+        app.launch()
+        
+        /* ... */
+    }
+}
+```

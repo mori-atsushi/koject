@@ -85,11 +85,15 @@ const config = {
                 label: 'Test',
               },
               {
-                to: 'docs/android',
+                to: 'docs/android/application',
                 label: 'Android',
               },
               {
-                to: 'docs/compose',
+                to: 'docs/ios/basic',
+                label: 'iOS(Kmm)',
+              },
+              {
+                to: 'docs/compose/core',
                 label: 'Compose',
               },
             ],
@@ -130,7 +134,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['kotlin'],
+        additionalLanguages: ['kotlin', 'swift'],
       },
     }),
 };

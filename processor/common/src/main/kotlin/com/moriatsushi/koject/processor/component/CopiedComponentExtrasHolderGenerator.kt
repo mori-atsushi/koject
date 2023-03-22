@@ -14,7 +14,6 @@ internal class CopiedComponentExtrasHolderGenerator(
 
         val extrasDeclarations = resolver.findComponentExtrasHolders()
         extrasDeclarations
-            .filter { it.containingFile == null } // The file is in the current module
             .groupBy { it.componentName }
             .forEach { (_, holders) ->
                 val min = holders.minBy { it.copiedCount }

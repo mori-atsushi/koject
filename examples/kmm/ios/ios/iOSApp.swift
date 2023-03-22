@@ -6,9 +6,13 @@ struct iOSApp: App {
     init() {
         #if DEBUG
         let isTesting = CommandLine.arguments.contains("TESTING")
-        KojectHelper.shared.startKoject(isTesting: isTesting)
+        if isTesting {
+            KojectHelper.shared.startTest()
+        } else {
+            KojectHelper.shared.start()
+        }
         #else
-        KojectHelper.shared.startKoject()
+        KojectHelper.shared.start()
         #endif
     }
     

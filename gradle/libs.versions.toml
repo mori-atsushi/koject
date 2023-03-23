@@ -16,7 +16,7 @@ kotlinx-coroutines = "1.6.4"
 ksp = "1.8.10-1.0.9"
 ktlint = "0.48.1"
 mockito-kotlin = "4.1.0"
-publish = "0.24.0"
+publish = "0.25.0"
 robolectric = "4.9.2"
 spotless = "6.17.0"
 

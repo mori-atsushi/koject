@@ -26,10 +26,14 @@ import com.moriatsushi.koject.processor.factory.ProviderValidator
 import com.moriatsushi.koject.processor.file.FileGenerator
 
 @InternalKojectApi
-class DIProcessorFactory(
+class DIProcessorFactory internal constructor(
     private val environment: SymbolProcessorEnvironment,
+    private val options: DIProcessorOptions,
 ) {
-    private val options = DIProcessorOptions.of(environment.options)
+    constructor(environment: SymbolProcessorEnvironment) : this(
+        environment = environment,
+        options = DIProcessorOptions.of(environment.options),
+    )
 
     private val timeMeasure by lazy {
         TimeMeasure(

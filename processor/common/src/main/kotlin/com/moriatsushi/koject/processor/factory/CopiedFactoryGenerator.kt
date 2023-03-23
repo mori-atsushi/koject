@@ -15,7 +15,6 @@ internal class CopiedFactoryGenerator(
 
         val factories = resolver.findFactories()
         factories
-            .filter { it.containingFile == null } // The file is in the current module
             .groupBy { it.identifier to it.component }
             .forEach { (_, factories) ->
                 val min = factories.minBy { it.copiedCount }

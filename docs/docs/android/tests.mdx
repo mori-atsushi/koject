@@ -4,7 +4,7 @@ import {
 } from '@site/src/components/CodeLink';
 
 
-# Android tests
+# Android Tests
 
 Here we will introduce some tips for testing Android applications.
 
@@ -14,7 +14,7 @@ To understand the basics of testing, please refer to the [Test documentation](/d
 
 :::
 
-## Unit tests
+## Unit Tests
 If the subject to be tested does not require the Android Framework, you can start testing by mocking the application class using mock libraries such as [mockito](https://site.mockito.org/) or [MockK](https://mockk.io/).
 When calling <KojectStartTest/>, specify the mocked application class as follows:
 
@@ -40,7 +40,7 @@ class SampleViewModelTest() {
 }
 ```
 
-Create JUnit rules as needed:
+Create JUnit rule if you need it.
 
 ```kotlin
 class KojectTestRule : TestWatcher() {
@@ -68,9 +68,9 @@ class SampleViewModelTest() {
 }
 ```
 
-## Instrumented tests / Robolectric tests
+## Instrumented Tests / Robolectric Tests
 
-If you want to run [instrumented tests](https://developer.android.com/training/testing/instrumented-tests) on a physical device or emulator, or run unit tests using [Robolectric](https://robolectric.org/), you need to replace <KojectStart/> with `Koject.startTest()`.
+To run [instrumented tests](https://developer.android.com/training/testing/instrumented-tests) on a physical device or emulator, or run unit tests using [Robolectric](https://robolectric.org/), you need to replace the <KojectStart/> call in your application class with `Koject.startTest()`.
 
 First, create a test application class using `Koject.startTest()`.
 

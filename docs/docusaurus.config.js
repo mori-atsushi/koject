@@ -72,31 +72,9 @@ const config = {
             position: 'left',
           },
           {
-            type: 'dropdown',
+            to: 'docs/core/basic',
             label: 'Docs',
             position: 'left',
-            items: [
-              {
-                to: 'docs/core/basic',
-                label: 'Core',
-              },
-              {
-                to: 'docs/test',
-                label: 'Test',
-              },
-              {
-                to: 'docs/android/application',
-                label: 'Android',
-              },
-              {
-                to: 'docs/ios/basic',
-                label: 'iOS(Kmm)',
-              },
-              {
-                to: 'docs/compose/core',
-                label: 'Compose',
-              },
-            ],
           },
           {
             href: '/api/index.html',

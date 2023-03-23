@@ -3,7 +3,7 @@ import {
     KojectStartTest,
 } from '@site/src/components/CodeLink';
 
-# iOS tests
+# iOS Tests
 There are two ways to test KMM iOS code: testing with Kotlin only and integration testing from iOS.
 Here is an introduction to both methods.
 
@@ -15,7 +15,8 @@ To understand the basics of testing, please refer to the [Test documentation](/d
 
 ## Testing with Kotlin only
 
-To test with Kotlin only, you can use <KojectRunTest/> or <KojectStartTest/> to use the DI container for testing.
+If you want to test Kotlin code only, you can write tests in Kotlin as usual.
+You can use <KojectRunTest/> or <KojectStartTest/> to start a DI container for testing.
 
 ```kotlin
 @Provides
@@ -32,10 +33,11 @@ class SampleTest() {
 
 Please refer to the [Test documentation](/docs/test) for more details.
 
-## iOS Unit tests
+## iOS Unit Tests
 To test including code written in Swift, use [XCTest](https://developer.apple.com/documentation/xctest).
 
-First, add the `koject-test` dependency to `iosMain` in shared/build.gradle.kts.
+First, add the `koject-test` dependency to the `iosMain` source set in the `build.gradle.kts` file of the shared module.
+Use the main source set, not the test source set, to call from Swift.
 
 ```diff title="shared/build.gradle.kts"
 kotlin {
@@ -97,10 +99,10 @@ final class SampleStateTests: XCTestCase {
 }
 ```
 
-## iOS UI tests
+## iOS UI Tests
 When performing UI tests, the DI container for the application is used, so branching must be done on the application side.
 
-First, create a branch in `@main` as follows:
+First, create a test branch in your entry point with the `@main` attribute as follows:
 
 ```swift title="MyApp.swift"
 import SwiftUI
@@ -135,7 +137,7 @@ import XCTest
 final class UITests: XCTestCase {
     let app = XCUIApplication()
     
-    func testAddTask() {
+    func testSome() {
         app.launchArguments = ["TESTING"]
         app.launch()
         

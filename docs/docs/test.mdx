@@ -100,9 +100,10 @@ class SampleTest() {
 }
 ```
 
-## Swapping dependencies
-Using <TestProvides/>, you can replace dependencies.
-In the following example, `SampleRepositoryImpl` is used in production, and `FakeSampleRepository` is used in testing.
+## Swapping dependencies in tests
+You can use <TestProvides/> to replace dependencies during testing.
+
+For example, suppose you provided and used SampleRepository as follows:
 
 ```kotlin title="src/main/kotlin/SampleRepository.kt"
 interface SampleRepository
@@ -118,6 +119,10 @@ fun main() {
     val repository = inject<SampleRepository>() // is SampleRepositoryImpl
 }
 ```
+
+During testing, you may want to use different code because you do not want to communicate with the backend server or you want to test more efficiently.
+By using <TestProvides /> as follows, `FakeSampleRepository` is used during testing instead of `SampleRepositoryImpl`.
+
 ```kotlin title="src/test/kotlin/FakeSampleRepository.kt"
 @TestProvides
 @Binds
@@ -132,6 +137,7 @@ class SampleTest() {
 }
 ```
 
+Note that `FakeSampleRepository` is not provided.
 You can provide both `FakeSampleRepository` and `SampleRepository` by using `@TestProvides` as follows.
 
 ```kotlin title="src/test/kotlin/FakeSampleRepository.kt"

@@ -16,9 +16,20 @@ kotlin {
     iosSimulatorArm64()
     macosX64()
     macosArm64()
+    watchos()
+    watchosSimulatorArm64()
+    watchosDeviceArm64()
+    tvos()
+    tvosSimulatorArm64()
+
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX86()
+    androidNativeX64()
 
     mingwX64()
     linuxX64()
+    linuxArm64()
 
     sourceSets {
         val commonMain by getting {
@@ -51,16 +62,15 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", project(":processor:lib"))
-    add("kspJvm", project(":processor:lib"))
-    add("kspJs", project(":processor:lib"))
-    add("kspIosX64", project(":processor:lib"))
-    add("kspIosArm64", project(":processor:lib"))
-    add("kspIosSimulatorArm64", project(":processor:lib"))
-    add("kspMacosX64", project(":processor:lib"))
-    add("kspMacosArm64", project(":processor:lib"))
-    add("kspMingwX64", project(":processor:lib"))
-    add("kspLinuxX64", project(":processor:lib"))
+    kotlin.sourceSets.forEach { sourceSet ->
+        if (sourceSet.name.endsWith("Main")) {
+            val name = sourceSet.name.substringBefore("Main")
+            val configuration = "ksp${name.replaceFirstChar { it.uppercase() }}"
+            if (configurations.any { it.name == configuration }) {
+                add(configuration, project(":processor:lib"))
+            }
+        }
+    }
 }
 
 ksp {

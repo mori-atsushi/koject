@@ -1,0 +1,243 @@
+---
+slug: test-test-test
+title: Koject v1.3.0 - DIコンテナを使ったテストコードを書こう
+authors: atsushi
+image: /blog/2023-03-25/ogp.png
+---
+
+import {
+    KojectStart,
+    KojectStartTest,
+    KojectRunTest,
+    Inject,
+    TestProvides,
+} from '@site/src/components/CodeLink';
+
+# Koject v1.3.0 - DIコンテナを使ったテストコードを書こう
+
+![](/blog/2023-03-25/banner.png)
+
+継続的なソフトウェア開発を行う上で、テストコードは重要な役割を果たします。
+Koject v1.3.0ではテストのサポートが追加されました。
+この記事ではテスト時にDIコンテナを使う理由と、Kojectを使ったテストコードの書き方、Koject v1.3.0で追加されたもう一つの機能について紹介します。
+
+<!--truncate-->
+
+[**Read in English →**](/blog/test-test-test)
+
+## テスト時もDIコンテナを使う
+[以前紹介](/blog/jp/first-stable-release)したように、Dependency Injectionのパターンに従うことで、テスト容易性を向上させることができます。
+テスト時に一部の依存関係を差し替えることで、外部との通信をなくして不安定なテストを避けたり、テストにかかる時間を短縮することが可能になります。
+
+この際に利用される、実際とは異なるオブジェクトのことを、モックやフェイクと言います。
+一方で、単一のクラスをテストするために、そのクラスの全ての依存関係を実際とは異なるモックに差し替えると、テストの信頼性や保守性の面で問題が生じるかもしれません。
+
+```kotlin
+class VideoUploadServiceTest {
+    private val videoUploader = mock(VideoUploader::class)
+    private val notificationManager = mock(NotificationManager::class)
+    private val videoUploadService =
+        VideoUploadService(videoUploader, notificationManager)
+
+    @Test
+    fun test() {
+        /* ... */
+    }
+}
+```
+
+モックオブジェクトは実際のオブジェクトと全く同じ動作をするわけではないので、それが理由でテストが失敗する可能性があります。
+テストが失敗した際に実際のコードが間違っているのか、もしくはうまくモックできていないのか、判断するのに手間がかかるようになります。
+反対に、モックが正しくないことにより、コードが間違っているのにテストが成功する可能性も存在します。
+
+テストの対象のほとんどがモックの場合、あまり意味のあるテストとは言えないでしょう。
+
+また、モックオブジェクトが増えるとその保守も難しくなります。
+モックしている対象が変わった場合、そのモックオブジェクトも追従する必要があります。
+メンテしにくいテストは次第に機能しなくなるため、テストのメンテナンス性は重要です。
+
+できる限り実際の依存関係を利用することをおすすめします。
+制御が難しい外部と通信する場合や、そのままだと莫大な時間がかかる場合に、その該当箇所のみをテスト用のものに差し替えます。
+
+テスト対象のクラスが多くの依存関係を持つ場合、インスタンスの生成に苦労すると考えるかもしれません。
+心配しないでください。
+本番環境と同じくDIコンテナを使えば、テスト時の依存関係も簡単に作成することができます。
+
+## UnitテストでKojectを使う
+
+テスト時にKojectを使う方法について紹介します。
+
+例えば、このような依存関係を持つコードがあったとします。
+
+```kotlin
+interface Api
+
+@Provides
+@Binds
+class ApiImpl: Api
+
+interface SampleRepository
+
+@Provide
+@Binds
+class SampleRepositoryImpl(
+    private val api: Api
+): SampleRepository
+
+@Provides
+class SampleController(
+    private val repository: SampleRepository
+)
+```
+
+この`SampleController`に対して、テストコードを作成してみましょう。<KojectRunTest/>を使うことで、テスト用のDIコンテナを起動してテストすることができます。
+その後、<Inject/>関数を使って、依存が解決されたクラスを取得します。
+
+```kotlin
+class SampleControllerTest() {
+    @Test
+    fun test() = Koject.runTest {
+        val controller = inject<SampleController>() // can be injected
+    }
+}
+```
+
+Apiクラスをモックに差し替えたい場合、以下のように<TestProvides/>を使って上書きします。
+これにより、テスト時は`MockApi`が使われ、本番環境では`ApiImpl`が使われます。
+
+```kotlin
+@TestProvides
+@Binds
+class MockApi: Api
+```
+
+テストには追加の依存関係の設定が必要です。
+詳しくは、以下のドキュメントを参照してください。
+
+* [テスト(共通)](/docs/test)
+* [Androidテスト](/docs/android/tests)
+* [iOSテスト](/docs/ios/tests)
+
+## UIテストでKojectを使う
+
+KojectはUIテスト等のintegrationテストでも利用することができます。
+
+### Android UIテスト
+
+Androidアプリでは、実機もしくはエミュレータを使った[instrumentedテスト](https://developer.android.com/training/testing/instrumented-tests)を作成するか、[Robolectoric](https://robolectric.org/)を利用することで、UIテストを実行します。
+
+UIテストでテスト用DIコンテナを利用するには、アプリケーションクラスで呼んでいる<KojectStart/>を<KojectStartTest/>に置き換える必要があります。
+アプリケーションクラスの置き換えにはカスタム`Runner`を作成してください。
+
+```kotlin
+class TestApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        Koject.startTest {
+            application(this@TestApplication)
+        }
+    }
+}
+```
+```kotlin
+class TestRunner : AndroidJUnitRunner() {
+    override fun newApplication(
+        classLoader: ClassLoader?,
+        className: String?,
+        context: Context?
+    ): Application {
+        return super.newApplication(classLoader, TestApplication::class.java.name, context)
+    }
+}
+```
+
+以下ドキュメントでより詳しい詳しい説明を行っています。
+
+* [Androidテスト](/docs/android/tests)
+
+
+### iOS UIテスト
+
+Kojectは[Kotlin Multiplatform Mobile](https://kotlinlang.org/lp/mobile/)に対応しており、iOSでも利用することができます。
+
+iOSのUIテストは[XCTest](https://developer.apple.com/documentation/xctest)を利用し、Swiftで記述します。
+以下のようにテスト時用の分岐を作成し、テスト用のDIコンテナを開始してください。
+
+```swift
+import SwiftUI
+import shared
+
+@main
+struct MyApp: App {
+    init() {
+        #if DEBUG
+        let isTesting = CommandLine.arguments.contains("TESTING")
+        if isTesting {
+            KojectHelper.shared.startTest()
+        } else {
+            KojectHelper.shared.start()
+        }
+        #else
+        KojectHelper.shared.start()
+        #endif
+    }
+    
+    var body: some Scene {
+        /* ... */
+    }
+}
+```
+```swift
+import XCTest
+
+final class UITests: XCTestCase {
+    let app = XCUIApplication()
+    
+    func testSome() {
+        app.launchArguments = ["TESTING"]
+        app.launch()
+        
+        /* ... */
+    }
+}
+```
+
+iOSでKojectを利用する詳しい情報は、以下ドキュメントから確認できます。
+
+* [iOS(KMM)](/docs/ios/basic)
+* [iOSテスト](/docs/ios/tests)
+
+## 推移的な依存関係の収集
+Koject v1.3.0のもう一つの重要な変更点は、gradleマルチモジュールを使った場合の依存関係の収集が改善されたことです。
+
+Koject v1.2.0以前は、配布している全ての依存関係はappモジュールから直接参照できる必要がありました。
+
+![](/blog/2023-03-25/module1.png)
+
+Koject v1.3.0からは推移的な依存関係の収集に対応したため、直接参照できる必要はありません。
+
+![](/blog/2023-03-25/module2.png)
+
+有効化には、以下のようにモジュール名を指定する必要があります。
+
+```diff title="build.gradle"
+dependencies {
+    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta02")
+    ksp("com.moriatsushi.koject:koject-processor-lib:1.3.0-beta02")
+}
+
++ ksp {
++     arg("moduleName", project.name) 
++ }
+```
+
+詳細は[セットアップドキュメント](/docs/setup)を確認してください。
+
+## Kojectを使って快適な開発を
+テスト時もDIコンテナを利用する有用性について紹介しました。
+Kojectを利用することで、部分的に依存関係を差し替え、すぐにテストを開始することができます。
+また、gradleマルチモジュールのサポートも強化されました。
+
+KojectはDIコンテナとして基本的な機能を全て揃えており、今すぐ利用することができます。
+なにか問題があれば、いつでも[Issue](https://github.com/mori-atsushi/koject/issues)から教えて下さい。

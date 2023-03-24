@@ -9,8 +9,6 @@ import {
 # Start Koject
 To start using Koject, simply add the <Provides/> annotation to the classes you want to make available for injection.
 
-Koject uses the [primary constructor](https://kotlinlang.org/docs/classes.html#constructors) to instantiate objects, so it's important to make sure that all parameter types in the primary constructor are annotated with `@Provides`.
-
 ```kotlin
 @Provides
 class Repository
@@ -20,6 +18,8 @@ class Controller(
     private val repository: Repository
 )
 ```
+
+Koject uses the [primary constructor](https://kotlinlang.org/docs/classes.html#constructors) to instantiate objects, so it's important to make sure that all parameter types in the primary constructor are annotated with `@Provides`.
 
 Once you have called <KojectStart/>, you can obtain an instance of a class by using the <Inject/> method.
 
@@ -31,11 +31,11 @@ fun main() {
 }
 ```
 
-In this case, `inject<Controller>()` will return an instance of the `Controller` class that has been instantiated by Koject using its primary constructor and any `@Provides` annotated dependencies. 
+In this case, `inject<Controller>()` will return an instance of the `Controller` class that has been instantiated by Koject using its primary constructor and `@Provides` annotated dependencies. 
 
 ## Provide from functions
-You can use the `@Provides` annotation in top-level functions to provide any types. 
-This can be particularly useful for providing dependencies that are shared across multiple modules.
+The `@Provides` annotation can also be used in top-level functions and can provide any types.
+This is especially useful when providing types outside the current module.
 
 ```kotlin
 @Provides
@@ -49,16 +49,26 @@ fun provideDB(dbConfig: DBConfig): DB {
 }
 ```
 
-You can also provide types by using functions defined in objects or companion objects. 
+In addition to top-level functions, it is also possible to provide types by functions of objects or companion objects.
+
+By using objects, you can group provide functions.
 
 ```kotlin
 object DBFactory {
     @Provides
-    fun create(): DB {
-        return DB.create()
+    fun provideConfig(): DBConfig {
+        return DBConfig.Builder().build()
+    }
+
+    @Provides
+    fun provide(dbConfig: DBConfig): DB {
+        return DB.create(dbConfig)
     }
 }
 ```
+
+By using companion objects, the relationship with a specific type becomes more clear.
+
 ```kotlin
 class DB {
     companion object {
@@ -71,8 +81,8 @@ class DB {
 ```
 
 ## Singleton Scope
-You can use the <Singleton/> annotation to indicate that an instance should be created only once and reused throughout the application.
-This can be particularly useful for dependencies that are expensive to create or that need to be shared across multiple classes.
+You can use the <Singleton/> annotation to create an instance only once and reuse it throughout the application.
+This can be used for dependencies that are expensive to create or dependencies that need to be shared among multiple classes.
 
 ```kotlin
 @Singleton

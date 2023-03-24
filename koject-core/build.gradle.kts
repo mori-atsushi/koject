@@ -15,10 +15,19 @@ kotlin {
     macosX64()
     macosArm64()
     watchos()
+    watchosSimulatorArm64()
+    watchosDeviceArm64()
     tvos()
+    tvosSimulatorArm64()
+
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX86()
+    androidNativeX64()
 
     mingwX64()
     linuxX64()
+    linuxArm64()
 
     sourceSets {
         val commonMain by getting

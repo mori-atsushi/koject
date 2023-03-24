@@ -49,7 +49,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.moriatsushi.koject.integrationtest.lib"
+    namespace = "com.moriatsushi.koject.integrationtest.lib2"
     compileSdk = 33
 
     defaultConfig {

@@ -51,11 +51,14 @@ class Controller(
   * [Start Koject](https://mori-atsushi.github.io/koject/docs/core/basic)
   * [Qualifier](https://mori-atsushi.github.io/koject/docs/core/qualifier)
   * [Binds](https://mori-atsushi.github.io/koject/docs/core/binds)
+* [Test](https://mori-atsushi.github.io/koject/docs/test)
 * [Android](https://mori-atsushi.github.io/koject/docs/android)
+* [iOS (KMM)](https://mori-atsushi.github.io/koject/docs/ios)
 * [Compose](https://mori-atsushi.github.io/koject/docs/compose)
 
 ## Examples
 * [Koject TODO (KMM)](https://github.com/Mori-Atsushi/koject/tree/main/examples/kmm)
+* [Now in Android App with Koject (Android)](https://github.com/mori-atsushi/nowinandroid)
 
 ## Related libraries
 Koject is inspired by the following libraries.

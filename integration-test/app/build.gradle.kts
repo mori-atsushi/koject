@@ -14,9 +14,14 @@ kotlin {
     iosSimulatorArm64()
     macosX64()
     macosArm64()
+    watchos()
+    watchosSimulatorArm64()
+    tvos()
+    tvosSimulatorArm64()
 
     mingwX64()
     linuxX64()
+    linuxArm64()
 
     sourceSets {
         val commonMain by getting {
@@ -35,9 +40,19 @@ kotlin {
             }
         }
 
-        val jvmMain by getting
+        val jvmMain by getting {
+            dependsOn(commonMain)
+        }
 
         val jvmTest by getting {
+            dependsOn(commonTest)
+        }
+
+        val jsMain by getting {
+            dependsOn(commonMain)
+        }
+
+        val jsTest by getting {
             dependsOn(commonTest)
         }
 
@@ -65,6 +80,38 @@ kotlin {
         }
 
         val iosSimulatorArm64Test by getting {
+            dependsOn(iosTest)
+        }
+
+        val watchosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val watchosTest by getting {
+            dependsOn(nativeTest)
+        }
+
+        val watchosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
+        val watchosSimulatorArm64Test by getting {
+            dependsOn(iosTest)
+        }
+
+        val tvosMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val tvosTest by getting {
+            dependsOn(nativeTest)
+        }
+
+        val tvosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
+        val tvosSimulatorArm64Test by getting {
             dependsOn(iosTest)
         }
 
@@ -99,28 +146,34 @@ kotlin {
         val linuxX64Test by getting {
             dependsOn(nativeTest)
         }
+
+        val linuxArm64Main by getting {
+            dependsOn(nativeMain)
+        }
+
+        val linuxArm64Test by getting {
+            dependsOn(nativeTest)
+        }
     }
 }
 
 dependencies {
-    add("kspJvm", project(":processor:app"))
-    add("kspJvmTest", project(":processor:app"))
-    add("kspJs", project(":processor:app"))
-    add("kspJsTest", project(":processor:app"))
-    add("kspIosX64", project(":processor:app"))
-    add("kspIosX64Test", project(":processor:app"))
-    add("kspIosArm64", project(":processor:app"))
-    add("kspIosArm64Test", project(":processor:app"))
-    add("kspIosSimulatorArm64", project(":processor:app"))
-    add("kspIosSimulatorArm64Test", project(":processor:app"))
-    add("kspMacosX64", project(":processor:app"))
-    add("kspMacosX64Test", project(":processor:app"))
-    add("kspMacosArm64", project(":processor:app"))
-    add("kspMacosArm64Test", project(":processor:app"))
-    add("kspMingwX64", project(":processor:app"))
-    add("kspMingwX64Test", project(":processor:app"))
-    add("kspLinuxX64", project(":processor:app"))
-    add("kspLinuxX64Test", project(":processor:app"))
+    kotlin.sourceSets.forEach { sourceSet ->
+        if (sourceSet.name.endsWith("Main")) {
+            val name = sourceSet.name.substringBefore("Main")
+            val configuration = "ksp${name.replaceFirstChar { it.uppercase() }}"
+            if (configurations.any { it.name == configuration }) {
+                add(configuration, project(":processor:app"))
+            }
+        }
+        if (sourceSet.name.endsWith("Test")) {
+            val name = sourceSet.name.substringBefore("Test")
+            val configuration = "ksp${name.replaceFirstChar { it.uppercase() }}Test"
+            if (configurations.any { it.name == configuration }) {
+                add(configuration, project(":processor:app"))
+            }
+        }
+    }
 }
 
 ksp {

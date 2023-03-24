@@ -9,7 +9,7 @@ android {
     namespace = "com.moriatsushi.koject.compose.viewmodel"
     compileSdk = 33
     defaultConfig {
-        minSdk = 14
+        minSdk = 21
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

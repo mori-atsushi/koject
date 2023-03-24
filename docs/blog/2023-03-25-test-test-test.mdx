@@ -1,0 +1,231 @@
+---
+slug: test-test-test
+title: Koject v1.3.0 - Writing Test Code with DI Containers
+authors: atsushi
+image: /blog/2023-03-25/ogp.png
+---
+
+import {
+    KojectStart,
+    KojectStartTest,
+    KojectRunTest,
+    Inject,
+    TestProvides,
+} from '@site/src/components/CodeLink';
+
+# Koject v1.3.0 - Writing Test Code with DI Containers
+
+![](/blog/2023-03-25/banner.png)
+
+In continuous software development, test code plays an important role.
+Koject v1.3.0 added support for testing.
+This article introduces the reasons for using a DI container in testing, how to write test code using Koject, and another new feature added in Koject v1.3.0.
+
+<!--truncate-->
+
+[**日本語で読む →**](/blog/jp/test-test-test)
+
+## Use a DI Container Even in Testing
+As I introduced [earlier](/blog/jp/first-stable-release), following the Dependency Injection pattern can improve testability.
+By replacing some of the dependencies during testing, it is possible to eliminate communication with the outside world and avoid unstable tests, as well as reduce testing time.
+
+The objects that are used instead of actual objects are called mocks or fakes.
+However, replacing all the actual dependencies of the classes under test with mocks may cause problems in terms of test reliability and maintainability.
+
+```kotlin
+class VideoUploadServiceTest {
+    private val videoUploader = mock(VideoUploader::class)
+    private val notificationManager = mock(NotificationManager::class)
+    private val videoUploadService =
+        VideoUploadService(videoUploader, notificationManager)
+
+    @Test
+    fun test() {
+        /* ... */
+    }
+}
+```
+
+Since mock objects do not behave exactly the same as actual objects, tests may fail because of this difference. It becomes time-consuming to determine whether the actual code is incorrect or the mocks are not set up properly when tests fail. Conversely, there is also the possibility that the code is incorrect but the test succeeds due to incorrect mocks.
+
+Tests that rely heavily on mocks may not be meaningful.
+
+Furthermore, maintaining mock objects becomes difficult as the number of mocks increases. If the target being mocked changes, the corresponding mock object also needs to be updated. Tests that are difficult to maintain gradually become dysfunctional, so test maintainability is important.
+
+It is recommended to use the actual dependencies as much as possible. If it is difficult to control communication with the outside world or if it takes a long time as it is, only the relevant parts can be replaced with ones for testing.
+
+If the class under test has many dependencies, you may think that it is difficult to generate instances. Do not worry. By using a DI container, just like in production, dependencies for testing can be easily created.
+
+## Using Koject for Unit Testing
+In this article, I will introduce how to use Koject for unit testing.
+
+Assuming you have a code with the following dependencies:
+
+```kotlin
+interface Api
+
+@Provides
+@Binds
+class ApiImpl: Api
+
+interface SampleRepository
+
+@Provide
+@Binds
+class SampleRepositoryImpl(
+    private val api: Api
+): SampleRepository
+
+@Provides
+class SampleController(
+    private val repository: SampleRepository
+)
+```
+
+Let's create a test code for `SampleController`.
+You can launch a DI container for testing using <KojectRunTest/> and then obtain a resolved class using the <Inject/> function.
+
+```kotlin
+class SampleControllerTest() {
+    @Test
+    fun test() = Koject.runTest {
+        val controller = inject<SampleController>() // can be injected
+    }
+}
+```
+
+If you want to replace the `Api` class with a mock, use <TestProvides/> to override it.
+This allows you to use `MockApi` during testing and `ApiImpl` during production.
+
+```kotlin
+@TestProvides
+@Binds
+class MockApi: Api
+```
+
+Additional dependency settings are required for testing. For more information, please refer to the following documents:
+
+* [Test (common)](/docs/test)
+* [Android Tests](/docs/android/tests)
+* [iOS Tests](/docs/ios/tests)
+
+## Using Koject for UI Testing
+
+Koject can also be used in integration testing, such as UI testing.
+
+### Android UI Testing
+In an Android app, you can run UI tests using an [instrumented test](https://developer.android.com/training/testing/instrumented-tests) on a real device or emulator, or by using [Robolectoric](https://robolectric.org/).
+
+To use a DI container for UI testing, you need to replace <KojectStart/> called in your application class with <KojectStartTest/>.
+To replace the application class, create a custom `Runner`.
+
+```kotlin
+class TestApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        Koject.startTest {
+            application(this@TestApplication)
+        }
+    }
+}
+```
+```kotlin
+class TestRunner : AndroidJUnitRunner() {
+    override fun newApplication(
+        classLoader: ClassLoader?,
+        className: String?,
+        context: Context?
+    ): Application {
+        return super.newApplication(classLoader, TestApplication::class.java.name, context)
+    }
+}
+```
+
+For more detailed explanations, please refer to the following document:
+
+* [Android Tests](/docs/android/tests)
+
+### iOS UI Testing
+
+Koject supports [Kotlin Multiplatform Mobile](https://kotlinlang.org/lp/mobile/) and can also be used in iOS projects.
+
+To perform UI testing in iOS, we use [XCTest](https://developer.apple.com/documentation/xctest) and write tests in Swift. To use Koject in iOS UI testing, create a branch for testing, and start the DI container for testing, as shown in the following code:
+
+```swift
+import SwiftUI
+import shared
+
+@main
+struct MyApp: App {
+    init() {
+        #if DEBUG
+        let isTesting = CommandLine.arguments.contains("TESTING")
+        if isTesting {
+            KojectHelper.shared.startTest()
+        } else {
+            KojectHelper.shared.start()
+        }
+        #else
+        KojectHelper.shared.start()
+        #endif
+    }
+    
+    var body: some Scene {
+        /* ... */
+    }
+}
+```
+```swift
+import XCTest
+
+final class UITests: XCTestCase {
+    let app = XCUIApplication()
+    
+    func testSome() {
+        app.launchArguments = ["TESTING"]
+        app.launch()
+        
+        /* ... */
+    }
+}
+```
+
+For more information on using Koject in iOS, refer to the following documents:
+
+* [iOS(KMM)](/docs/ios/basic)
+* [iOS Tests](/docs/ios/tests)
+
+## Collecting Transitive Dependencies
+Another important change in Koject v1.3.0 is the improved collection of dependency relationships when using gradle multi-modules.
+
+Prior to Koject v1.3.0, all provided dependencies had to be directly referenced from the app module.
+
+![](/blog/2023-03-25/module1.png)
+
+Since Koject v1.3.0, collection of transitive dependency relationships is supported, and direct reference is no longer required.
+
+![](/blog/2023-03-25/module2.png)
+
+To enable this feature, specify the module name as follows:
+
+```diff
+dependencies {
+    implementation("com.moriatsushi.koject:koject-core:1.3.0-beta02")
+    ksp("com.moriatsushi.koject:koject-processor-lib:1.3.0-beta02")
+}
+
++ ksp {
++     arg("moduleName", project.name) 
++ }
+```
+
+For more information, please refer to the [Setup documentation](/docs/setup).
+
+## Enjoy Development with Koject
+In summary, I have highlighted the usefulness of using the DI container in testing and demonstrated how Koject can be used to partially replace dependencies.
+Koject allows you to start testing quickly.
+Furthermore, Koject now provides enhanced support for gradle multi-modules.
+
+Koject has all the basic features of a DI container and can be used right away.
+If you encounter any issues, please let us know via the [Issue](https://github.com/mori-atsushi/koject/issues) Page.

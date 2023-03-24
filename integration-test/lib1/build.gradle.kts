@@ -18,10 +18,7 @@ kotlin {
     macosArm64()
 
     mingwX64()
-    mingwX86()
     linuxX64()
-    linuxArm32Hfp()
-    linuxMips32()
 
     sourceSets {
         val commonMain by getting {
@@ -65,10 +62,7 @@ dependencies {
     add("kspMacosX64", project(":processor:lib"))
     add("kspMacosArm64", project(":processor:lib"))
     add("kspMingwX64", project(":processor:lib"))
-    add("kspMingwX86", project(":processor:lib"))
     add("kspLinuxX64", project(":processor:lib"))
-    add("kspLinuxArm32Hfp", project(":processor:lib"))
-    add("kspLinuxMips32", project(":processor:lib"))
 }
 
 ksp {

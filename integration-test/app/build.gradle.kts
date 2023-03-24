@@ -16,10 +16,7 @@ kotlin {
     macosArm64()
 
     mingwX64()
-    mingwX86()
     linuxX64()
-    linuxArm32Hfp()
-    linuxMips32()
 
     sourceSets {
         val commonMain by getting {
@@ -95,35 +92,11 @@ kotlin {
             dependsOn(nativeTest)
         }
 
-        val mingwX86Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val mingwX86Test by getting {
-            dependsOn(nativeTest)
-        }
-
         val linuxX64Main by getting {
             dependsOn(nativeMain)
         }
 
         val linuxX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxArm32HfpMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxArm32HfpTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxMips32Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxMips32Test by getting {
             dependsOn(nativeTest)
         }
     }
@@ -146,14 +119,8 @@ dependencies {
     add("kspMacosArm64Test", project(":processor:app"))
     add("kspMingwX64", project(":processor:app"))
     add("kspMingwX64Test", project(":processor:app"))
-    add("kspMingwX86", project(":processor:app"))
-    add("kspMingwX86Test", project(":processor:app"))
     add("kspLinuxX64", project(":processor:app"))
     add("kspLinuxX64Test", project(":processor:app"))
-    add("kspLinuxArm32Hfp", project(":processor:app"))
-    add("kspLinuxArm32HfpTest", project(":processor:app"))
-    add("kspLinuxMips32", project(":processor:app"))
-    add("kspLinuxMips32Test", project(":processor:app"))
 }
 
 ksp {

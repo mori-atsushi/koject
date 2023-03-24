@@ -18,10 +18,7 @@ kotlin {
     tvos()
 
     mingwX64()
-    mingwX86()
     linuxX64()
-    linuxArm32Hfp()
-    linuxMips32()
 
     sourceSets {
         val commonMain by getting
@@ -115,35 +112,11 @@ kotlin {
             dependsOn(nativeTest)
         }
 
-        val mingwX86Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val mingwX86Test by getting {
-            dependsOn(nativeTest)
-        }
-
         val linuxX64Main by getting {
             dependsOn(nativeMain)
         }
 
         val linuxX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxArm32HfpMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxArm32HfpTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxMips32Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxMips32Test by getting {
             dependsOn(nativeTest)
         }
 

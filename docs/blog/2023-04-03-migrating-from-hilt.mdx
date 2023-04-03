@@ -1,0 +1,593 @@
+---
+slug: migrating-from-hilt
+title: Migrating from Hilt to Koject
+authors: atsushi
+image: /blog/2023-04-03/ogp.png
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import {
+    KojectStart,
+    Inject,
+    Binds,
+    ViewModelComponent,
+    InjectViewModel,
+    ActivityLazyViewModels,
+    ActivityLazyInject,
+    ActivityComponent,
+} from '@site/src/components/CodeLink';
+
+# Migrating from Hilt to Koject
+
+![](/blog/2023-04-03/banner.png)
+
+Koject is a new dependency injection (DI) container library for Kotlin.
+In this article, I'll discuss how to migrate from [Hilt](https://dagger.dev/hilt/) to Koject using the Android sample app "[Now in Android](https://github.com/android/nowinandroid)" as an example.
+
+<!--truncate-->
+
+[**日本語で読む →**](/blog/jp/migrating-from-hilt)
+
+## Hilt or Koject
+Koject is compatible with multiple platforms, and if you want to share code between Android and other platforms such as iOS, you can use Koject to also share your DI container.
+Hilt and Dagger do not work with Kotlin/Native or Kotlin/JS.
+
+If you're developing for Android only, Hilt is still a valid option.
+Hilt is optimized for Android and offers more support for Android components.
+Additionally, custom scopes are not provided by Koject.
+
+On the other hand, Koject is simpler and easier to understand as it has fewer features.
+It also offers standard DI container functionality that is more than enough for most use cases.
+
+Furthermore, Koject works on [KSP](https://github.com/google/ksp), which tends to reduce compilation time compared to Hilt, which works on [kapt](https://kotlinlang.org/docs/kapt.html).
+While Dagger is also planning to [migrate to KSP](https://github.com/google/dagger/issues/2349), it will take some time.
+
+When comparing Koject and Hilt, consider the pros and cons listed in the table below and choose the one that suits you best.
+
+Library|Koject|Dagger
+:--|:--:|:--:
+Multiplatform|○|✗
+Android Support|○|◎
+Custom Scopes|✗|○
+Code Generation|○(KSP)|△(kapt)
+Multi-module|○|○
+
+## Getting Started with Koject
+
+Let's try using Koject in Now in Android. Please also check out [my GitHub repository](https://github.com/mori-atsushi/nowinandroid).
+
+First, add the Koject dependency to the `build.gradle.kts` file in the application module as follows:
+
+```kotlin title="app/build.gradle.kts"
+plugins {
+    id("nowinandroid.android.application")
+
+    /* ... */
+
+    id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+}
+
+dependencies {
+    /* ... */
+
+    implementation("com.moriatsushi.koject:koject-android-core:1.3.0")
+    implementation("com.moriatsushi.koject:koject-android-activity:1.3.0")
+    ksp("com.moriatsushi.koject:koject-processor-app:1.3.0")
+}
+
+/* ... */
+```
+
+In the library module, use `koject-processor-lib` instead of `koject-processor-app`.
+Also, don't forget to set the `moduleName`.
+
+```kotlin title="{lib}/build.gradle.kts"
+plugins {
+    id("nowinandroid.android.library")
+
+    /* ... */
+
+    id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+}
+
+dependencies {
+    /* ... */
+
+    implementation("com.moriatsushi.koject:koject-core:1.3.0")
+    ksp("com.moriatsushi.koject:koject-processor-lib:1.3.0")
+}
+
+ksp {
+    arg("moduleName", project.name)
+}
+
+/* ... */
+```
+
+Now in Android has shared setup code in the `build-logic` directory.
+We can also group the Koject setup with plugins as follows:
+
+```kotlin title="build-logic/conversation/src/main/kotlin/AndroidLibraryKojectConventionPlugin.kt"
+import com.google.devtools.ksp.gradle.KspExtension
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getByType
+
+class AndroidLibraryKojectConventionPlugin : Plugin<Project> {
+    override fun apply(target: Project) {
+        with(target) {
+            with(pluginManager) {
+                apply("com.google.devtools.ksp")
+                apply("com.android.library")
+            }
+
+            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            dependencies {
+                "implementation"(libs.findLibrary("koject.core").get())
+                "ksp"(libs.findLibrary("koject.processor.lib").get())
+            }
+
+            extensions.configure<KspExtension> {
+                arg("moduleName", name)
+                allowSourcesFromOtherPlugins = true
+            }
+        }
+    }
+}
+```
+
+Next, modify the application class.
+Remove the `@HiltAndroidApp` annotation and call <KojectStart/> in `onCreate`.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@HiltAndroidApp
+class NiaApplication : Application(), ImageLoaderFactory {
+    /* ... */
+
+    override fun onCreate() {
+        super.onCreate()
+        /* ... */
+    }
+
+    /* ... */
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+class NiaApplication : Application(), ImageLoaderFactory {
+    /* ... */
+
+    override fun onCreate() {
+        super.onCreate()
+
+        Koject.start {
+            application(this@NiaApplication)
+        }
+        /* ... */
+    }
+
+    /* ... */
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Provide ImageLoader
+Let's change the dependency distribution from Hilt to Koject.
+Here, I will use `ImageLoader` as an example.
+
+In Now in Android, `ImageLoader` of [Coil](https://github.com/coil-kt/coil) was provided from `NetworkModule`.
+Creating `ImageLoader` requires `Call.Factory` of [OkHttp](https://square.github.io/okhttp/), which was also provided by Hilt.
+Both are singletons to use the same instances each time.
+
+Now, let's migrate to Koject.
+We will remove `@Module` and `@InstallIn`.
+There is no need to specify a component in Koject.
+Although the name is the same, we need to change `dagger.Provides` to `com.moriatsushi.koject.Provides`, and `javax.inject.Singleton` to `com.moriatsushi.koject.Singleton`.
+Also, since Koject uses `ApplicationContext` by default, we will remove `@ApplicationContext`.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+    /* ... */
+
+    @Provides
+    @Singleton
+    fun okHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
+        .addInterceptor(/* ... */)
+        .build()
+
+    @Provides
+    @Singleton
+    fun imageLoader(
+        okHttpCallFactory: Call.Factory,
+        @ApplicationContext application: Context,
+    ): ImageLoader = ImageLoader.Builder(application)
+        .apply { /* ... */ }
+        .build()
+}
+
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+object NetworkModule {
+    /* ... */
+
+    @Provides
+    @Singleton
+    fun okHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
+        .addInterceptor(/* ... */)
+        .build()
+
+
+    @Provides
+    @Singleton
+    fun imageLoader(
+        okHttpCallFactory: Call.Factory,
+        application: Context,
+    ): ImageLoader = ImageLoader.Builder(application)
+        .apply { /* ... */ }
+        .build()
+}
+```
+
+</TabItem>
+</Tabs>
+
+`ImageLoader` was used in the application class.
+In Koject, we can use <Inject/> to get `ImageLoader`, so the change will look like this:
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@HiltAndroidApp
+class NiaApplication : Application(), ImageLoaderFactory {
+    @Inject
+    lateinit var imageLoader: Provider<ImageLoader>
+
+    override fun onCreate() {
+        super.onCreate()
+        /* ... */
+    }
+
+    override fun newImageLoader(): ImageLoader = imageLoader.get()
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+class NiaApplication : Application(), ImageLoaderFactory {
+    override fun onCreate() {
+        super.onCreate()
+        /* ... */
+    }
+
+    override fun newImageLoader(): ImageLoader = inject()
+}
+```
+
+</TabItem>
+</Tabs>
+
+Hilt and Koject have many similarities, so there won't be many changes in the code that need to be made.
+
+## Provides Repositories
+Let's continue to migrate other dependencies.
+
+The repositories, which are responsible for persisting data, consist of separate interfaces and implementation classes.
+When using Hilt, the implementation class was provided with `@Inject` and it was associated with the interface using `@Binds` in `DataModule`.
+
+In Koject, we provide the classes using the `@Provides` annotation.
+Since the primary constructor is automatically used, we can remove the `constructor` keyword.
+`DataModule` is changed from an `interface` to an `object` and described using `@Provides`.
+
+All types used in the constructor must be provided by Koject.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+class OfflineFirstNewsRepository @Inject constructor(
+    private val newsResourceDao: NewsResourceDao,
+    private val topicDao: TopicDao,
+    private val network: NiaNetworkDataSource,
+) : NewsRepository {
+    /* ... */
+}
+```
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+interface DataModule {
+    @Binds
+    fun bindsNewsResourceRepository(
+        newsRepository: OfflineFirstNewsRepository,
+    ): NewsRepository
+
+    /* ... */
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+@Provides
+class OfflineFirstNewsRepository(
+    private val newsResourceDao: NewsResourceDao,
+    private val topicDao: TopicDao,
+    private val network: NiaNetworkDataSource,
+) : NewsRepository {
+    /* ... */
+}
+```
+```kotlin
+object DataModule {
+    @Provides
+    fun bindsNewsResourceRepository(
+        newsRepository: OfflineFirstNewsRepository,
+    ): NewsRepository = newsRepository
+
+    /* ... */
+}
+```
+
+</TabItem>
+</Tabs>
+
+In Koject, you can easily provide it as a supertype by using the <Binds/> annotation as follows, without the need for a `Module` class.
+
+```kotlin
+@Provides
+@Binds
+class OfflineFirstNewsRepository(
+    private val newsResourceDao: NewsResourceDao,
+    private val topicDao: TopicDao,
+    private val network: NiaNetworkDataSource,
+) : NewsRepository {
+    /* ... */
+}
+```
+
+## Provids ViewModel
+In this section, I will introduce how to migrate ViewModel distribution method.
+In Koject, it is easy to use AndroidX ViewModel.
+
+To migrate ViewModel, you need to remove `@Inject` and `@HiltViewModel` annotations, and add `@Provides` and `@ViewModelComponent` annotations.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@HiltViewModel
+class TopicViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    stringDecoder: StringDecoder,
+    private val userDataRepository: UserDataRepository,
+    topicsRepository: TopicsRepository,
+    getSaveableNewsResources: GetUserNewsResourcesUseCase,
+) : ViewModel() {
+    /* ... */
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+@ViewModelComponent
+@Provides
+class TopicViewModel(
+    savedStateHandle: SavedStateHandle,
+    stringDecoder: StringDecoder,
+    private val userDataRepository: UserDataRepository,
+    topicsRepository: TopicsRepository,
+    getSaveableNewsResources: GetUserNewsResourcesUseCase,
+) : ViewModel() {
+    /* ... */
+}
+```
+
+</TabItem>
+</Tabs>
+
+If you want to use ViewModel from a Composable function, replace `hiltViewModel()` with <InjectViewModel/>.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@Composable
+internal fun TopicRoute(
+    onBackClick: () -> Unit,
+    onTopicClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: TopicViewModel = hiltViewModel(),
+) {
+    /* ... */
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+@Composable
+internal fun TopicRoute(
+    onBackClick: () -> Unit,
+    onTopicClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: TopicViewModel = injectViewModel(),
+) {
+    /* ... */
+}
+```
+
+</TabItem>
+</Tabs>
+
+If you want to use `ViewModel` from an Activity, use <ActivityLazyViewModels/>.
+If Hilt is not needed in the Activity, you can also remove `@AndroidEntryPoint`.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    /* ... */
+
+    val viewModel: MainActivityViewModel by viewModels()
+
+    /* ... */
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    /* ... */
+
+    val viewModel: MainActivityViewModel by lazyViewModels()
+
+    /* ... */
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Provides JankStats
+Finally, let me introduce a slightly more complex method for providing dependencies.
+
+[JankStats](https://developer.android.com/topic/performance/jankstats) is an AndroidX library for measuring app performance.
+Creating an instance requires access to the `window` of an Activity, which was achieved in Hilt by using the `ActivityComponent`.
+By using this component, you can access the Activity instance.
+
+Koject also provides <ActivityComponent/>, but unlike Hilt, you need to annotate each individual function rather than using a module.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@Module
+@InstallIn(ActivityComponent::class)
+object JankStatsModule {
+    @Provides
+    fun providesOnFrameListener(): JankStats.OnFrameListener {
+        return JankStats.OnFrameListener { frameData ->
+            /* ... */
+        }
+    }
+
+    @Provides
+    fun providesWindow(activity: Activity): Window {
+        return activity.window
+    }
+
+    @Provides
+    fun providesJankStats(
+        window: Window,
+        frameListener: JankStats.OnFrameListener,
+    ): JankStats {
+        return JankStats.createAndTrack(window, frameListener)
+    }
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+object JankStatsModule {
+    @ActivityComponent
+    @Provides
+    fun providesOnFrameListener(): JankStats.OnFrameListener {
+        return JankStats.OnFrameListener { frameData ->
+            /* ... */
+        }
+    }
+
+    @ActivityComponent
+    @Provides
+    fun providesWindow(activity: Activity): Window {
+        return activity.window
+    }
+
+    @ActivityComponent
+    @Provides
+    fun providesJankStats(
+        window: Window,
+        frameListener: JankStats.OnFrameListener,
+    ): JankStats {
+        return JankStats.createAndTrack(window, frameListener)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+To use it in an Activity, use <ActivityLazyInject/>.
+
+<Tabs>
+<TabItem value="hilt" label="Hilt" default>
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var lazyStats: dagger.Lazy<JankStats>
+
+    /* ... */
+}
+```
+
+</TabItem>
+<TabItem value="koject" label="Koject">
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    private val lazyStats: JankStats by lazyInject()
+
+    /* ... */
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Review all changes
+Koject has many similarities to Hilt, so its usage should be easy to understand.
+However, migrating all dependencies to Koject can be a bit of a hassle.
+Koject, like Hilt, can check for missing dependencies at compile time, but I recommend thoroughly testing the migration.
+
+You can see all the changes made in Now in Android in [Migrate from hilt to koject #1](https://github.com/mori-atsushi/nowinandroid/pull/1).
+You can also learn more about settings and usage in testing.
+If you feel like trying Koject, feel free to use it as a reference.
+
+If you encounter any issues while migrating from Hilt, please send me feedback via [Issue](https://github.com/mori-atsushi/koject/issues).
+I will support you as much as possible.

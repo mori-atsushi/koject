@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.ksp)
@@ -9,6 +11,15 @@ kotlin {
         moduleName = "integration-test-app"
         nodejs()
         browser()
+    }
+    wasm {
+        binaries.executable()
+        nodejs()
+        browser {
+            commonWebpackConfig {
+                experiments = mutableSetOf("topLevelAwait")
+            }
+        }
     }
     ios()
     iosSimulatorArm64()
@@ -154,6 +165,14 @@ kotlin {
         val linuxArm64Test by getting {
             dependsOn(nativeTest)
         }
+
+        val wasmMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val wasmTest by getting {
+            dependsOn(nativeTest)
+        }
     }
 }
 
@@ -178,4 +197,9 @@ dependencies {
 
 ksp {
     arg("measureDuration", "true")
+}
+
+rootProject.the<NodeJsRootExtension>().apply {
+    nodeVersion = "20.2.0"
+    versions.webpack.version = "5.76.2"
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.publish)
@@ -9,6 +11,15 @@ kotlin {
     js(IR) {
         nodejs()
         browser()
+    }
+    wasm {
+        binaries.executable()
+        nodejs()
+        browser {
+            commonWebpackConfig {
+                experiments = mutableSetOf("topLevelAwait")
+            }
+        }
     }
     ios()
     iosSimulatorArm64()
@@ -133,8 +144,21 @@ kotlin {
             dependsOn(nativeTest)
         }
 
+        val wasmMain by getting {
+            dependsOn(nativeMain)
+        }
+
+        val wasmTest by getting {
+            dependsOn(nativeTest)
+        }
+
         all {
             languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
         }
     }
+}
+
+rootProject.the<NodeJsRootExtension>().apply {
+    nodeVersion = "20.2.0"
+    versions.webpack.version = "5.76.2"
 }

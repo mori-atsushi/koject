@@ -67,9 +67,6 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        androidMain {
-            dependsOn(jvmMain.get())
-        }
     }
 }
 

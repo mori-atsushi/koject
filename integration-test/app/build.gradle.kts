@@ -81,6 +81,11 @@ dependencies {
         .forEach { target ->
             val targetConfigSuffix = if (target == "Metadata") "CommonMainMetadata" else target
             add("ksp${targetConfigSuffix}", project(":processor:lib"))
+
+            // kspCommonMainMetadataTest is not found
+            if (targetConfigSuffix != "CommonMainMetadata") {
+                add("ksp${targetConfigSuffix}Test", project(":processor:lib"))
+            }
         }
 }
 

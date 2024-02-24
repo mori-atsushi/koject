@@ -66,9 +66,6 @@ kotlin {
             }
         }
 
-        androidMain{
-            dependsOn(jvmMain.get())
-        }
     }
 }
 

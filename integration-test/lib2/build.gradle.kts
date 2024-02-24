@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Locale
+
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.ksp)
@@ -5,22 +8,44 @@ plugins {
 }
 
 kotlin {
-    android()
-    jvm()
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.AZUL)
+    }
+
+    androidTarget {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
+    jvm("desktop") {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
     js(IR) {
         moduleName = "integration-test-lib2"
         nodejs()
         browser()
     }
-    ios()
+
+    iosArm64()
+    iosX64()
     iosSimulatorArm64()
     macosX64()
     macosArm64()
-    watchos()
+    tvosX64()
+    tvosSimulatorArm64()
+    tvosArm64()
+    watchosArm32()
+    watchosArm64()
+    watchosX64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
-    tvos()
-    tvosSimulatorArm64()
 
     androidNativeArm32()
     androidNativeArm64()
@@ -31,8 +56,10 @@ kotlin {
     linuxX64()
     linuxArm64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":koject-core"))
                 implementation(project(":integration-test:lib3"))
@@ -40,10 +67,8 @@ kotlin {
             }
         }
 
-        val jvmMain by getting
-
-        val androidMain by getting {
-            dependsOn(jvmMain)
+        androidMain {
+            dependsOn(jvmMain.get())
         }
     }
 }
@@ -57,23 +82,26 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_17)
-        targetCompatibility(JavaVersion.VERSION_17)
+        sourceCompatibility(JavaVersion.VERSION_11)
+        targetCompatibility(JavaVersion.VERSION_11)
     }
 }
 
 dependencies {
-    kotlin.sourceSets.forEach { sourceSet ->
-        if (sourceSet.name.endsWith("Main")) {
-            val name = sourceSet.name.substringBefore("Main")
-            val configuration = "ksp${name.replaceFirstChar { it.uppercase() }}"
-            if (configurations.any { it.name == configuration }) {
-                add(configuration, project(":processor:lib"))
-            }
-        }
+    fun String.capitalizeUS() = replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.US)
+        else it.toString()
     }
-}
 
+    kotlin
+        .targets
+        .names
+        .map { it.capitalizeUS() }
+        .forEach { target ->
+            val targetConfigSuffix = if (target == "Metadata") "CommonMainMetadata" else target
+            add("ksp${targetConfigSuffix}", project(":processor:lib"))
+        }
+}
 ksp {
     arg("measureDuration", "true")
     arg("moduleName", "integration-test-lib2")

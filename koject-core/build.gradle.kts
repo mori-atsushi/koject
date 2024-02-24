@@ -10,15 +10,20 @@ kotlin {
         nodejs()
         browser()
     }
-    ios()
+
+    iosArm64()
+    iosX64()
     iosSimulatorArm64()
     macosX64()
     macosArm64()
-    watchos()
+    tvosX64()
+    tvosSimulatorArm64()
+    tvosArm64()
+    watchosArm32()
+    watchosArm64()
+    watchosX64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
-    tvos()
-    tvosSimulatorArm64()
 
     androidNativeArm32()
     androidNativeArm64()
@@ -29,106 +34,14 @@ kotlin {
     linuxX64()
     linuxArm64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
-        val commonMain by getting
-
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-
-        val jvmMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val jvmTest by getting {
-            dependsOn(commonTest)
-        }
-
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val jsTest by getting {
-            dependsOn(commonTest)
-        }
-
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val nativeTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val iosTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosMain)
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val macosArm64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosArm64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val watchosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val watchosTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val tvosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val tvosTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val mingwX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
         all {
             languageSettings.optIn("com.moriatsushi.koject.internal.InternalKojectApi")
         }

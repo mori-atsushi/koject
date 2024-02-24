@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.moriatsushi.koject.integrationtest.android"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.moriatsushi.koject.integrationtest.android"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

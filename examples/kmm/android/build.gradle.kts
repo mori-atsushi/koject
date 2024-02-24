@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "com.moriatsushi.koject.example.kmm"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.moriatsushi.koject.example.kmm"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

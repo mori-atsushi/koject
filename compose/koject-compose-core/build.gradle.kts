@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Locale
 
 plugins {
@@ -10,8 +11,25 @@ plugins {
 }
 
 kotlin {
-    androidTarget()
-    jvm("desktop")
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.AZUL)
+    }
+
+    androidTarget {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
+    jvm("desktop") {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
     js(IR) {
         browser()
     }
@@ -64,8 +82,8 @@ android {
         minSdk = 21
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
         buildConfig = false

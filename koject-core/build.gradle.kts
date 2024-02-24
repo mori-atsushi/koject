@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.publish)
@@ -5,7 +7,18 @@ plugins {
 }
 
 kotlin {
-    jvm()
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.AZUL)
+    }
+
+    jvm {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
     js(IR) {
         nodejs()
         browser()

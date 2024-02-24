@@ -102,6 +102,7 @@ dependencies {
             add("ksp${targetConfigSuffix}", project(":processor:lib"))
         }
 }
+
 ksp {
     arg("measureDuration", "true")
     arg("moduleName", "integration-test-lib2")

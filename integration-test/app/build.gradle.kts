@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Locale
 
 plugins {
     kotlin("multiplatform")
@@ -68,22 +69,19 @@ kotlin {
 }
 
 dependencies {
-    kotlin.sourceSets.forEach { sourceSet ->
-        if (sourceSet.name.endsWith("Main")) {
-            val name = sourceSet.name.substringBefore("Main")
-            val configuration = "ksp${name.replaceFirstChar { it.uppercase() }}"
-            if (configurations.any { it.name == configuration }) {
-                add(configuration, project(":processor:app"))
-            }
-        }
-        if (sourceSet.name.endsWith("Test")) {
-            val name = sourceSet.name.substringBefore("Test")
-            val configuration = "ksp${name.replaceFirstChar { it.uppercase() }}Test"
-            if (configurations.any { it.name == configuration }) {
-                add(configuration, project(":processor:app"))
-            }
-        }
+    fun String.capitalizeUS() = replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.US)
+        else it.toString()
     }
+
+    kotlin
+        .targets
+        .names
+        .map { it.capitalizeUS() }
+        .forEach { target ->
+            val targetConfigSuffix = if (target == "Metadata") "CommonMainMetadata" else target
+            add("ksp${targetConfigSuffix}", project(":processor:lib"))
+        }
 }
 
 ksp {

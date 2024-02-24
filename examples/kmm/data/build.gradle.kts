@@ -62,7 +62,7 @@ kotlin {
 
 android {
     namespace = "com.moriatsushi.koject.example.kmm.data"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 23
     }

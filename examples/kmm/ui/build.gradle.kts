@@ -73,7 +73,7 @@ kotlin {
 
 android {
     namespace = "com.moriatsushi.koject.example.kmm.ui"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 23
     }

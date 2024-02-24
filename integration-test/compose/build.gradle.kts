@@ -1,4 +1,4 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
@@ -8,38 +8,54 @@ plugins {
 }
 
 kotlin {
-    android()
-    jvm("desktop")
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.AZUL)
+    }
+
+    androidTarget {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
+    jvm("desktop") {
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_11
+            }
+        }
+    }
     js(IR) {
         moduleName = "integration-test-compose"
         browser()
     }
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":compose:koject-compose-core"))
                 implementation(compose.runtime)
                 implementation(libs.kotlinx.coroutines.core)
             }
         }
-
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
 
-        val jvmTest by creating {
-            dependsOn(commonTest)
+        val commonJvmTest by creating {
+            dependsOn(commonTest.get())
             dependencies {
-                @OptIn(ExperimentalComposeLibrary::class)
-                implementation(compose.uiTestJUnit4)
+                implementation(compose.desktop.uiTestJUnit4)
             }
         }
 
-        val androidMain by getting {
-            dependsOn(commonMain)
+        androidMain {
             dependencies {
                 api(project(":android:koject-android-core"))
                 implementation(libs.androidx.activity)
@@ -47,10 +63,9 @@ kotlin {
         }
 
         val androidUnitTest by getting {
-            dependsOn(jvmTest)
+            dependsOn(commonJvmTest)
             dependencies {
-                @OptIn(ExperimentalComposeLibrary::class)
-                implementation(compose.uiTestJUnit4)
+                implementation(compose.desktop.uiTestJUnit4)
                 implementation(libs.androidx.test.core)
                 implementation(libs.androidx.test.ext.junit)
                 implementation(libs.robolectric)
@@ -58,40 +73,49 @@ kotlin {
         }
 
         val desktopMain by getting {
-            dependsOn(commonMain)
             dependencies {
                 implementation(compose.desktop.currentOs)
             }
         }
-
         val desktopTest by getting {
-            dependsOn(jvmTest)
+            dependsOn(commonJvmTest)
             dependencies {
-                @OptIn(ExperimentalComposeLibrary::class)
-                implementation(compose.uiTestJUnit4)
+                implementation(compose.desktop.uiTestJUnit4)
             }
         }
 
-        val jsTest by getting {
-            dependsOn(commonTest)
+        jsTest {
             dependencies {
-                implementation(compose.web.testUtils)
+                implementation(compose.html.testUtils)
             }
         }
     }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+    kotlinOptions {
+        // 'expect'/'actual' classes (including interfaces, objects, annotations, enums,
+        // and 'actual' typealiases) are in Beta.
+        // You can use -Xexpect-actual-classes flag to suppress this warning.
+        // Also see: https://youtrack.jetbrains.com/issue/KT-61573
+        freeCompilerArgs +=
+            listOf(
+                "-Xexpect-actual-classes",
+            )
+    }
+}
+
 android {
     namespace = "com.moriatsushi.koject.integrationtest.compose"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
         buildConfig = false

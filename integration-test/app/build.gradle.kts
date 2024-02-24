@@ -80,11 +80,11 @@ dependencies {
         .map { it.capitalizeUS() }
         .forEach { target ->
             val targetConfigSuffix = if (target == "Metadata") "CommonMainMetadata" else target
-            add("ksp${targetConfigSuffix}", project(":processor:lib"))
+            add("ksp${targetConfigSuffix}", project(":processor:app"))
 
             // kspCommonMainMetadataTest is not found
             if (targetConfigSuffix != "CommonMainMetadata") {
-                add("ksp${targetConfigSuffix}Test", project(":processor:lib"))
+                add("ksp${targetConfigSuffix}Test", project(":processor:app"))
             }
         }
 }

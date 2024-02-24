@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.android.library)
@@ -8,23 +10,32 @@ plugins {
 }
 
 kotlin {
-    android()
+    androidTarget()
     jvm("desktop")
     js(IR) {
         browser()
     }
-    ios()
+
+    iosArm64()
+    iosX64()
     iosSimulatorArm64()
     macosX64()
     macosArm64()
-    watchos()
-    tvos()
+    tvosX64()
+    tvosSimulatorArm64()
+    tvosArm64()
+    watchosArm32()
+    watchosArm64()
+    watchosX64()
+    watchosSimulatorArm64()
 
     mingwX64()
     linuxX64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":koject-core"))
                 implementation(compose.runtime)
@@ -32,53 +43,16 @@ kotlin {
             }
         }
 
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
 
-        val androidMain by getting {
-            dependsOn(commonMain)
+        androidMain {
             dependencies {
                 implementation(compose.ui)
             }
-        }
-
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosArm64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val watchosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val tvosMain by getting {
-            dependsOn(nativeMain)
-        }
-
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
         }
     }
 }
@@ -98,22 +72,22 @@ android {
     }
 }
 
+
+
 dependencies {
-    add("kspAndroid", project(":processor:lib"))
-    add("kspDesktop", project(":processor:lib"))
-    add("kspJs", project(":processor:lib"))
-    add("kspIosX64", project(":processor:lib"))
-    add("kspIosArm64", project(":processor:lib"))
-    add("kspIosSimulatorArm64", project(":processor:lib"))
-    add("kspMacosX64", project(":processor:lib"))
-    add("kspMacosArm64", project(":processor:lib"))
-    add("kspWatchosArm32", project(":processor:lib"))
-    add("kspWatchosArm64", project(":processor:lib"))
-    add("kspWatchosX64", project(":processor:lib"))
-    add("kspTvosArm64", project(":processor:lib"))
-    add("kspTvosX64", project(":processor:lib"))
-    add("kspMingwX64", project(":processor:lib"))
-    add("kspLinuxX64", project(":processor:lib"))
+    fun String.capitalizeUS() = replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.US)
+        else it.toString()
+    }
+
+    kotlin
+        .targets
+        .names
+        .map { it.capitalizeUS() }
+        .forEach { target ->
+            val targetConfigSuffix = if (target == "Metadata") "CommonMainMetadata" else target
+            add("ksp${targetConfigSuffix}", project(":processor:lib"))
+        }
 }
 
 ksp {

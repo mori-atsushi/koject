@@ -20,7 +20,7 @@ kotlin {
             }
         }
     }
-    jvm("desktop") {
+    jvm {
         compilations.configureEach {
             compilerOptions.configure {
                 jvmTarget = JvmTarget.JVM_11

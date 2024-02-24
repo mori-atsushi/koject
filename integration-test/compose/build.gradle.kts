@@ -86,7 +86,7 @@ kotlin {
 
         jsTest {
             dependencies {
-                implementation(compose.web.testUtils)
+                implementation(compose.html.testUtils)
             }
         }
     }

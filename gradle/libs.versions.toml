@@ -1,6 +1,6 @@
 [versions]
 android-gradle-plugin = "8.1.2"
-androidx-activity = "1.7.2"
+androidx-activity = "1.9.3"
 androidx-compose-ui = "1.4.3"
 androidx-compose-compiler = "1.4.5"
 androidx-fragment = "1.6.1"
